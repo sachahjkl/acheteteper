@@ -1,4 +1,4 @@
-# Tentative de "framework" simple PHP
+# Framework PHP minimal (Acheteteper)
 
 ## Usage
 
@@ -13,12 +13,20 @@ require '../../vendor/autoload.php';
 use Controllers\IndexController;
 use Acheteteper\ConfigBuilder;
 use Acheteteper\Engine;
+use Acheteteper\SqliteDataSource;
+use Services\DbDemoService;
+use Repositories\DbDemoRepository;
 
 $configBuilder = new ConfigBuilder();
 $configBuilder->setViewDir(__DIR__ . '/../views');
+$configBuilder->setDbPath(__DIR__ . '/../database.sqlite');
 $config = $configBuilder->build();
 
 $engine = new Engine($config);
+$engine->registerDatasource('default', SqliteDataSource::class);
+$engine->registerService(DbDemoService::class);
+$engine->registerRepository(DbDemoRepository::class);
+
 $engine->registerController('/', IndexController::class);
 
 $engine->run();
@@ -69,6 +77,10 @@ $engine->registerController('/about', AboutController::class);
 - `json(array $data)` - Retourne une réponse JSON
 - `getFieldValue(string $key)` - Récupère une valeur POST/GET
 - `getFieldsValues(array $keys)` - Récupère plusieurs valeurs POST/GET
+- `datasource(string $name = 'default')` - Récupère un datasource
+- `getService(string $class)` - Récupère un service
+- `getRepository(string $class)` - Récupère un repository
+- `fail(int $status, string $message)` - Lance une HttpException
 
 ### Vues
 
@@ -78,6 +90,15 @@ Les vues sont des fichiers PHP dans le répertoire configuré (`viewDir`). Exten
 <h1>Page</h1>
 <p>Bonjour <?= $name; ?></p>
 ```
+
+### Datasource / Services / Repositories
+
+- Déclarer un datasource : `$engine->registerDatasource('default', SqliteDataSource::class);`
+- Déclarer un service : `$engine->registerService(MyService::class);`
+- Déclarer un repository : `$engine->registerRepository(MyRepository::class);`
+- Dans un contrôleur : `$this->datasource()` ou `$this->getService(MyService::class)` ou `$this->getRepository(MyRepository::class)`
+
+Exemple de demo : `/db` (DbDemoController) utilise SQLite, un service et un repository pour un CRUD simple sur `demo_items`.
 
 ## Démarrage
 

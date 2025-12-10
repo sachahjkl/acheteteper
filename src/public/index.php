@@ -14,16 +14,24 @@ use Controllers\{
     ApiDemoController,
     HelpersDemoController,
     RoutingDemoController,
-    ErrorsDemoController
+    ErrorsDemoController,
+    DBDemoController
 };
 use Acheteteper\ConfigBuilder;
 use Acheteteper\Engine;
 
 $configBuilder = new ConfigBuilder();
 $configBuilder->setViewDir(__DIR__ . '/../views');
+$configBuilder->setDbPath(__DIR__ . '/../../database.db');
+$configBuilder->enableDebug();
 $config = $configBuilder->build();
 
 $engine = new Engine($config);
+
+$engine->registerDatasource('default', Acheteteper\SqliteDataSource::class);
+$engine->registerService(Services\DbDemoService::class);
+$engine->registerRepository(Repositories\DbDemoRepository::class);
+
 $engine->registerController('/', IndexController::class);
 $engine->registerController('/request', RequestDemoController::class);
 $engine->registerController('/response', ResponseDemoController::class);
@@ -36,5 +44,6 @@ $engine->registerController('/api', ApiDemoController::class);
 $engine->registerController('/helpers', HelpersDemoController::class);
 $engine->registerController('/routing', RoutingDemoController::class);
 $engine->registerController('/errors', ErrorsDemoController::class);
+$engine->registerController('/db', DBDemoController::class);
 
 $engine->run();

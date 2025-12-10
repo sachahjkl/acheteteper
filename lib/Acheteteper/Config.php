@@ -22,8 +22,11 @@ class Config
 
     /**
      * @param string $viewDir Directory path where view files are located.
+     * @param string $dbPath SQLite database file path.
      */
     public function __construct(
-        public string $viewDir = "views"
+        public string $viewDir = "views",
+        public string $dbPath = "database.sqlite",
+        public bool $debug = false
     ) {}
 }

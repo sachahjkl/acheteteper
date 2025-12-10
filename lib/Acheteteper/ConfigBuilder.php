@@ -2,6 +2,8 @@
 
 namespace Acheteteper;
 
+use Acheteteper\Utils\PathUtils;
+
 /**
  * Builder for creating Config instances.
  * 
@@ -9,7 +11,7 @@ namespace Acheteteper;
  */
 class ConfigBuilder
 {
-    private $config;
+    private Config $config;
 
     public function __construct()
     {
@@ -24,7 +26,31 @@ class ConfigBuilder
      */
     public function setViewDir(string $viewDir)
     {
-        $this->config->viewDir = $viewDir;
+        $this->config->viewDir = PathUtils::realpath($viewDir);
+        return $this;
+    }
+
+    /**
+     * Set SQLite database path.
+     * 
+     * @param string $dbPath Path to SQLite file.
+     * @return self
+     */
+    public function setDbPath(string $dbPath)
+    {
+        $this->config->dbPath = PathUtils::realpath($dbPath);
+        return $this;
+    }
+
+    public function enableDebug()
+    {
+        $this->config->debug = true;
+        return $this;
+    }
+
+    public function disableDebug()
+    {
+        $this->config->debug = false;
         return $this;
     }
 

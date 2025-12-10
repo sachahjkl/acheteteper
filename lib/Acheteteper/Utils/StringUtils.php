@@ -1,6 +1,6 @@
 <?php
 
-namespace Acheteteper;
+namespace Acheteteper\Utils;
 
 /**
  * Utility class for string operations.

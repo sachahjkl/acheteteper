@@ -27,7 +27,7 @@ class Validator
      * @param string $message Error message.
      * @return self
      */
-    public function required(string $field, string $message = null): self
+    public function required(string $field, ?string $message = null): self
     {
         $value = $this->data[$field] ?? null;
         if ($value === null || $value === '') {
@@ -43,7 +43,7 @@ class Validator
      * @param string $message Error message.
      * @return self
      */
-    public function email(string $field, string $message = null): self
+    public function email(string $field, ?string $message = null): self
     {
         $value = $this->data[$field] ?? null;
         if ($value !== null && $value !== '' && !filter_var($value, FILTER_VALIDATE_EMAIL)) {
@@ -60,7 +60,7 @@ class Validator
      * @param string $message Error message.
      * @return self
      */
-    public function minLength(string $field, int $min, string $message = null): self
+    public function minLength(string $field, int $min, ?string $message = null): self
     {
         $value = $this->data[$field] ?? '';
         if (strlen($value) < $min) {
@@ -77,7 +77,7 @@ class Validator
      * @param string $message Error message.
      * @return self
      */
-    public function maxLength(string $field, int $max, string $message = null): self
+    public function maxLength(string $field, int $max, ?string $message = null): self
     {
         $value = $this->data[$field] ?? '';
         if (strlen($value) > $max) {
@@ -94,7 +94,7 @@ class Validator
      * @param string $message Error message.
      * @return self
      */
-    public function pattern(string $field, string $pattern, string $message = null): self
+    public function pattern(string $field, string $pattern, ?string $message = null): self
     {
         $value = $this->data[$field] ?? '';
         if ($value !== '' && !preg_match($pattern, $value)) {
@@ -111,7 +111,7 @@ class Validator
      * @param string $message Error message.
      * @return self
      */
-    public function equals(string $field, string $otherField, string $message = null): self
+    public function equals(string $field, string $otherField, ?string $message = null): self
     {
         $value = $this->data[$field] ?? null;
         $otherValue = $this->data[$otherField] ?? null;

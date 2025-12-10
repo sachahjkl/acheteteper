@@ -2,6 +2,8 @@
 
 namespace Acheteteper;
 
+use Acheteteper\DataSourceInterface;
+
 /**
  * Base class for all controllers.
  * 
@@ -22,6 +24,17 @@ class ControllerBase
         public Request $request,
         public Response $response
     ) {}
+
+    /** @var callable|null */
+    private $datasourceProvider = null;
+
+    /** @var callable|null */
+    private $serviceProvider = null;
+
+    /** @var callable|null */
+    private $repositoryProvider = null;
+
+    public ?DataSourceInterface $datasource = null;
 
     /**
      * Render a view template with optional data.
@@ -310,6 +323,55 @@ class ControllerBase
     public function requireCsrf(): void
     {
         Csrf::verify();
+    }
+
+    public function setDatasourceProvider(callable $provider): void
+    {
+        $this->datasourceProvider = $provider;
+        $this->datasource = $provider();
+    }
+
+    public function setServiceProvider(callable $provider): void
+    {
+        $this->serviceProvider = $provider;
+    }
+
+    public function setRepositoryProvider(callable $provider): void
+    {
+        $this->repositoryProvider = $provider;
+    }
+
+    /**
+     * Get a datasource by name.
+     */
+    public function datasource(string $name = 'default'): DataSourceInterface
+    {
+        if ($this->datasourceProvider === null) {
+            throw new HttpException(500, 'Datasource provider not set');
+        }
+        return ($this->datasourceProvider)($name);
+    }
+
+    /**
+     * Resolve a service instance.
+     */
+    public function getService(string $class): object
+    {
+        if ($this->serviceProvider === null) {
+            throw new HttpException(500, 'Service provider not set');
+        }
+        return ($this->serviceProvider)($class);
+    }
+
+    /**
+     * Resolve a repository instance.
+     */
+    public function getRepository(string $class): object
+    {
+        if ($this->repositoryProvider === null) {
+            throw new HttpException(500, 'Repository provider not set');
+        }
+        return ($this->repositoryProvider)($class);
     }
 
     /**

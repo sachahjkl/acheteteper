@@ -1,0 +1,46 @@
+<?php
+
+namespace Controllers;
+
+use Acheteteper\ControllerBase;
+use Services\DbDemoService;
+
+class DBDemoController extends ControllerBase
+{
+
+    private function dbService(): DbDemoService
+    {
+        /** @var DbDemoService */
+        return $this->getService(DbDemoService::class);
+    }
+
+    public function index()
+    {
+        $service = $this->dbService();
+
+        if ($this->isPost()) {
+            $action = $this->request->post('action');
+            if ($action === 'add') {
+                $name = trim((string)$this->request->post('name', ''));
+                if ($name === '') {
+                    $this->fail(400, 'Name is required');
+                }
+                $service->addItem($name);
+                $this->redirect('/db');
+            } elseif ($action === 'delete') {
+                $id = (int)$this->request->post('id', 0);
+                if ($id > 0) {
+                    $service->deleteItem($id);
+                }
+                $this->redirect('/db');
+            }
+        }
+
+        $items = $service->listItems();
+
+        $this->render('db_demo', [
+            'items' => $items,
+            'dbPath' => $service->dbPath(),
+        ]);
+    }
+}

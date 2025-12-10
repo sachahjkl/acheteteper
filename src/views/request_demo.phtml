@@ -1,0 +1,107 @@
+<?php
+$title = 'Request Demo';
+ob_start();
+?>
+
+<h2>Request Information</h2>
+<table>
+    <tr>
+        <th>Property</th>
+        <th>Value</th>
+    </tr>
+    <tr>
+        <td>Method</td>
+        <td><?= \Httpeur\e($method) ?></td>
+    </tr>
+    <tr>
+        <td>Is GET</td>
+        <td><?= $isGet ? 'Yes' : 'No' ?></td>
+    </tr>
+    <tr>
+        <td>Is POST</td>
+        <td><?= $isPost ? 'Yes' : 'No' ?></td>
+    </tr>
+    <tr>
+        <td>Is AJAX</td>
+        <td><?= $isAjax ? 'Yes' : 'No' ?></td>
+    </tr>
+    <tr>
+        <td>Path</td>
+        <td><?= \Httpeur\e($path) ?></td>
+    </tr>
+    <tr>
+        <td>Full URL</td>
+        <td><?= \Httpeur\e($url) ?></td>
+    </tr>
+    <tr>
+        <td>IP Address</td>
+        <td><?= \Httpeur\e($ip) ?></td>
+    </tr>
+    <tr>
+        <td>User-Agent</td>
+        <td><?= \Httpeur\e($userAgent ?? 'N/A') ?></td>
+    </tr>
+    <tr>
+        <td>Accept</td>
+        <td><?= \Httpeur\e($accept ?? 'N/A') ?></td>
+    </tr>
+    <tr>
+        <td>Accept-Language</td>
+        <td><?= \Httpeur\e($acceptLanguage ?? 'N/A') ?></td>
+    </tr>
+</table>
+
+<h2>GET Parameters</h2>
+<?php if (empty($getParams)): ?>
+    <p>No GET parameters. Add some: <a href="?foo=bar&test=123">?foo=bar&test=123</a></p>
+<?php else: ?>
+    <table>
+        <tr>
+            <th>Key</th>
+            <th>Value</th>
+        </tr>
+        <?php foreach ($getParams as $key => $value): ?>
+            <tr>
+                <td><?= \Httpeur\e($key) ?></td>
+                <td><?= \Httpeur\e($value) ?></td>
+            </tr>
+        <?php endforeach; ?>
+    </table>
+<?php endif; ?>
+
+<h2>POST Parameters</h2>
+<?php if (empty($postParams)): ?>
+    <p>No POST parameters. Submit the form below to test POST.</p>
+<?php else: ?>
+    <table>
+        <tr>
+            <th>Key</th>
+            <th>Value</th>
+        </tr>
+        <?php foreach ($postParams as $key => $value): ?>
+            <tr>
+                <td><?= \Httpeur\e($key) ?></td>
+                <td><?= \Httpeur\e($value) ?></td>
+            </tr>
+        <?php endforeach; ?>
+    </table>
+<?php endif; ?>
+
+<h2>Test POST Request</h2>
+<form method="POST">
+    <input type="text" name="test_field" placeholder="Enter some text" value="Test value">
+    <input type="email" name="test_email" placeholder="Enter email" value="test@example.com">
+    <button type="submit">Submit POST</button>
+</form>
+
+<?php
+$content = ob_get_clean();
+$extraStyles = '
+    table { width: 100%; border-collapse: collapse; margin: 20px 0; }
+    th, td { padding: 10px; text-align: left; border: 1px solid #ddd; }
+    th { background: #f0f0f0; }
+    form { margin: 20px 0; padding: 15px; background: #f9f9f9; border: 1px solid #ddd; }
+    input, button { padding: 8px; margin: 5px; }
+    button { background: #007bff; color: white; border: none; cursor: pointer; }
+';
+?>

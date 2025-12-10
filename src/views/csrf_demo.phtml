@@ -1,0 +1,45 @@
+<?php
+$title = 'CSRF Demo';
+ob_start();
+?>
+
+<h2>CSRF Token</h2>
+<p>Current CSRF Token: <span class="token"><?= isset($token) ? \Httpeur\e($token) : 'None' ?></span></p>
+
+<?php if (isset($success) && $success): ?>
+    <div class="success">
+        <strong>Success!</strong> <?= \Httpeur\e($message) ?>
+    </div>
+<?php endif; ?>
+
+<?php if (isset($error) && $error): ?>
+    <div class="error">
+        <strong>Error!</strong> <?= \Httpeur\e($message) ?>
+    </div>
+<?php endif; ?>
+
+<h2>Form with CSRF Protection</h2>
+<form method="POST" action="/csrf/submit">
+    <?= \Httpeur\csrf_field() ?>
+    <input type="text" name="data" placeholder="Enter some data" value="Test data">
+    <button type="submit">Submit (with CSRF token)</button>
+</form>
+
+<h2>Form without CSRF Protection</h2>
+<p>This form will fail validation:</p>
+<form method="POST" action="/csrf/submit">
+    <input type="text" name="data" placeholder="Enter some data" value="Test data">
+    <button type="submit">Submit (without CSRF token)</button>
+</form>
+
+<?php
+$content = ob_get_clean();
+$extraStyles = '
+    .success { color: green; padding: 15px; background: #d4edda; border: 1px solid #c3e6cb; margin: 20px 0; }
+    .error { color: red; padding: 15px; background: #f8d7da; border: 1px solid #f5c6cb; margin: 20px 0; }
+    form { margin: 20px 0; padding: 15px; background: #f9f9f9; border: 1px solid #ddd; }
+    input, button { padding: 8px; margin: 5px; }
+    button { background: #007bff; color: white; border: none; cursor: pointer; }
+    .token { font-family: monospace; background: #f0f0f0; padding: 5px; }
+';
+?>

@@ -1,0 +1,37 @@
+<?php
+$title = 'Error Handling Demo';
+ob_start();
+?>
+
+<?php if (isset($error)): ?>
+    <div class="error-box">
+        <h2><?= \Httpeur\e($error) ?></h2>
+        <p>This is a custom error page demonstrating error handling.</p>
+    </div>
+<?php endif; ?>
+
+<h2>Test Error Responses</h2>
+<div class="routes">
+    <div class="route">
+        <strong>404 Not Found</strong>
+        <a href="/errors/notFound"><button>Trigger 404</button></a>
+    </div>
+    <div class="route">
+        <strong>403 Forbidden</strong>
+        <a href="/errors/forbidden"><button>Trigger 403</button></a>
+    </div>
+    <div class="route">
+        <strong>500 Internal Server Error</strong>
+        <a href="/errors/serverError"><button>Trigger 500</button></a>
+    </div>
+</div>
+
+<?php
+$content = ob_get_clean();
+$extraStyles = '
+    .error-box { margin: 20px 0; padding: 15px; background: #f8d7da; border: 1px solid #f5c6cb; color: #721c24; }
+    .routes { margin: 20px 0; }
+    .route { margin: 10px 0; padding: 10px; background: #f9f9f9; border: 1px solid #ddd; }
+    button { background: #dc3545; color: white; padding: 8px 15px; border: none; cursor: pointer; }
+';
+?>

@@ -1,0 +1,47 @@
+<?php
+$title = 'Session Demo';
+ob_start();
+?>
+
+<h2>Session Counter</h2>
+<p>This page has been visited <span class="counter"><?= $counter ?></span> times.</p>
+
+<h2>Set Session Value</h2>
+<form method="POST">
+    <input type="text" name="key" placeholder="Key" required>
+    <input type="text" name="value" placeholder="Value" required>
+    <button type="submit">Set Session Value</button>
+</form>
+
+<h2>All Session Data</h2>
+<?php if (empty($allSession)): ?>
+    <p>No session data stored.</p>
+<?php else: ?>
+    <table>
+        <tr>
+            <th>Key</th>
+            <th>Value</th>
+        </tr>
+        <?php foreach ($allSession as $key => $value): ?>
+            <tr>
+                <td><?= \Httpeur\e($key) ?></td>
+                <td><?= \Httpeur\e(is_array($value) ? json_encode($value) : (string)$value) ?></td>
+            </tr>
+        <?php endforeach; ?>
+    </table>
+<?php endif; ?>
+
+<p><a href="/session/clear"><button>Clear All Session Data</button></a></p>
+
+<?php
+$content = ob_get_clean();
+$extraStyles = '
+    table { width: 100%; border-collapse: collapse; margin: 20px 0; }
+    th, td { padding: 10px; text-align: left; border: 1px solid #ddd; }
+    th { background: #f0f0f0; }
+    form { margin: 20px 0; padding: 15px; background: #f9f9f9; border: 1px solid #ddd; }
+    input, button { padding: 8px; margin: 5px; }
+    button { background: #007bff; color: white; border: none; cursor: pointer; }
+    .counter { font-size: 1.5em; color: #007bff; font-weight: bold; }
+';
+?>

@@ -14,8 +14,14 @@ class ControllerBase
 {
     /**
      * @param Config $config Framework configuration.
+     * @param Request $request Request instance.
+     * @param Response $response Response instance.
      */
-    public function __construct(private Config $config) {}
+    public function __construct(
+        private Config $config,
+        public Request $request,
+        public Response $response
+    ) {}
 
     /**
      * Render a view template with optional data.
@@ -29,17 +35,36 @@ class ControllerBase
      */
     public function render(string $view, array $data = [])
     {
+        static $helpersLoaded = false;
+        if (!$helpersLoaded) {
+            require __DIR__ . '/helpers.php';
+            $helpersLoaded = true;
+        }
+
         $viewBasename = $this->config->viewDir . DIRECTORY_SEPARATOR . $view;
+        $viewFile = null;
         foreach (Config::$viewExtensions as $extension) {
-            $view = $viewBasename . '.' . $extension;
-            if (file_exists($view)) {
-                extract($data);
-                require $view;
-                return;
+            $viewPath = $viewBasename . '.' . $extension;
+            if (file_exists($viewPath)) {
+                $viewFile = $viewPath;
+                break;
             }
         }
 
-        throw new \Exception("View not found: $viewBasename");
+        if ($viewFile === null) {
+            throw new \Exception("View not found: $viewBasename");
+        }
+
+        extract($data);
+
+        $layoutFile = $this->config->viewDir . DIRECTORY_SEPARATOR . '_layout.phtml';
+        if (file_exists($layoutFile)) {
+            // Views are responsible for setting $title/$content/$extraStyles.
+            require $viewFile;
+            require $layoutFile;
+        } else {
+            require $viewFile;
+        }
     }
 
     /**
@@ -50,8 +75,7 @@ class ControllerBase
      */
     public function redirect(string $url)
     {
-        header("Location: $url");
-        exit();
+        $this->response->redirect($url);
     }
 
     /**
@@ -62,9 +86,7 @@ class ControllerBase
      */
     public function json(array $data)
     {
-        header('Content-Type: application/json');
-        echo json_encode($data);
-        exit();
+        $this->response->json($data);
     }
 
     /**
@@ -75,19 +97,7 @@ class ControllerBase
      */
     public function setStatus(int $status)
     {
-        http_response_code($status);
-    }
-
-    /**
-     * Send a 404 Not Found response.
-     * 
-     * @return void
-     */
-    public function notFoud()
-    {
-        $this->setStatus(404);
-        echo "404 Not Found";
-        exit();
+        $this->response->setStatus($status);
     }
 
     /**
@@ -98,7 +108,7 @@ class ControllerBase
      */
     public function getFieldValue(string $key)
     {
-        return $_POST[$key] ?? $_GET[$key] ?? null;
+        return $this->request->input($key);
     }
 
     /**
@@ -113,5 +123,205 @@ class ControllerBase
             $values[$key] = $this->getFieldValue($key);
         }
         return $values;
+    }
+
+    /**
+     * Get request method (GET, POST, etc.).
+     * 
+     * @return string
+     */
+    public function method(): string
+    {
+        return $this->request->method();
+    }
+
+    /**
+     * Check if request is POST.
+     * 
+     * @return bool
+     */
+    public function isPost(): bool
+    {
+        return $this->request->isPost();
+    }
+
+    /**
+     * Check if request is GET.
+     * 
+     * @return bool
+     */
+    public function isGet(): bool
+    {
+        return $this->request->isGet();
+    }
+
+    /**
+     * Check if request is PUT.
+     * 
+     * @return bool
+     */
+    public function isPut(): bool
+    {
+        return $this->request->isPut();
+    }
+
+    /**
+     * Check if request is DELETE.
+     * 
+     * @return bool
+     */
+    public function isDelete(): bool
+    {
+        return $this->request->isDelete();
+    }
+
+    /**
+     * Check if request is PATCH.
+     * 
+     * @return bool
+     */
+    public function isPatch(): bool
+    {
+        return $this->request->isPatch();
+    }
+
+    /**
+     * Check if request is HEAD.
+     * 
+     * @return bool
+     */
+    public function isHead(): bool
+    {
+        return $this->request->isHead();
+    }
+
+    /**
+     * Redirect with a flash message.
+     * 
+     * @param string $url Target URL.
+     * @param string $key Flash message key.
+     * @param mixed $value Flash message value.
+     * @return void
+     */
+    public function redirectWithFlash(string $url, string $key, mixed $value): void
+    {
+        Session::setFlash($key, $value);
+        $this->redirect($url);
+    }
+
+    /**
+     * Validate request data.
+     * 
+     * @param array $data Data to validate (defaults to POST data).
+     * @return Validator
+     */
+    public function validate(?array $data = null): Validator
+    {
+        if ($data === null) {
+            $data = $this->request->allPost();
+        }
+        return new Validator($data);
+    }
+
+    /**
+     * Require POST method, throw exception if not.
+     * 
+     * @return void
+     * @throws \Exception If request is not POST.
+     */
+    public function requirePost(): void
+    {
+        if (!$this->request->isPost()) {
+            throw new HttpException(405, 'This action requires POST method');
+        }
+    }
+
+    /**
+     * Require GET method, throw exception if not.
+     * 
+     * @return void
+     * @throws HttpException If request is not GET.
+     */
+    public function requireGet(): void
+    {
+        if (!$this->request->isGet()) {
+            throw new HttpException(405, 'This action requires GET method');
+        }
+    }
+
+    /**
+     * Require PUT method, throw exception if not.
+     * 
+     * @return void
+     * @throws HttpException If request is not PUT.
+     */
+    public function requirePut(): void
+    {
+        if (!$this->request->isPut()) {
+            throw new HttpException(405, 'This action requires PUT method');
+        }
+    }
+
+    /**
+     * Require DELETE method, throw exception if not.
+     * 
+     * @return void
+     * @throws HttpException If request is not DELETE.
+     */
+    public function requireDelete(): void
+    {
+        if (!$this->request->isDelete()) {
+            throw new HttpException(405, 'This action requires DELETE method');
+        }
+    }
+
+    /**
+     * Require PATCH method, throw exception if not.
+     * 
+     * @return void
+     * @throws HttpException If request is not PATCH.
+     */
+    public function requirePatch(): void
+    {
+        if (!$this->request->isPatch()) {
+            throw new HttpException(405, 'This action requires PATCH method');
+        }
+    }
+
+    /**
+     * Require HEAD method, throw exception if not.
+     * 
+     * @return void
+     * @throws HttpException If request is not HEAD.
+     */
+    public function requireHead(): void
+    {
+        if (!$this->request->isHead()) {
+            throw new HttpException(405, 'This action requires HEAD method');
+        }
+    }
+
+    /**
+     * Require valid CSRF token, throw exception if not.
+     * 
+     * @return void
+     * @throws HttpException If CSRF token is invalid.
+     */
+    public function requireCsrf(): void
+    {
+        Csrf::verify();
+    }
+
+    /**
+     * Throw an HTTP exception with status and message.
+     * 
+     * @param int $status HTTP status code.
+     * @param string $message Error message.
+     * @return never
+     * @throws HttpException
+     */
+    public function fail(int $status, string $message = ''): never
+    {
+        throw new HttpException($status, $message);
     }
 }

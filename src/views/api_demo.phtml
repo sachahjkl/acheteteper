@@ -1,0 +1,77 @@
+<?php
+$title = 'JSON API Demo';
+ob_start();
+?>
+
+<h2>API Endpoints</h2>
+
+<div class="endpoint">
+    <h3>GET /api/users</h3>
+    <p>Get all users</p>
+    <button onclick="fetchUsers()">Fetch Users</button>
+    <div id="users-result" class="result"></div>
+</div>
+
+<div class="endpoint">
+    <h3>GET /api/user?id=1</h3>
+    <p>Get a specific user</p>
+    <input type="number" id="userId" value="1" min="1">
+    <button onclick="fetchUser()">Fetch User</button>
+    <div id="user-result" class="result"></div>
+</div>
+
+<div class="endpoint">
+    <h3>GET /api/error</h3>
+    <p>Get error response (500 status)</p>
+    <button onclick="fetchError()">Fetch Error</button>
+    <div id="error-result" class="result"></div>
+</div>
+
+<script>
+    async function fetchUsers() {
+        const result = document.getElementById('users-result');
+        result.innerHTML = 'Loading...';
+        try {
+            const response = await fetch('/api/users');
+            const data = await response.json();
+            result.innerHTML = '<pre>' + JSON.stringify(data, null, 2) + '</pre>';
+        } catch (error) {
+            result.innerHTML = '<pre>Error: ' + error.message + '</pre>';
+        }
+    }
+
+    async function fetchUser() {
+        const result = document.getElementById('user-result');
+        const userId = document.getElementById('userId').value;
+        result.innerHTML = 'Loading...';
+        try {
+            const response = await fetch('/api/user?id=' + userId);
+            const data = await response.json();
+            result.innerHTML = '<pre>' + JSON.stringify(data, null, 2) + '</pre>';
+        } catch (error) {
+            result.innerHTML = '<pre>Error: ' + error.message + '</pre>';
+        }
+    }
+
+    async function fetchError() {
+        const result = document.getElementById('error-result');
+        result.innerHTML = 'Loading...';
+        try {
+            const response = await fetch('/api/error');
+            const data = await response.json();
+            result.innerHTML = '<pre>Status: ' + response.status + '\n' + JSON.stringify(data, null, 2) + '</pre>';
+        } catch (error) {
+            result.innerHTML = '<pre>Error: ' + error.message + '</pre>';
+        }
+    }
+</script>
+
+<?php
+$content = ob_get_clean();
+$extraStyles = '
+    .endpoint { margin: 20px 0; padding: 15px; background: #f9f9f9; border: 1px solid #ddd; }
+    button { background: #007bff; color: white; padding: 8px 15px; border: none; cursor: pointer; margin: 5px; }
+    pre { background: #f0f0f0; padding: 15px; overflow-x: auto; border: 1px solid #ddd; }
+    .result { margin-top: 10px; }
+';
+?>

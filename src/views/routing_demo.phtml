@@ -1,0 +1,71 @@
+<?php
+$title = 'Routing Demo';
+ob_start();
+?>
+
+<h2>Current Route Information</h2>
+<table>
+    <tr>
+        <th>Property</th>
+        <th>Value</th>
+    </tr>
+    <tr>
+        <td>Action</td>
+        <td><?= \Httpeur\e($action) ?></td>
+    </tr>
+    <tr>
+        <td>Method</td>
+        <td><?= \Httpeur\e($method) ?></td>
+    </tr>
+    <tr>
+        <td>Path</td>
+        <td><?= \Httpeur\e($path) ?></td>
+    </tr>
+    <?php if (isset($id)): ?>
+        <tr>
+            <td>ID Parameter</td>
+            <td><?= \Httpeur\e($id) ?></td>
+        </tr>
+    <?php endif; ?>
+    <?php if (isset($message)): ?>
+        <tr>
+            <td>Message</td>
+            <td><?= \Httpeur\e($message) ?></td>
+        </tr>
+    <?php endif; ?>
+</table>
+
+<h2>Available Routes</h2>
+<div class="routes">
+    <div class="route">
+        <strong>/routing</strong> → <code>index()</code>
+        <a href="/routing"><button>Visit</button></a>
+    </div>
+    <div class="route">
+        <strong>/routing/show</strong> → <code>show()</code>
+        <a href="/routing/show"><button>Visit</button></a>
+        <a href="/routing/show?id=123"><button>With ID</button></a>
+    </div>
+    <div class="route">
+        <strong>/routing/edit</strong> → <code>edit()</code>
+        <a href="/routing/edit"><button>Visit</button></a>
+    </div>
+    <div class="route">
+        <strong>/routing/delete</strong> → <code>delete()</code> (POST required)
+        <form method="POST" action="/routing/delete" style="display: inline;">
+            <button type="submit">Submit POST</button>
+        </form>
+    </div>
+</div>
+
+<?php
+$content = ob_get_clean();
+$extraStyles = '
+    table { width: 100%; border-collapse: collapse; margin: 20px 0; }
+    th, td { padding: 10px; text-align: left; border: 1px solid #ddd; }
+    th { background: #f0f0f0; }
+    .routes { margin: 20px 0; }
+    .route { margin: 10px 0; padding: 10px; background: #f9f9f9; border: 1px solid #ddd; }
+    button { background: #007bff; color: white; padding: 8px 15px; border: none; cursor: pointer; }
+';
+?>

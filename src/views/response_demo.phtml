@@ -1,0 +1,51 @@
+<?php
+$title = 'Response Demo';
+ob_start();
+?>
+
+<h2>Response Information</h2>
+<table>
+    <tr>
+        <th>Property</th>
+        <th>Value</th>
+    </tr>
+    <tr>
+        <td>Status Code</td>
+        <td class="status-<?= $status ?>"><?= $status ?></td>
+    </tr>
+</table>
+
+<h2>Response Headers</h2>
+<table>
+    <tr>
+        <th>Header Name</th>
+        <th>Value</th>
+    </tr>
+    <?php foreach ($headers as $name => $value): ?>
+        <tr>
+            <td><?= \Httpeur\e($name) ?></td>
+            <td><?= \Httpeur\e($value) ?></td>
+        </tr>
+    <?php endforeach; ?>
+</table>
+
+<h2>Test Different Status Codes</h2>
+<p>
+    <a href="?status=200">200 OK</a> |
+    <a href="?status=201">201 Created</a> |
+    <a href="?status=400">400 Bad Request</a> |
+    <a href="?status=404">404 Not Found</a> |
+    <a href="?status=500">500 Internal Server Error</a>
+</p>
+
+<?php
+$content = ob_get_clean();
+$extraStyles = '
+    table { width: 100%; border-collapse: collapse; margin: 20px 0; }
+    th, td { padding: 10px; text-align: left; border: 1px solid #ddd; }
+    th { background: #f0f0f0; }
+    .status-200 { color: green; }
+    .status-404 { color: red; }
+    .status-500 { color: red; }
+';
+?>

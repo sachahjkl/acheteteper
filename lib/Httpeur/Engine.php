@@ -72,7 +72,17 @@ class Engine
             return;
         }
 
-        $controller->$action();
+        try {
+            $controller->$action();
+        } catch (HttpException $e) {
+            $this->setStatus($e->getStatus());
+            echo $e->getMessage();
+            return;
+        } catch (\Throwable $e) {
+            $this->setStatus(500);
+            echo "500 Internal Server Error";
+            return;
+        }
     }
 
 
@@ -115,7 +125,9 @@ class Engine
     private function tryFindController(string $route)
     {
         if (isset($this->controllerMappings[$route])) {
-            return new $this->controllerMappings[$route]($this->config);
+            $request = Request::fromGlobals();
+            $response = Response::fromGlobals();
+            return new $this->controllerMappings[$route]($this->config, $request, $response);
         } else {
             return null;
         }

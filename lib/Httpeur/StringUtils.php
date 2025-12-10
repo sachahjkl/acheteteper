@@ -50,4 +50,42 @@ class StringUtils
         }
         return array_values($pathParts);
     }
+
+    /**
+     * Convert a string to camelCase.
+     * 
+     * @param string $string String to convert.
+     * @return string CamelCase string.
+     */
+    public static function camelCase(string $string): string
+    {
+        $string = str_replace(['-', '_'], ' ', $string);
+        $string = ucwords($string);
+        $string = str_replace(' ', '', $string);
+        return lcfirst($string);
+    }
+
+    /**
+     * Convert a string to snake_case.
+     * 
+     * @param string $string String to convert.
+     * @return string Snake_case string.
+     */
+    public static function snakeCase(string $string): string
+    {
+        $string = preg_replace('/([a-z])([A-Z])/', '$1_$2', $string);
+        return strtolower($string);
+    }
+
+    /**
+     * Convert a string to kebab-case.
+     * 
+     * @param string $string String to convert.
+     * @return string Kebab-case string.
+     */
+    public static function kebabCase(string $string): string
+    {
+        $string = preg_replace('/([a-z])([A-Z])/', '$1-$2', $string);
+        return strtolower($string);
+    }
 }

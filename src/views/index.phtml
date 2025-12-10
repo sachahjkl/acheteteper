@@ -1,0 +1,14 @@
+<h1>Ceci est la page d'accueil</h1>
+
+<p>Bonjour <?= $name; ?></p>
+
+<nav>
+    <a href="/about">About</a>
+    <a href="/about/contact">Contact</a>
+</nav>
+
+<ul>
+    <?php foreach ($items as $item) : ?>
+        <li><?= $item; ?></li>
+    <?php endforeach; ?>
+</ul>

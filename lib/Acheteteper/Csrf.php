@@ -1,11 +1,11 @@
 <?php
 
-namespace Httpeur;
+namespace Acheteteper;
 
 /**
  * Simple CSRF token generation and validation.
  * 
- * @package Httpeur
+ * @package Acheteteper
  */
 class Csrf
 {

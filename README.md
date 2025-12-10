@@ -11,8 +11,8 @@ Créer un fichier `index.php` dans le répertoire public :
 require '../../vendor/autoload.php';
 
 use Controllers\IndexController;
-use Httpeur\ConfigBuilder;
-use Httpeur\Engine;
+use Acheteteper\ConfigBuilder;
+use Acheteteper\Engine;
 
 $configBuilder = new ConfigBuilder();
 $configBuilder->setViewDir(__DIR__ . '/../views');
@@ -33,7 +33,7 @@ Les contrôleurs étendent `ControllerBase` :
 
 namespace Controllers;
 
-use Httpeur\ControllerBase;
+use Acheteteper\ControllerBase;
 
 class IndexController extends ControllerBase
 {

@@ -24,8 +24,8 @@ ob_start();
         </tr>
         <?php foreach ($allSession as $key => $value): ?>
             <tr>
-                <td><?= \Httpeur\e($key) ?></td>
-                <td><?= \Httpeur\e(is_array($value) ? json_encode($value) : (string)$value) ?></td>
+                <td><?= \Acheteteper\e($key) ?></td>
+                <td><?= \Acheteteper\e(is_array($value) ? json_encode($value) : (string)$value) ?></td>
             </tr>
         <?php endforeach; ?>
     </table>

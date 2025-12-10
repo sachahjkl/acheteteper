@@ -1,11 +1,11 @@
 <?php
 
-namespace Httpeur;
+namespace Acheteteper;
 
 /**
  * View helper functions for common operations.
  * 
- * @package Httpeur
+ * @package Acheteteper
  */
 class ViewHelper
 {

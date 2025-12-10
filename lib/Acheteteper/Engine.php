@@ -1,16 +1,13 @@
 <?php
 
-namespace Httpeur;
-
-use ReflectionClass;
-use ReflectionType;
+namespace Acheteteper;
 
 /**
  * Engine class
  * 
  * This class is the core of the application and coordinates the request/response cycle.
  * 
- * @package Httpeur
+ * @package Acheteteper
  * @author  sachahjkl
  * @version 1.0.0
  */

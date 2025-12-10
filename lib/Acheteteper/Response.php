@@ -1,11 +1,11 @@
 <?php
 
-namespace Httpeur;
+namespace Acheteteper;
 
 /**
  * Simple response wrapper.
  * 
- * @package Httpeur
+ * @package Acheteteper
  */
 class Response
 {

@@ -1,14 +1,14 @@
 <?php
 
-namespace Httpeur;
+namespace Acheteteper;
 
 /**
  * Global helper functions for use in views.
  * 
- * @package Httpeur
+ * @package Acheteteper
  */
 
-if (!function_exists('Httpeur\e')) {
+if (!function_exists('Acheteteper\e')) {
     /**
      * Escape HTML special characters.
      * 
@@ -21,7 +21,7 @@ if (!function_exists('Httpeur\e')) {
     }
 }
 
-if (!function_exists('Httpeur\url')) {
+if (!function_exists('Acheteteper\url')) {
     /**
      * Generate a URL from a path.
      * 
@@ -34,7 +34,7 @@ if (!function_exists('Httpeur\url')) {
     }
 }
 
-if (!function_exists('Httpeur\csrf_field')) {
+if (!function_exists('Acheteteper\csrf_field')) {
     /**
      * Generate CSRF token field HTML.
      * 
@@ -46,7 +46,7 @@ if (!function_exists('Httpeur\csrf_field')) {
     }
 }
 
-if (!function_exists('Httpeur\csrf_token')) {
+if (!function_exists('Acheteteper\csrf_token')) {
     /**
      * Get CSRF token.
      * 
@@ -58,7 +58,7 @@ if (!function_exists('Httpeur\csrf_token')) {
     }
 }
 
-if (!function_exists('Httpeur\flash')) {
+if (!function_exists('Acheteteper\flash')) {
     /**
      * Get and remove a flash message.
      * 

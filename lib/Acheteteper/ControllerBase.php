@@ -1,6 +1,6 @@
 <?php
 
-namespace Httpeur;
+namespace Acheteteper;
 
 /**
  * Base class for all controllers.
@@ -8,7 +8,7 @@ namespace Httpeur;
  * Provides common functionality for rendering views, handling redirects,
  * JSON responses, and accessing request data.
  * 
- * @package Httpeur
+ * @package Acheteteper
  */
 class ControllerBase
 {

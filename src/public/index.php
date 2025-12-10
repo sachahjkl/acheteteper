@@ -16,8 +16,8 @@ use Controllers\{
     RoutingDemoController,
     ErrorsDemoController
 };
-use Httpeur\ConfigBuilder;
-use Httpeur\Engine;
+use Acheteteper\ConfigBuilder;
+use Acheteteper\Engine;
 
 $configBuilder = new ConfigBuilder();
 $configBuilder->setViewDir(__DIR__ . '/../views');

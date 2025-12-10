@@ -1,11 +1,11 @@
 <?php
 
-namespace Httpeur;
+namespace Acheteteper;
 
 /**
  * Simple request wrapper for accessing HTTP request data.
  * 
- * @package Httpeur
+ * @package Acheteteper
  */
 class Request
 {

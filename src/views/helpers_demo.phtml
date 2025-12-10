@@ -1,44 +1,44 @@
 <?php
 $title = 'View Helpers Demo';
 
-use Httpeur\ViewHelper;
+use Acheteteper\ViewHelper;
 
 ob_start();
 ?>
 
 <div class="example">
     <h2>e() - HTML Escape</h2>
-    <p><strong>Input:</strong> <code><?= \Httpeur\e($htmlString) ?></code></p>
-    <p><strong>Output:</strong> <?= \Httpeur\e($htmlString) ?></p>
+    <p><strong>Input:</strong> <code><?= \Acheteteper\e($htmlString) ?></code></p>
+    <p><strong>Output:</strong> <?= \Acheteteper\e($htmlString) ?></p>
     <p>The script tag is escaped and displayed as text, preventing XSS attacks.</p>
 </div>
 
 <div class="example">
     <h2>url() - URL Generation</h2>
-    <p><strong>url('/request'):</strong> <code><?= \Httpeur\url('/request') ?></code></p>
-    <p><strong>url('/api/users'):</strong> <code><?= \Httpeur\url('/api/users') ?></code></p>
+    <p><strong>url('/request'):</strong> <code><?= \Acheteteper\url('/request') ?></code></p>
+    <p><strong>url('/api/users'):</strong> <code><?= \Acheteteper\url('/api/users') ?></code></p>
 </div>
 
 <div class="example">
     <h2>ViewHelper::date() - Date Formatting</h2>
     <p><strong>Timestamp:</strong> <?= $timestamp ?></p>
-    <p><strong>Default format:</strong> <?= \Httpeur\ViewHelper::date($timestamp) ?></p>
-    <p><strong>Custom format (Y-m-d):</strong> <?= \Httpeur\ViewHelper::date($timestamp, 'Y-m-d') ?></p>
+    <p><strong>Default format:</strong> <?= \Acheteteper\ViewHelper::date($timestamp) ?></p>
+    <p><strong>Custom format (Y-m-d):</strong> <?= \Acheteteper\ViewHelper::date($timestamp, 'Y-m-d') ?></p>
     <p><strong>Date string:</strong> <?= $dateString ?></p>
-    <p><strong>Formatted:</strong> <?= \Httpeur\ViewHelper::date($dateString, 'F j, Y') ?></p>
+    <p><strong>Formatted:</strong> <?= \Acheteteper\ViewHelper::date($dateString, 'F j, Y') ?></p>
 </div>
 
 <div class="example">
     <h2>ViewHelper::truncate() - String Truncation</h2>
-    <p><strong>Original:</strong> <?= \Httpeur\e($longText) ?></p>
-    <p><strong>Truncated (30 chars):</strong> <?= \Httpeur\ViewHelper::truncate($longText, 30) ?></p>
-    <p><strong>Truncated (50 chars):</strong> <?= \Httpeur\ViewHelper::truncate($longText, 50) ?></p>
+    <p><strong>Original:</strong> <?= \Acheteteper\e($longText) ?></p>
+    <p><strong>Truncated (30 chars):</strong> <?= \Acheteteper\ViewHelper::truncate($longText, 30) ?></p>
+    <p><strong>Truncated (50 chars):</strong> <?= \Acheteteper\ViewHelper::truncate($longText, 50) ?></p>
 </div>
 
 <div class="example">
     <h2>ViewHelper::link() - Link Generation</h2>
-    <p><?= \Httpeur\ViewHelper::link('/request', 'Request Demo') ?></p>
-    <p><?= \Httpeur\ViewHelper::link('/api/users', 'API Users', ['target' => '_blank']) ?></p>
+    <p><?= \Acheteteper\ViewHelper::link('/request', 'Request Demo') ?></p>
+    <p><?= \Acheteteper\ViewHelper::link('/api/users', 'API Users', ['target' => '_blank']) ?></p>
 </div>
 
 <?php

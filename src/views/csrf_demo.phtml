@@ -4,23 +4,23 @@ ob_start();
 ?>
 
 <h2>CSRF Token</h2>
-<p>Current CSRF Token: <span class="token"><?= isset($token) ? \Httpeur\e($token) : 'None' ?></span></p>
+<p>Current CSRF Token: <span class="token"><?= isset($token) ? \Acheteteper\e($token) : 'None' ?></span></p>
 
 <?php if (isset($success) && $success): ?>
     <div class="success">
-        <strong>Success!</strong> <?= \Httpeur\e($message) ?>
+        <strong>Success!</strong> <?= \Acheteteper\e($message) ?>
     </div>
 <?php endif; ?>
 
 <?php if (isset($error) && $error): ?>
     <div class="error">
-        <strong>Error!</strong> <?= \Httpeur\e($message) ?>
+        <strong>Error!</strong> <?= \Acheteteper\e($message) ?>
     </div>
 <?php endif; ?>
 
 <h2>Form with CSRF Protection</h2>
 <form method="POST" action="/csrf/submit">
-    <?= \Httpeur\csrf_field() ?>
+    <?= \Acheteteper\csrf_field() ?>
     <input type="text" name="data" placeholder="Enter some data" value="Test data">
     <button type="submit">Submit (with CSRF token)</button>
 </form>

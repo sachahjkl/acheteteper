@@ -1,26 +1,26 @@
 <?php
 $title = 'Flash Messages Demo';
-$successMsg = \Httpeur\flash('success');
-$errorMsg = \Httpeur\flash('error');
-$infoMsg = \Httpeur\flash('info');
-$warningMsg = \Httpeur\flash('warning');
+$successMsg = \Acheteteper\flash('success');
+$errorMsg = \Acheteteper\flash('error');
+$infoMsg = \Acheteteper\flash('info');
+$warningMsg = \Acheteteper\flash('warning');
 ob_start();
 ?>
 
 <?php if ($successMsg): ?>
-    <div class="flash flash-success"><?= \Httpeur\e($successMsg) ?></div>
+    <div class="flash flash-success"><?= \Acheteteper\e($successMsg) ?></div>
 <?php endif; ?>
 
 <?php if ($errorMsg): ?>
-    <div class="flash flash-error"><?= \Httpeur\e($errorMsg) ?></div>
+    <div class="flash flash-error"><?= \Acheteteper\e($errorMsg) ?></div>
 <?php endif; ?>
 
 <?php if ($infoMsg): ?>
-    <div class="flash flash-info"><?= \Httpeur\e($infoMsg) ?></div>
+    <div class="flash flash-info"><?= \Acheteteper\e($infoMsg) ?></div>
 <?php endif; ?>
 
 <?php if ($warningMsg): ?>
-    <div class="flash flash-warning"><?= \Httpeur\e($warningMsg) ?></div>
+    <div class="flash flash-warning"><?= \Acheteteper\e($warningMsg) ?></div>
 <?php endif; ?>
 
 <h2>Send Flash Message</h2>

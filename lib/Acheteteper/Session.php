@@ -1,11 +1,11 @@
 <?php
 
-namespace Httpeur;
+namespace Acheteteper;
 
 /**
  * Simple session wrapper.
  * 
- * @package Httpeur
+ * @package Acheteteper
  */
 class Session
 {

@@ -1,11 +1,11 @@
 <?php
 
-namespace Httpeur;
+namespace Acheteteper;
 
 /**
  * Simple validation helper.
  * 
- * @package Httpeur
+ * @package Acheteteper
  */
 class Validator
 {

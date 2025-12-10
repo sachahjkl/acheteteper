@@ -1,22 +1,22 @@
 <?php
-$title = 'Httpeur Framework - Demo Pages';
+$title = 'Acheteteper Framework - Demo Pages';
 ob_start();
 ?>
-<p>Welcome to the Httpeur framework demo. Explore the features below:</p>
+<p>Welcome to the Acheteteper framework demo. Explore the features below:</p>
 
 <h2>Available Demos</h2>
 <ul class="demo-list">
-    <li><a href="<?= \Httpeur\url('/request') ?>">Request Demo</a> - Access request data, headers, IP, method, etc.</li>
-    <li><a href="<?= \Httpeur\url('/response') ?>">Response Demo</a> - Manipulate response status codes and headers</li>
-    <li><a href="<?= \Httpeur\url('/validation') ?>">Validation Demo</a> - Form validation with all validation rules</li>
-    <li><a href="<?= \Httpeur\url('/session') ?>">Session Demo</a> - Session management and data storage</li>
-    <li><a href="<?= \Httpeur\url('/flash') ?>">Flash Messages Demo</a> - Temporary messages after redirects</li>
-    <li><a href="<?= \Httpeur\url('/csrf') ?>">CSRF Demo</a> - CSRF token generation and validation</li>
-    <li><a href="<?= \Httpeur\url('/upload') ?>">File Upload Demo</a> - File upload handling with validation</li>
-    <li><a href="<?= \Httpeur\url('/api') ?>">JSON API Demo</a> - JSON responses and API endpoints</li>
-    <li><a href="<?= \Httpeur\url('/helpers') ?>">View Helpers Demo</a> - Helper functions for views</li>
-    <li><a href="<?= \Httpeur\url('/routing') ?>">Routing Demo</a> - Different routes and actions</li>
-    <li><a href="<?= \Httpeur\url('/errors') ?>">Error Handling Demo</a> - Error responses and status codes</li>
+    <li><a href="<?= \Acheteteper\url('/request') ?>">Request Demo</a> - Access request data, headers, IP, method, etc.</li>
+    <li><a href="<?= \Acheteteper\url('/response') ?>">Response Demo</a> - Manipulate response status codes and headers</li>
+    <li><a href="<?= \Acheteteper\url('/validation') ?>">Validation Demo</a> - Form validation with all validation rules</li>
+    <li><a href="<?= \Acheteteper\url('/session') ?>">Session Demo</a> - Session management and data storage</li>
+    <li><a href="<?= \Acheteteper\url('/flash') ?>">Flash Messages Demo</a> - Temporary messages after redirects</li>
+    <li><a href="<?= \Acheteteper\url('/csrf') ?>">CSRF Demo</a> - CSRF token generation and validation</li>
+    <li><a href="<?= \Acheteteper\url('/upload') ?>">File Upload Demo</a> - File upload handling with validation</li>
+    <li><a href="<?= \Acheteteper\url('/api') ?>">JSON API Demo</a> - JSON responses and API endpoints</li>
+    <li><a href="<?= \Acheteteper\url('/helpers') ?>">View Helpers Demo</a> - Helper functions for views</li>
+    <li><a href="<?= \Acheteteper\url('/routing') ?>">Routing Demo</a> - Different routes and actions</li>
+    <li><a href="<?= \Acheteteper\url('/errors') ?>">Error Handling Demo</a> - Error responses and status codes</li>
 </ul>
 <?php
 $content = ob_get_clean();

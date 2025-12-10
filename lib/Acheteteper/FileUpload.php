@@ -1,11 +1,11 @@
 <?php
 
-namespace Httpeur;
+namespace Acheteteper;
 
 /**
  * Simple file upload helper.
  * 
- * @package Httpeur
+ * @package Acheteteper
  */
 class FileUpload
 {

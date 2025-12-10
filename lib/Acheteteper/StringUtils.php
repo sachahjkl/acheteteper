@@ -1,11 +1,11 @@
 <?php
 
-namespace Httpeur;
+namespace Acheteteper;
 
 /**
  * Utility class for string operations.
  * 
- * @package Httpeur
+ * @package Acheteteper
  */
 class StringUtils
 {

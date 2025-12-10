@@ -1,11 +1,11 @@
 <?php
 
-namespace Httpeur;
+namespace Acheteteper;
 
 /**
  * Builder for creating Config instances.
  * 
- * @package Httpeur
+ * @package Acheteteper
  */
 class ConfigBuilder
 {

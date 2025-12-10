@@ -1,11 +1,11 @@
 <?php
 
-namespace Httpeur;
+namespace Acheteteper;
 
 /**
  * Configuration class for the framework.
  * 
- * @package Httpeur
+ * @package Acheteteper
  */
 class Config
 {

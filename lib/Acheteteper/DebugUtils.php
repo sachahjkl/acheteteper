@@ -1,6 +1,6 @@
 <?php
 
-namespace Httpeur;
+namespace Acheteteper;
 
 class DebugUtils
 {

@@ -11,7 +11,7 @@ ob_start();
     </tr>
     <tr>
         <td>Method</td>
-        <td><?= \Httpeur\e($method) ?></td>
+        <td><?= \Acheteteper\e($method) ?></td>
     </tr>
     <tr>
         <td>Is GET</td>
@@ -27,27 +27,27 @@ ob_start();
     </tr>
     <tr>
         <td>Path</td>
-        <td><?= \Httpeur\e($path) ?></td>
+        <td><?= \Acheteteper\e($path) ?></td>
     </tr>
     <tr>
         <td>Full URL</td>
-        <td><?= \Httpeur\e($url) ?></td>
+        <td><?= \Acheteteper\e($url) ?></td>
     </tr>
     <tr>
         <td>IP Address</td>
-        <td><?= \Httpeur\e($ip) ?></td>
+        <td><?= \Acheteteper\e($ip) ?></td>
     </tr>
     <tr>
         <td>User-Agent</td>
-        <td><?= \Httpeur\e($userAgent ?? 'N/A') ?></td>
+        <td><?= \Acheteteper\e($userAgent ?? 'N/A') ?></td>
     </tr>
     <tr>
         <td>Accept</td>
-        <td><?= \Httpeur\e($accept ?? 'N/A') ?></td>
+        <td><?= \Acheteteper\e($accept ?? 'N/A') ?></td>
     </tr>
     <tr>
         <td>Accept-Language</td>
-        <td><?= \Httpeur\e($acceptLanguage ?? 'N/A') ?></td>
+        <td><?= \Acheteteper\e($acceptLanguage ?? 'N/A') ?></td>
     </tr>
 </table>
 
@@ -62,8 +62,8 @@ ob_start();
         </tr>
         <?php foreach ($getParams as $key => $value): ?>
             <tr>
-                <td><?= \Httpeur\e($key) ?></td>
-                <td><?= \Httpeur\e($value) ?></td>
+                <td><?= \Acheteteper\e($key) ?></td>
+                <td><?= \Acheteteper\e($value) ?></td>
             </tr>
         <?php endforeach; ?>
     </table>
@@ -80,8 +80,8 @@ ob_start();
         </tr>
         <?php foreach ($postParams as $key => $value): ?>
             <tr>
-                <td><?= \Httpeur\e($key) ?></td>
-                <td><?= \Httpeur\e($value) ?></td>
+                <td><?= \Acheteteper\e($key) ?></td>
+                <td><?= \Acheteteper\e($value) ?></td>
             </tr>
         <?php endforeach; ?>
     </table>

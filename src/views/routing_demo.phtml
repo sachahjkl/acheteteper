@@ -11,26 +11,26 @@ ob_start();
     </tr>
     <tr>
         <td>Action</td>
-        <td><?= \Httpeur\e($action) ?></td>
+        <td><?= \Acheteteper\e($action) ?></td>
     </tr>
     <tr>
         <td>Method</td>
-        <td><?= \Httpeur\e($method) ?></td>
+        <td><?= \Acheteteper\e($method) ?></td>
     </tr>
     <tr>
         <td>Path</td>
-        <td><?= \Httpeur\e($path) ?></td>
+        <td><?= \Acheteteper\e($path) ?></td>
     </tr>
     <?php if (isset($id)): ?>
         <tr>
             <td>ID Parameter</td>
-            <td><?= \Httpeur\e($id) ?></td>
+            <td><?= \Acheteteper\e($id) ?></td>
         </tr>
     <?php endif; ?>
     <?php if (isset($message)): ?>
         <tr>
             <td>Message</td>
-            <td><?= \Httpeur\e($message) ?></td>
+            <td><?= \Acheteteper\e($message) ?></td>
         </tr>
     <?php endif; ?>
 </table>

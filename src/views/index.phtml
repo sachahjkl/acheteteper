@@ -1,41 +1,42 @@
 <?php
-$title = 'Acheteteper Framework - Demo Pages';
-ob_start();
-?>
-<p>Welcome to the Acheteteper framework demo. Explore the features below:</p>
 
-<h2>Available Demos</h2>
-<ul class="demo-list">
-    <li><a href="<?= \Acheteteper\url('/request') ?>">Request Demo</a> - Access request data, headers, IP, method, etc.</li>
-    <li><a href="<?= \Acheteteper\url('/response') ?>">Response Demo</a> - Manipulate response status codes and headers</li>
-    <li><a href="<?= \Acheteteper\url('/validation') ?>">Validation Demo</a> - Form validation with all validation rules</li>
-    <li><a href="<?= \Acheteteper\url('/session') ?>">Session Demo</a> - Session management and data storage</li>
-    <li><a href="<?= \Acheteteper\url('/flash') ?>">Flash Messages Demo</a> - Temporary messages after redirects</li>
-    <li><a href="<?= \Acheteteper\url('/csrf') ?>">CSRF Demo</a> - CSRF token generation and validation</li>
-    <li><a href="<?= \Acheteteper\url('/upload') ?>">File Upload Demo</a> - File upload handling with validation</li>
-    <li><a href="<?= \Acheteteper\url('/api') ?>">JSON API Demo</a> - JSON responses and API endpoints</li>
-    <li><a href="<?= \Acheteteper\url('/helpers') ?>">View Helpers Demo</a> - Helper functions for views</li>
-    <li><a href="<?= \Acheteteper\url('/routing') ?>">Routing Demo</a> - Different routes and actions</li>
-    <li><a href="<?= \Acheteteper\url('/errors') ?>">Error Handling Demo</a> - Error responses and status codes</li>
-    <li><a href="<?= \Acheteteper\url('/db') ?>">DB Demo</a> - Datasource / service / repository with SQLite</li>
-</ul>
-<?php
-$content = ob_get_clean();
-$extraStyles = '
+use Acheteteper\Utils\ViewUtils as v;
+
+$title = 'Acheteteper Framework - Demo Pages';
+?>
+<style>
     .demo-list {
         list-style: none;
         padding: 0;
     }
+
     .demo-list li {
         margin: 10px 0;
         padding: 10px;
         background: #f9f9f9;
         border-left: 3px solid #007bff;
     }
+
     .demo-list a {
         color: #007bff;
         text-decoration: none;
         font-weight: bold;
     }
-';
-?>
+</style>
+<p>Welcome to the Acheteteper framework demo. Explore the features below:</p>
+
+<h2>Available Demos</h2>
+<ul class="demo-list">
+    <li><a href="<?= v::url('/request') ?>">Request Demo</a> - Access request data, headers, IP, method, etc.</li>
+    <li><a href="<?= v::url('/response') ?>">Response Demo</a> - Manipulate response status codes and headers</li>
+    <li><a href="<?= v::url('/validation') ?>">Validation Demo</a> - Form validation with all validation rules</li>
+    <li><a href="<?= v::url('/session') ?>">Session Demo</a> - Session management and data storage</li>
+    <li><a href="<?= v::url('/flash') ?>">Flash Messages Demo</a> - Temporary messages after redirects</li>
+    <li><a href="<?= v::url('/csrf') ?>">CSRF Demo</a> - CSRF token generation and validation</li>
+    <li><a href="<?= v::url('/upload') ?>">File Upload Demo</a> - File upload handling with validation</li>
+    <li><a href="<?= v::url('/api') ?>">JSON API Demo</a> - JSON responses and API endpoints</li>
+    <li><a href="<?= v::url('/helpers') ?>">View Helpers Demo</a> - Helper functions for views</li>
+    <li><a href="<?= v::url('/routing') ?>">Routing Demo</a> - Different routes and actions</li>
+    <li><a href="<?= v::url('/errors') ?>">Error Handling Demo</a> - Error responses and status codes</li>
+    <li><a href="<?= v::url('/db') ?>">DB Demo</a> - Datasource / service / repository with SQLite</li>
+</ul>

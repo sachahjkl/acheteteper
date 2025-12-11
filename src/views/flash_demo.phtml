@@ -1,26 +1,80 @@
 <?php
+
+use Acheteteper\Utils\ViewUtils as v;
+
 $title = 'Flash Messages Demo';
-$successMsg = \Acheteteper\flash('success');
-$errorMsg = \Acheteteper\flash('error');
-$infoMsg = \Acheteteper\flash('info');
-$warningMsg = \Acheteteper\flash('warning');
-ob_start();
+$successMsg = v::flash('success');
+$errorMsg = v::flash('error');
+$infoMsg = v::flash('info');
+$warningMsg = v::flash('warning');
 ?>
+<style>
+    .flash {
+        padding: 15px;
+        margin: 20px 0;
+        border: 1px solid;
+    }
+
+    .flash-success {
+        background: #d4edda;
+        border-color: #c3e6cb;
+        color: #155724;
+    }
+
+    .flash-error {
+        background: #f8d7da;
+        border-color: #f5c6cb;
+        color: #721c24;
+    }
+
+    .flash-info {
+        background: #d1ecf1;
+        border-color: #bee5eb;
+        color: #0c5460;
+    }
+
+    .flash-warning {
+        background: #fff3cd;
+        border-color: #ffeaa7;
+        color: #856404;
+    }
+
+    form {
+        margin: 20px 0;
+        padding: 15px;
+        background: #f9f9f9;
+        border: 1px solid #ddd;
+    }
+
+    select,
+    input,
+    button {
+        padding: 8px;
+        margin: 5px;
+    }
+
+    button {
+        background: #007bff;
+        color: white;
+        border: none;
+        cursor: pointer;
+    }
+</style>
 
 <?php if ($successMsg): ?>
-    <div class="flash flash-success"><?= \Acheteteper\e($successMsg) ?></div>
+    <div class="flash flash-success"><?= v::e($successMsg) ?></div>
 <?php endif; ?>
 
 <?php if ($errorMsg): ?>
-    <div class="flash flash-error"><?= \Acheteteper\e($errorMsg) ?></div>
+    <div class="flash flash-error"><?= v::e($errorMsg) ?></div>
 <?php endif; ?>
 
 <?php if ($infoMsg): ?>
-    <div class="flash flash-info"><?= \Acheteteper\e($infoMsg) ?></div>
+    <div class="flash flash-info"><?= v::e($infoMsg) ?></div>
 <?php endif; ?>
 
 <?php if ($warningMsg): ?>
-    <div class="flash flash-warning"><?= \Acheteteper\e($warningMsg) ?></div>
+    <div class="flash flash-warning"><?= v::e($warningMsg) ?></div>
 <?php endif; ?>
 
 <h2>Send Flash Message</h2>
@@ -35,17 +89,3 @@ ob_start();
     <input type="text" name="message" placeholder="Message" value="This is a flash message!" required>
     <button type="submit">Send Flash Message</button>
 </form>
-
-<?php
-$content = ob_get_clean();
-$extraStyles = '
-    .flash { padding: 15px; margin: 20px 0; border: 1px solid; }
-    .flash-success { background: #d4edda; border-color: #c3e6cb; color: #155724; }
-    .flash-error { background: #f8d7da; border-color: #f5c6cb; color: #721c24; }
-    .flash-info { background: #d1ecf1; border-color: #bee5eb; color: #0c5460; }
-    .flash-warning { background: #fff3cd; border-color: #ffeaa7; color: #856404; }
-    form { margin: 20px 0; padding: 15px; background: #f9f9f9; border: 1px solid #ddd; }
-    select, input, button { padding: 8px; margin: 5px; }
-    button { background: #007bff; color: white; border: none; cursor: pointer; }
-';
-?>

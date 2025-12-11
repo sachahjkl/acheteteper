@@ -11,9 +11,6 @@ set ROOT=%~dp0
 set PUBLIC_DIR=%ROOT%src\public
 set HOST=127.0.0.1
 set PORT=8000
-set SRC_DIR=%ROOT%src
-set VENDOR_DIR=%ROOT%vendor
-set LIB_DIR=%ROOT%lib
 
 if "%1"==""          goto :usage
 if /I "%1"=="serve"  goto :serve

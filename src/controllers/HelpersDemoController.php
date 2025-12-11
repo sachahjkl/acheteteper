@@ -3,8 +3,6 @@
 namespace Controllers;
 
 use Acheteteper\ControllerBase;
-use Acheteteper\ViewHelper;
-
 class HelpersDemoController extends ControllerBase
 {
     public function index()

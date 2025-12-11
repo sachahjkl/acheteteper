@@ -1,6 +1,5 @@
 <?php
 $title = 'JSON API Demo';
-ob_start();
 ?>
 
 <h2>API Endpoints</h2>
@@ -66,12 +65,31 @@ ob_start();
     }
 </script>
 
-<?php
-$content = ob_get_clean();
-$extraStyles = '
-    .endpoint { margin: 20px 0; padding: 15px; background: #f9f9f9; border: 1px solid #ddd; }
-    button { background: #007bff; color: white; padding: 8px 15px; border: none; cursor: pointer; margin: 5px; }
-    pre { background: #f0f0f0; padding: 15px; overflow-x: auto; border: 1px solid #ddd; }
-    .result { margin-top: 10px; }
-';
-?>
+<style>
+    .endpoint {
+        margin: 20px 0;
+        padding: 15px;
+        background: #f9f9f9;
+        border: 1px solid #ddd;
+    }
+
+    button {
+        background: #007bff;
+        color: white;
+        padding: 8px 15px;
+        border: none;
+        cursor: pointer;
+        margin: 5px;
+    }
+
+    pre {
+        background: #f0f0f0;
+        padding: 15px;
+        overflow-x: auto;
+        border: 1px solid #ddd;
+    }
+
+    .result {
+        margin-top: 10px;
+    }
+</style>

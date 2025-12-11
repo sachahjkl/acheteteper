@@ -1,7 +1,68 @@
 <?php
+
+use Acheteteper\Utils\ViewUtils as v;
+
 $title = 'File Upload Demo';
-ob_start();
 ?>
+<style>
+    .success {
+        color: green;
+        padding: 15px;
+        background: #d4edda;
+        border: 1px solid #c3e6cb;
+        margin: 20px 0;
+    }
+
+    .error {
+        color: red;
+        padding: 15px;
+        background: #f8d7da;
+        border: 1px solid #f5c6cb;
+        margin: 20px 0;
+    }
+
+    form {
+        margin: 20px 0;
+        padding: 15px;
+        background: #f9f9f9;
+        border: 1px solid #ddd;
+    }
+
+    input,
+    button {
+        padding: 8px;
+        margin: 5px;
+    }
+
+    button {
+        background: #007bff;
+        color: white;
+        border: none;
+        cursor: pointer;
+    }
+
+    table {
+        width: 100%;
+        border-collapse: collapse;
+        margin: 20px 0;
+    }
+
+    th,
+    td {
+        padding: 10px;
+        text-align: left;
+        border: 1px solid #ddd;
+    }
+
+    th {
+        background: #f0f0f0;
+    }
+
+    img {
+        max-width: 300px;
+        margin: 10px 0;
+    }
+</style>
 
 <?php if (isset($success) && $success): ?>
     <div class="success">
@@ -15,7 +76,7 @@ ob_start();
         </tr>
         <tr>
             <td>Original Name</td>
-            <td><?= \Acheteteper\e($file['name']) ?></td>
+            <td><?= v::e($file['name']) ?></td>
         </tr>
         <tr>
             <td>Size</td>
@@ -23,15 +84,15 @@ ob_start();
         </tr>
         <tr>
             <td>Type</td>
-            <td><?= \Acheteteper\e($file['type']) ?></td>
+            <td><?= v::e($file['type']) ?></td>
         </tr>
         <tr>
             <td>Saved As</td>
-            <td><?= \Acheteteper\e($file['filename']) ?></td>
+            <td><?= v::e($file['filename']) ?></td>
         </tr>
     </table>
     <?php if (strpos($file['type'], 'image/') === 0): ?>
-        <img src="/uploads/<?= \Acheteteper\e($file['filename']) ?>" alt="Uploaded image">
+        <img src="/uploads/<?= v::e($file['filename']) ?>" alt="Uploaded image">
     <?php endif; ?>
 <?php endif; ?>
 
@@ -40,7 +101,7 @@ ob_start();
         <strong>Errors:</strong>
         <ul>
             <?php foreach ($errors as $error): ?>
-                <li><?= \Acheteteper\e($error) ?></li>
+                <li><?= v::e($error) ?></li>
             <?php endforeach; ?>
         </ul>
     </div>
@@ -52,18 +113,3 @@ ob_start();
     <input type="file" name="file" accept="image/*" required>
     <button type="submit">Upload File</button>
 </form>
-
-<?php
-$content = ob_get_clean();
-$extraStyles = '
-    .success { color: green; padding: 15px; background: #d4edda; border: 1px solid #c3e6cb; margin: 20px 0; }
-    .error { color: red; padding: 15px; background: #f8d7da; border: 1px solid #f5c6cb; margin: 20px 0; }
-    form { margin: 20px 0; padding: 15px; background: #f9f9f9; border: 1px solid #ddd; }
-    input, button { padding: 8px; margin: 5px; }
-    button { background: #007bff; color: white; border: none; cursor: pointer; }
-    table { width: 100%; border-collapse: collapse; margin: 20px 0; }
-    th, td { padding: 10px; text-align: left; border: 1px solid #ddd; }
-    th { background: #f0f0f0; }
-    img { max-width: 300px; margin: 10px 0; }
-';
-?>

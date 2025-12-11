@@ -20,6 +20,8 @@ use Controllers\{
 
 use Acheteteper\ConfigBuilder;
 use Acheteteper\Engine;
+use Repositories\DbDemoRepository;
+use Services\DbDemoService;
 
 class Application
 {
@@ -32,15 +34,15 @@ class Application
     {
         $configBuilder = new ConfigBuilder();
         $configBuilder->setViewDir(__DIR__ . '/views');
-        $configBuilder->setDbPath(__DIR__ . '/../database.db');
+        $configBuilder->setDbPath(__DIR__ . '/public/database.db');
         $configBuilder->enableDebug();
         $config = $configBuilder->build();
 
         $engine = new Engine($config);
 
         $engine->registerDatasource('default', \Acheteteper\SqliteDataSource::class);
-        $engine->registerService(\Services\DbDemoService::class);
-        $engine->registerRepository(\Repositories\DbDemoRepository::class);
+        $engine->registerService(DbDemoService::class);
+        $engine->registerRepository(DbDemoRepository::class);
 
         $engine->registerController('/', IndexController::class);
         $engine->registerController('/request', RequestDemoController::class);

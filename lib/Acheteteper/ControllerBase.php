@@ -3,6 +3,8 @@
 namespace Acheteteper;
 
 use Acheteteper\DataSourceInterface;
+use Acheteteper\Timings;
+use Acheteteper\Utils\ViewUtils;
 
 /**
  * Base class for all controllers.
@@ -22,7 +24,8 @@ class ControllerBase
     public function __construct(
         private Config $config,
         public Request $request,
-        public Response $response
+        public Response $response,
+        public Timings $timings
     ) {}
 
     /** @var callable|null */
@@ -36,6 +39,13 @@ class ControllerBase
 
     public ?DataSourceInterface $datasource = null;
 
+    private ?string $layout = null;
+
+    public function setLayout(string $layout): void
+    {
+        $this->layout = $layout;
+    }
+
     /**
      * Render a view template with optional data.
      * 
@@ -48,10 +58,8 @@ class ControllerBase
      */
     public function render(string $view, array $data = [])
     {
-        static $helpersLoaded = false;
-        if (!$helpersLoaded) {
-            require __DIR__ . '/helpers.php';
-            $helpersLoaded = true;
+        if ($this->config->debug) {
+            $this->timings->startMeasurement('render');
         }
 
         $viewBasename = $this->config->viewDir . DIRECTORY_SEPARATOR . $view;
@@ -70,13 +78,28 @@ class ControllerBase
 
         extract($data);
 
+        ViewUtils::setContext($this->request, $this->response, $this->config);
         $layoutFile = $this->config->viewDir . DIRECTORY_SEPARATOR . '_layout.phtml';
-        if (file_exists($layoutFile)) {
-            // Views are responsible for setting $title/$content/$extraStyles.
-            require $viewFile;
-            require $layoutFile;
-        } else {
-            require $viewFile;
+
+        if ($this->layout) {
+            $layoutFile = $this->config->viewDir . DIRECTORY_SEPARATOR . $this->layout . '.phtml';
+        }
+
+        try {
+            if (file_exists($layoutFile)) {
+                ViewUtils::startCaptureViewContent();
+                require $viewFile;
+                ViewUtils::endCaptureViewContent();
+                require $layoutFile;
+            } else {
+                require $viewFile;
+            }
+        } finally {
+            ViewUtils::clearContext();
+
+            if ($this->config->debug) {
+                $this->timings->stopMeasurement('render');
+            }
         }
     }
 

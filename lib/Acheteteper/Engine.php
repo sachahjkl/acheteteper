@@ -38,10 +38,26 @@ class Engine
      */
     private array $repositoryFactories = [];
 
+    private Timings $timings;
+
+    /**
+     * @var Request Current Request instance.
+     */
+    private Request $request;
+    /**
+     * @var Response Current Response instance.
+     */
+    private Response $response;
+
     /**
      * @param Config $config Framework configuration.
      */
-    public function __construct(private Config $config) {}
+    public function __construct(private Config $config)
+    {
+        $this->timings = new Timings();
+        $this->request = Request::fromGlobals();
+        $this->response = Response::fromGlobals();
+    }
 
     /**
      * Register a controller for a given route path.
@@ -67,6 +83,10 @@ class Engine
      */
     public function run()
     {
+        if ($this->config->debug) {
+            $this->timings->startMeasurement('engine');
+        }
+
         $path = $this->pathname();
         $action = "index";
 
@@ -90,31 +110,58 @@ class Engine
         }
 
         try {
+
+            if ($this->config->debug) {
+                $this->timings->startMeasurement('action');
+            }
+
             $controller->$action();
+
+            if ($this->config->debug) {
+                $this->timings->stopMeasurement('action');
+            }
         } catch (HttpException $e) {
             $this->setStatus($e->getStatus());
-            echo $e->getMessage();
+            $this->printError($e->getStatus(), $e->getMessage(), $e);
             return;
         } catch (\Throwable $e) {
-
             $this->setStatus(500);
-            echo "500 Internal Server Error";
+            $this->printError(500, "Internal Server Error", $e);
+            return;
+        }
+
+        if ($this->config->debug) {
+            $this->timings->stopMeasurement('engine');
+        }
+        $this->timings->setRequestMeta($this->request->method(), $this->request->path());
+        $this->printTimings();
+    }
+
+    private function printTimings(): void
+    {
+        if ($this->config->debug) {
+            $timingsHtml = $this->timings->toHtml();
+            echo $timingsHtml;
+        }
+    }
+
+    private function printError(int $status, string $message, \Throwable $e): void
+    {
+        echo "{$status} {$message}";
+        if ($this->config->debug) {
             echo "<br>";
             echo "<br>";
             echo "Debug mode: <b>" . ($this->config->debug ? "enabled" : "disabled") . "</b>";
-            if ($this->config->debug) {
-                echo "<br>";
-                echo "<br>";
-                echo "<b>Message:</b> <code style='background-color: #f0f0f0; padding: 5px; border-radius: 5px;'>" . $e->getMessage() . "</code>";
-                echo "<br>";
-                echo "<br>";
-                echo "<b>Trace:</b> 
+            echo "<br>";
+            echo "<br>";
+            echo "<b>Message:</b> <code style='background-color: #f0f0f0; padding: 5px; border-radius: 5px;'>" . $e->getMessage() . "</code>";
+            echo "<br>";
+            echo "<br>";
+            echo "<b>Trace:</b> 
                 <pre style='background-color: #f0f0f0; padding: 5px; border-radius: 5px;'>" . $e->getTraceAsString() . "</pre>";
-                echo "<br>";
-                echo "<br>";
-                DebugUtils::dump($e);
-            }
-            return;
+            echo "<br>";
+            echo "<br>";
+            DebugUtils::dump($e);
         }
     }
 
@@ -227,10 +274,8 @@ class Engine
     private function tryFindController(string $route)
     {
         if (isset($this->controllerMappings[$route])) {
-            $request = Request::fromGlobals();
-            $response = Response::fromGlobals();
             $controllerClass = $this->controllerMappings[$route];
-            $controller = new $controllerClass($this->config, $request, $response);
+            $controller = new $controllerClass($this->config, $this->request, $this->response, $this->timings);
 
             // Per-request caches
             $datasourceCache = [];

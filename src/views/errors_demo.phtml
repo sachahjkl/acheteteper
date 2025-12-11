@@ -1,11 +1,41 @@
 <?php
+
+use Acheteteper\Utils\ViewUtils as v;
+
 $title = 'Error Handling Demo';
-ob_start();
 ?>
+<style>
+    .error-box {
+        margin: 20px 0;
+        padding: 15px;
+        background: #f8d7da;
+        border: 1px solid #f5c6cb;
+        color: #721c24;
+    }
+
+    .routes {
+        margin: 20px 0;
+    }
+
+    .route {
+        margin: 10px 0;
+        padding: 10px;
+        background: #f9f9f9;
+        border: 1px solid #ddd;
+    }
+
+    button {
+        background: #dc3545;
+        color: white;
+        padding: 8px 15px;
+        border: none;
+        cursor: pointer;
+    }
+</style>
 
 <?php if (isset($error)): ?>
     <div class="error-box">
-        <h2><?= \Acheteteper\e($error) ?></h2>
+        <h2><?= v::e($error) ?></h2>
         <p>This is a custom error page demonstrating error handling.</p>
     </div>
 <?php endif; ?>
@@ -25,13 +55,3 @@ ob_start();
         <a href="/errors/serverError"><button>Trigger 500</button></a>
     </div>
 </div>
-
-<?php
-$content = ob_get_clean();
-$extraStyles = '
-    .error-box { margin: 20px 0; padding: 15px; background: #f8d7da; border: 1px solid #f5c6cb; color: #721c24; }
-    .routes { margin: 20px 0; }
-    .route { margin: 10px 0; padding: 10px; background: #f9f9f9; border: 1px solid #ddd; }
-    button { background: #dc3545; color: white; padding: 8px 15px; border: none; cursor: pointer; }
-';
-?>

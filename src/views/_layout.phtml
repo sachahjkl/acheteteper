@@ -1,8 +1,12 @@
+<?php
+
+use Acheteteper\Utils\ViewUtils as v;
+?>
 <!DOCTYPE html>
 <html>
 
 <head>
-    <title><?= isset($title) ? \Acheteteper\e($title) . ' - ' : '' ?>Acheteteper Framework</title>
+    <title><?= isset($title) ? v::e($title) . ' - ' : '' ?>Acheteteper Framework</title>
 
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -13,19 +17,14 @@
 </head>
 
 <body hx-boost="true">
-    <?php if (isset($extraStyles)): ?>
-        <style>
-            <?= $extraStyles ?>
-        </style>
-    <?php endif; ?>
     <div class="container">
         <?php if (isset($title)): ?>
-            <h1><?= \Acheteteper\e($title) ?></h1>
+            <h1><?= v::e($title) ?></h1>
         <?php endif; ?>
 
         <?php require __DIR__ . '/_nav.phtml'; ?>
 
-        <?= $content ?? '' ?>
+        <?= v::getViewContent() ?? '' ?>
     </div>
 </body>
 

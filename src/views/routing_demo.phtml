@@ -1,7 +1,46 @@
 <?php
+
+use Acheteteper\Utils\ViewUtils as v;
+
 $title = 'Routing Demo';
-ob_start();
 ?>
+<style>
+    table {
+        width: 100%;
+        border-collapse: collapse;
+        margin: 20px 0;
+    }
+
+    th,
+    td {
+        padding: 10px;
+        text-align: left;
+        border: 1px solid #ddd;
+    }
+
+    th {
+        background: #f0f0f0;
+    }
+
+    .routes {
+        margin: 20px 0;
+    }
+
+    .route {
+        margin: 10px 0;
+        padding: 10px;
+        background: #f9f9f9;
+        border: 1px solid #ddd;
+    }
+
+    button {
+        background: #007bff;
+        color: white;
+        padding: 8px 15px;
+        border: none;
+        cursor: pointer;
+    }
+</style>
 
 <h2>Current Route Information</h2>
 <table>
@@ -11,26 +50,26 @@ ob_start();
     </tr>
     <tr>
         <td>Action</td>
-        <td><?= \Acheteteper\e($action) ?></td>
+        <td><?= v::e($action) ?></td>
     </tr>
     <tr>
         <td>Method</td>
-        <td><?= \Acheteteper\e($method) ?></td>
+        <td><?= v::e($method) ?></td>
     </tr>
     <tr>
         <td>Path</td>
-        <td><?= \Acheteteper\e($path) ?></td>
+        <td><?= v::e($path) ?></td>
     </tr>
     <?php if (isset($id)): ?>
         <tr>
             <td>ID Parameter</td>
-            <td><?= \Acheteteper\e($id) ?></td>
+            <td><?= v::e($id) ?></td>
         </tr>
     <?php endif; ?>
     <?php if (isset($message)): ?>
         <tr>
             <td>Message</td>
-            <td><?= \Acheteteper\e($message) ?></td>
+            <td><?= v::e($message) ?></td>
         </tr>
     <?php endif; ?>
 </table>
@@ -57,15 +96,3 @@ ob_start();
         </form>
     </div>
 </div>
-
-<?php
-$content = ob_get_clean();
-$extraStyles = '
-    table { width: 100%; border-collapse: collapse; margin: 20px 0; }
-    th, td { padding: 10px; text-align: left; border: 1px solid #ddd; }
-    th { background: #f0f0f0; }
-    .routes { margin: 20px 0; }
-    .route { margin: 10px 0; padding: 10px; background: #f9f9f9; border: 1px solid #ddd; }
-    button { background: #007bff; color: white; padding: 8px 15px; border: none; cursor: pointer; }
-';
-?>

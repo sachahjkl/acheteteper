@@ -1,7 +1,53 @@
 <?php
+
+use Acheteteper\Utils\ViewUtils as v;
+
 $title = 'Session Demo';
-ob_start();
 ?>
+<style>
+    table {
+        width: 100%;
+        border-collapse: collapse;
+        margin: 20px 0;
+    }
+
+    th,
+    td {
+        padding: 10px;
+        text-align: left;
+        border: 1px solid #ddd;
+    }
+
+    th {
+        background: #f0f0f0;
+    }
+
+    form {
+        margin: 20px 0;
+        padding: 15px;
+        background: #f9f9f9;
+        border: 1px solid #ddd;
+    }
+
+    input,
+    button {
+        padding: 8px;
+        margin: 5px;
+    }
+
+    button {
+        background: #007bff;
+        color: white;
+        border: none;
+        cursor: pointer;
+    }
+
+    .counter {
+        font-size: 1.5em;
+        color: #007bff;
+        font-weight: bold;
+    }
+</style>
 
 <h2>Session Counter</h2>
 <p>This page has been visited <span class="counter"><?= $counter ?></span> times.</p>
@@ -24,24 +70,11 @@ ob_start();
         </tr>
         <?php foreach ($allSession as $key => $value): ?>
             <tr>
-                <td><?= \Acheteteper\e($key) ?></td>
-                <td><?= \Acheteteper\e(is_array($value) ? json_encode($value) : (string)$value) ?></td>
+                <td><?= v::e($key) ?></td>
+                <td><?= v::e(is_array($value) ? json_encode($value) : (string)$value) ?></td>
             </tr>
         <?php endforeach; ?>
     </table>
 <?php endif; ?>
 
 <p><a href="/session/clear"><button>Clear All Session Data</button></a></p>
-
-<?php
-$content = ob_get_clean();
-$extraStyles = '
-    table { width: 100%; border-collapse: collapse; margin: 20px 0; }
-    th, td { padding: 10px; text-align: left; border: 1px solid #ddd; }
-    th { background: #f0f0f0; }
-    form { margin: 20px 0; padding: 15px; background: #f9f9f9; border: 1px solid #ddd; }
-    input, button { padding: 8px; margin: 5px; }
-    button { background: #007bff; color: white; border: none; cursor: pointer; }
-    .counter { font-size: 1.5em; color: #007bff; font-weight: bold; }
-';
-?>

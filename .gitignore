@@ -2,4 +2,4 @@ src/uploads/*
 !src/uploads/.gitkeep
 
 
-*.db
+data/*

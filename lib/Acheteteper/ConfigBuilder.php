@@ -38,7 +38,7 @@ class ConfigBuilder
      */
     public function setDbPath(string $dbPath)
     {
-        $this->config->dbPath = PathUtils::realpath($dbPath);
+        $this->config->dbPath = $dbPath;
         return $this;
     }
 
@@ -51,6 +51,29 @@ class ConfigBuilder
     public function disableDebug()
     {
         $this->config->debug = false;
+        return $this;
+    }
+
+    public function setUserConfig(string $key, mixed $value)
+    {
+        $this->config->setUserConfig($key, $value);
+        return $this;
+    }
+
+    public function getUserConfig(string $key)
+    {
+        return $this->config->getUserConfig($key);
+    }
+
+    public function clearUserConfig($key)
+    {
+        $this->config->clearUserConfig($key);
+        return $this;
+    }
+
+    public function clearUserConfigs()
+    {
+        $this->config->clearUserConfigs();
         return $this;
     }
 

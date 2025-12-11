@@ -20,6 +20,8 @@ class Config
         "html",
     ];
 
+    public array $userConfigs = [];
+
     /**
      * @param string $viewDir Directory path where view files are located.
      * @param string $dbPath SQLite database file path.
@@ -29,4 +31,28 @@ class Config
         public string $dbPath = "database.sqlite",
         public bool $debug = false
     ) {}
+
+
+    public function setUserConfig(string $key, mixed $value)
+    {
+        $this->userConfigs[$key] = $value;
+        return $this;
+    }
+
+    public function getUserConfig(string $key)
+    {
+        return $this->userConfigs[$key] ?? null;
+    }
+
+    public function clearUserConfig($key)
+    {
+        unset($this->userConfigs[$key]);
+        return $this;
+    }
+
+    public function clearUserConfigs()
+    {
+        $this->userConfigs = [];
+        return $this;
+    }
 }

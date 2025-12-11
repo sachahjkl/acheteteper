@@ -113,3 +113,7 @@ $title = 'File Upload Demo';
     <input type="file" name="file" accept="image/*" required>
     <button type="submit">Upload File</button>
 </form>
+
+<p>Uploaded files are stored in the <code><?= v::e(v::config()->getUserConfig('uploadsPath')) ?></code> directory.</p>
+
+<a href="/uploads" hx-boost="false">View uploaded files</a>

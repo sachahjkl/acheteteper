@@ -36,7 +36,7 @@ class UploadDemoController extends ControllerBase
                 $file = FileUpload::get('file');
                 $extension = FileUpload::extension('file');
                 $filename = uniqid() . '.' . $extension;
-                $destination = __DIR__ . '/../uploads/' . $filename;
+                $destination = $this->config()->getUserConfig('uploadsPath') . '/' . $filename;
 
                 if (FileUpload::move('file', $destination)) {
                     $data['success'] = true;

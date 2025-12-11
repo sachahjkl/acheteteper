@@ -30,11 +30,45 @@ class Application
         private Engine $engine
     ) {}
 
+
+    public static function loadConfig(): array
+    {
+        $dbFromEnv = getenv('DB_PATH');
+        $uploadsFromEnv = getenv('UPLOADS_PATH');
+        if ($dbFromEnv) {
+            $dbPath = $dbFromEnv;
+        } else {
+            $dbPath = __DIR__ . '/../data/database.db';
+        }
+        if ($uploadsFromEnv) {
+            $uploadsPath = $uploadsFromEnv;
+        } else {
+            $uploadsPath = __DIR__ . '/../data/uploads';
+        }
+
+        return [
+            'dbPath' => $dbPath,
+            'uploadsPath' => $uploadsPath
+        ];
+    }
+
+    public static function ensureUploadsDir(string $uploadsPath): void
+    {
+        if (!is_dir($uploadsPath)) {
+            mkdir($uploadsPath, 0777, true);
+        }
+    }
+
     public static function bootstrap(): Application
     {
+
+        $config = self::loadConfig();
+        self::ensureUploadsDir($config['uploadsPath']);
+
         $configBuilder = new ConfigBuilder();
         $configBuilder->setViewDir(__DIR__ . '/views');
-        $configBuilder->setDbPath(__DIR__ . '/public/database.db');
+        $configBuilder->setDbPath($config['dbPath']);
+        $configBuilder->setUserConfig('uploadsPath', $config['uploadsPath']);
         $configBuilder->enableDebug();
         $config = $configBuilder->build();
 
@@ -57,6 +91,8 @@ class Application
         $engine->registerController('/routing', RoutingDemoController::class);
         $engine->registerController('/errors', ErrorsDemoController::class);
         $engine->registerController('/db', DBDemoController::class);
+
+        $engine->registerStaticDir('/uploads', $config->getUserConfig('uploadsPath'));
 
         return new Application($engine);
     }

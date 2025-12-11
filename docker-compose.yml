@@ -1,0 +1,15 @@
+version: "3.9"
+
+services:
+  app:
+    build: .
+    ports:
+      - "8000:8000"
+    environment:
+      DB_PATH: /data/database.db
+      UPLOADS_PATH: /tmp/uploads
+    volumes:
+      - ./data:/data
+      - ./data/uploads:/tmp/uploads
+    restart: unless-stopped
+

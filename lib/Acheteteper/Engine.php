@@ -3,6 +3,7 @@
 namespace Acheteteper;
 
 use Acheteteper\Utils\DebugUtils;
+use Acheteteper\Utils\PathUtils;
 use Acheteteper\Utils\StringUtils;
 
 /**
@@ -37,6 +38,11 @@ class Engine
      * @var array<string, callable> Repository factories keyed by class name.
      */
     private array $repositoryFactories = [];
+
+    /**
+     * @var array<int, array{prefix: string, base: string}> Static directory mappings.
+     */
+    private array $staticDirectories = [];
 
     private Timings $timings;
 
@@ -89,6 +95,10 @@ class Engine
 
         $path = $this->pathname();
         $action = "index";
+
+        if ($this->tryServeStatic($path)) {
+            return;
+        }
 
         $controller = $this->tryFindController($path);
 
@@ -383,5 +393,129 @@ class Engine
     private function setStatus(int $status)
     {
         http_response_code($status);
+    }
+
+    /**
+     * Register a static directory to serve files from for a given route prefix.
+     *
+     * @param string $routePrefix URL prefix (e.g. '/uploads').
+     * @param string $directory Filesystem directory to serve from.
+     * @return void
+     */
+    public function registerStaticDir(string $routePrefix, string $directory): void
+    {
+        $normalizedPrefix = '/' . ltrim($routePrefix, '/');
+        $realBase = PathUtils::realpath($directory) ?: $directory;
+        if (!is_dir($realBase)) {
+            throw new HttpException(500, "Static directory not found: {$directory}");
+        }
+        $realBase = rtrim(PathUtils::realpath($realBase) ?: $realBase, DIRECTORY_SEPARATOR);
+        $this->staticDirectories[] = [
+            'prefix' => $normalizedPrefix,
+            'base' => $realBase,
+        ];
+    }
+
+    /**
+     * Try to serve a static file for the current path. Returns true if handled.
+     *
+     * @param string $path
+     * @return bool
+     */
+    private function tryServeStatic(string $path): bool
+    {
+        foreach ($this->staticDirectories as $staticDir) {
+            $prefix = $staticDir['prefix'];
+            $matchesPrefix = $path === $prefix || str_starts_with($path, $prefix . '/');
+            if (!$matchesPrefix) {
+                continue;
+            }
+
+            $relative = ltrim(substr($path, strlen($prefix)), '/');
+            $candidate = $staticDir['base'] . ($relative !== '' ? DIRECTORY_SEPARATOR . $relative : '');
+            $resolved = PathUtils::realpath($candidate);
+
+            if (!$resolved || !str_starts_with($resolved, $staticDir['base'])) {
+                $this->notFound();
+                return true;
+            }
+
+            if (is_dir($resolved)) {
+                $this->renderDirectoryListing($staticDir['base'], $prefix, $relative);
+                return true;
+            }
+
+            if (!is_file($resolved)) {
+                $this->notFound();
+                return true;
+            }
+
+            $this->streamFile($resolved);
+            return true;
+        }
+
+        return false;
+    }
+
+    private function renderDirectoryListing(string $basePath, string $prefix, string $relative): void
+    {
+        $virtualPrefix = rtrim($prefix, '/');
+        $dir = $basePath . ($relative !== '' ? DIRECTORY_SEPARATOR . $relative : '');
+
+        $entries = @scandir($dir) ?: [];
+        $items = [];
+        foreach ($entries as $entry) {
+            if ($entry === '.' || $entry === '..') {
+                continue;
+            }
+            $fullPath = $dir . DIRECTORY_SEPARATOR . $entry;
+            $isDir = is_dir($fullPath);
+            $items[] = [
+                'name' => $entry,
+                'isDir' => $isDir,
+            ];
+        }
+
+        header('Content-Type: text/html; charset=utf-8');
+
+        echo "<!doctype html><html><head><meta charset='utf-8'><title>Index of " . htmlspecialchars($virtualPrefix . '/' . $relative) . "</title></head><body>";
+        echo "<h1>Index of " . htmlspecialchars($virtualPrefix . '/' . $relative) . "</h1>";
+        echo "<ul>";
+
+        if ($relative !== '') {
+            $parentRelative = '';
+            $parts = explode('/', trim($relative, '/'));
+            array_pop($parts);
+            if (!empty($parts)) {
+                $parentRelative = implode('/', $parts);
+            }
+            $parentHref = $virtualPrefix . ($parentRelative !== '' ? '/' . $parentRelative : '');
+            if ($parentHref === '') {
+                $parentHref = '/';
+            }
+            echo "<li><a href=\"" . htmlspecialchars($parentHref === '' ? '/' : $parentHref) . "\">..</a></li>";
+        }
+
+        foreach ($items as $item) {
+            $nameEsc = htmlspecialchars($item['name'], ENT_QUOTES | ENT_SUBSTITUTE, 'UTF-8');
+            $href = $virtualPrefix . ($relative !== '' ? '/' . $relative : '') . '/' . $item['name'];
+            if ($item['isDir']) {
+                $href .= '/';
+            }
+            echo "<li><a href=\"" . htmlspecialchars($href, ENT_QUOTES | ENT_SUBSTITUTE, 'UTF-8') . "\">" . $nameEsc . ($item['isDir'] ? '/' : '') . "</a></li>";
+        }
+
+        echo "</ul></body></html>";
+    }
+
+    private function streamFile(string $path): void
+    {
+        // NOTE: requires enabled fileinfo extension in php.ini
+        $mime = mime_content_type($path);
+        if ($mime) {
+            header('Content-Type: ' . $mime);
+        }
+        header('Content-Length: ' . filesize($path));
+        readfile($path);
     }
 }

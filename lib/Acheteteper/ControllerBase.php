@@ -409,4 +409,9 @@ class ControllerBase
     {
         throw new HttpException($status, $message);
     }
+
+    public function config(): Config
+    {
+        return $this->config;
+    }
 }

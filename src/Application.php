@@ -82,6 +82,7 @@ class Application
         } else {
             $configBuilder->disableDebug();
         }
+
         $config = $configBuilder->build();
 
         $engine = new Engine($config);

@@ -5,11 +5,7 @@ ENV DB_PATH=/data/database.db
 ENV UPLOADS_PATH=/tmp/uploads
 ENV DEBUG=false
 
-RUN apk add --no-cache nginx sqlite
-
-ADD --chmod=0755 https://github.com/mlocati/docker-php-extension-installer/releases/latest/download/install-php-extensions /usr/local/bin/
-
-RUN install-php-extensions pdo pdo_sqlite fileinfo
+RUN apk update && apk add --no-cache nginx php85-fileinfo php85-pdo_sqlite
 
 WORKDIR ${APP_DIR}
 

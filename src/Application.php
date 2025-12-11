@@ -45,10 +45,17 @@ class Application
         } else {
             $uploadsPath = __DIR__ . '/../data/uploads';
         }
+        $debug = getenv('DEBUG');
+        if ($debug === 'true') {
+            $debug = true;
+        } else {
+            $debug = false;
+        }
 
         return [
             'dbPath' => $dbPath,
-            'uploadsPath' => $uploadsPath
+            'uploadsPath' => $uploadsPath,
+            'debug' => $debug
         ];
     }
 
@@ -69,7 +76,12 @@ class Application
         $configBuilder->setViewDir(__DIR__ . '/Views');
         $configBuilder->setDbPath($config['dbPath']);
         $configBuilder->setUserConfig('uploadsPath', $config['uploadsPath']);
-        $configBuilder->enableDebug();
+
+        if ($config['debug']) {
+            $configBuilder->enableDebug();
+        } else {
+            $configBuilder->disableDebug();
+        }
         $config = $configBuilder->build();
 
         $engine = new Engine($config);

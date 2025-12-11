@@ -89,6 +89,8 @@ class Engine
      */
     public function run()
     {
+        $this->checkDebugSession();
+
         if ($this->config->debug) {
             $this->timings->startMeasurement('engine');
         }
@@ -517,5 +519,13 @@ class Engine
         }
         header('Content-Length: ' . filesize($path));
         readfile($path);
+    }
+
+    private function checkDebugSession(): void
+    {
+        $debug = Session::get('DEBUG', "none");
+        if ($debug !== "none") {
+            $this->config->debug = $debug === "true";
+        }
     }
 }

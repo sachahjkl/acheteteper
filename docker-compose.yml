@@ -6,6 +6,7 @@ services:
     environment:
       DB_PATH: /data/database.db
       UPLOADS_PATH: /tmp/uploads
+      DEBUG: true
     volumes:
       - ./data:/data
       - ./data/uploads:/tmp/uploads

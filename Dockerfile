@@ -3,6 +3,7 @@ FROM php:8.5-fpm-alpine
 ENV APP_DIR=/app
 ENV DB_PATH=/data/database.db
 ENV UPLOADS_PATH=/tmp/uploads
+ENV DEBUG=false
 
 RUN apk add --no-cache nginx sqlite
 

@@ -21,6 +21,7 @@ class Timings
         $timings = $this->toArray();
         $sb = "";
         $sb .= '<div style="position:fixed;bottom:8px;right:8px;background:#111;color:#0f0;padding:8px 12px;font:12px monospace;z-index:9999;border:1px solid #0f0;line-height:1.4;opacity:0.9;">';
+        $sb .= '<div style="margin-bottom:6px; color: #ff2300;"><b>WARNING : DEBUG MODE ENABLED</b></div>';
         $sb .= '<div style="margin-bottom:6px;"><b>Request:</b> ' . htmlspecialchars($this->requestMethod . ' ' . $this->requestPath, ENT_QUOTES, 'UTF-8') . '</div>';
         $sb .= '<b style="font-size:1.1em;">Timings:</b><br>';
         foreach ($timings as $name => $durationSecs) {

@@ -1,6 +1,7 @@
 <?php
 
 use Acheteteper\Utils\ViewUtils as v;
+use Components as c;
 
 $title = 'Flash Messages Demo';
 $successMsg = v::flash('success');
@@ -8,84 +9,36 @@ $errorMsg = v::flash('error');
 $infoMsg = v::flash('info');
 $warningMsg = v::flash('warning');
 ?>
-<style>
-    .flash {
-        padding: 15px;
-        margin: 20px 0;
-        border: 1px solid;
-    }
-
-    .flash-success {
-        background: #d4edda;
-        border-color: #c3e6cb;
-        color: #155724;
-    }
-
-    .flash-error {
-        background: #f8d7da;
-        border-color: #f5c6cb;
-        color: #721c24;
-    }
-
-    .flash-info {
-        background: #d1ecf1;
-        border-color: #bee5eb;
-        color: #0c5460;
-    }
-
-    .flash-warning {
-        background: #fff3cd;
-        border-color: #ffeaa7;
-        color: #856404;
-    }
-
-    form {
-        margin: 20px 0;
-        padding: 15px;
-        background: #f9f9f9;
-        border: 1px solid #ddd;
-    }
-
-    select,
-    input,
-    button {
-        padding: 8px;
-        margin: 5px;
-    }
-
-    button {
-        background: #007bff;
-        color: white;
-        border: none;
-        cursor: pointer;
-    }
-</style>
 
 <?php if ($successMsg): ?>
-    <div class="flash flash-success"><?= v::e($successMsg) ?></div>
+    <div class="mb-3 rounded-sm border border-green-200 bg-green-50 px-4 py-3 text-sm text-green-900 shadow-sm"><?= v::e($successMsg) ?></div>
 <?php endif; ?>
 
 <?php if ($errorMsg): ?>
-    <div class="flash flash-error"><?= v::e($errorMsg) ?></div>
+    <div class="mb-3 rounded-sm border border-red-200 bg-red-50 px-4 py-3 text-sm text-red-900 shadow-sm"><?= v::e($errorMsg) ?></div>
 <?php endif; ?>
 
 <?php if ($infoMsg): ?>
-    <div class="flash flash-info"><?= v::e($infoMsg) ?></div>
+    <div class="mb-3 rounded-sm border border-blue-200 bg-blue-50 px-4 py-3 text-sm text-blue-900 shadow-sm"><?= v::e($infoMsg) ?></div>
 <?php endif; ?>
 
 <?php if ($warningMsg): ?>
-    <div class="flash flash-warning"><?= v::e($warningMsg) ?></div>
+    <div class="mb-3 rounded-sm border border-amber-200 bg-amber-50 px-4 py-3 text-sm text-amber-900 shadow-sm"><?= v::e($warningMsg) ?></div>
 <?php endif; ?>
 
-<h2>Send Flash Message</h2>
-<p>Flash messages are displayed once and then removed. Submit the form to see a flash message after redirect.</p>
-<form method="POST" action="/flash/submit">
-    <select name="type" required>
-        <option value="success">Success</option>
-        <option value="error">Error</option>
-        <option value="info">Info</option>
-        <option value="warning">Warning</option>
-    </select>
-    <input type="text" name="message" placeholder="Message" value="This is a flash message!" required>
-    <button type="submit">Send Flash Message</button>
-</form>
+<section class="space-y-3">
+    <h2 class="text-xl font-semibold text-zinc-900">Send Flash Message</h2>
+    <p class="text-sm text-zinc-700">Flash messages display once after redirect. Pick a type and message.</p>
+    <form method="POST" action="/flash/submit" class="space-y-3 rounded-sm border border-zinc-200 bg-zinc-50 p-4 shadow-sm">
+        <div class="grid gap-3 md:grid-cols-2">
+            <?= c::Select('type', 'Type', [
+                'success' => 'Success',
+                'error' => 'Error',
+                'info' => 'Info',
+                'warning' => 'Warning',
+            ], null, ['required' => 'required']) ?>
+            <?= c::FormInput('message', 'Message', 'This is a flash message!', ['required' => 'required']) ?>
+        </div>
+        <?= c::Button('Send Flash Message', 'blue', ['type' => 'submit']) ?>
+    </form>
+</section>

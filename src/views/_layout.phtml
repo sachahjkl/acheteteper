@@ -12,19 +12,24 @@ use Acheteteper\Utils\ViewUtils as v;
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
     <link rel="icon" type="image/png" href="/php-icon.png">
+    <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
     <link rel="stylesheet" href="/app.css">
     <script src="/htmx.v2.0.8.min.js"></script>
 </head>
 
-<body hx-boost="true">
-    <div class="container">
-        <?php if (isset($title)): ?>
-            <h1><?= v::e($title) ?></h1>
-        <?php endif; ?>
+<body class="min-h-screen bg-zinc-100 text-zinc-900" hx-boost="true">
+    <div class="container mx-auto py-6 px-2 space-y-6">
+        <header class="space-y-3">
+            <?php if (isset($title)): ?>
+                <h1 class="text-3xl font-bold tracking-tight text-zinc-900"><?= v::e($title) ?></h1>
+            <?php endif; ?>
 
-        <?php require __DIR__ . '/_nav.phtml'; ?>
+            <?php require __DIR__ . '/_nav.phtml'; ?>
+        </header>
 
-        <?= v::getViewContent() ?? '' ?>
+        <main class="bg-white border border-zinc-200 shadow-sm rounded-sm p-6">
+            <?= v::getViewContent() ?? '' ?>
+        </main>
     </div>
 </body>
 

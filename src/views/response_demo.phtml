@@ -1,71 +1,59 @@
 <?php
 
 use Acheteteper\Utils\ViewUtils as v;
+use Components as c;
 
 $title = 'Response Demo';
+$tableClass = 'min-w-full text-sm text-left text-zinc-800 font-mono';
+$theadClass = 'bg-zinc-100 text-xs font-semibold uppercase tracking-wide text-zinc-700';
+$cellClass = 'px-4 py-3 border-b border-zinc-200';
 ?>
-<style>
-    table {
-        width: 100%;
-        border-collapse: collapse;
-        margin: 20px 0;
-    }
 
-    th,
-    td {
-        padding: 10px;
-        text-align: left;
-        border: 1px solid #ddd;
-    }
+<section class="space-y-3 mb-6">
+    <h2 class="text-xl font-semibold text-zinc-900">Response Information</h2>
+    <div class="overflow-hidden rounded-sm border border-zinc-200 shadow-sm">
+        <table class="<?= $tableClass ?>">
+            <tbody class="divide-y divide-zinc-200">
+                <tr>
+                    <th class="w-1/3 bg-zinc-50 <?= $cellClass ?> font-semibold text-zinc-800">Status Code</th>
+                    <td class="<?= $cellClass ?>">
+                        <span class="font-semibold <?= $status >= 400 ? 'text-red-700' : 'text-green-700' ?>"><?= $status ?></span>
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+</section>
 
-    th {
-        background: #f0f0f0;
-    }
+<section class="space-y-3 mb-6">
+    <h2 class="text-xl font-semibold text-zinc-900">Response Headers</h2>
+    <div class="overflow-hidden rounded-sm border border-zinc-200 shadow-sm">
+        <table class="<?= $tableClass ?>">
+            <thead class="<?= $theadClass ?>">
+                <tr>
+                    <th class="px-4 py-3">Header Name</th>
+                    <th class="px-4 py-3">Value</th>
+                </tr>
+            </thead>
+            <tbody class="divide-y divide-zinc-200">
+                <?php foreach ($headers as $name => $value): ?>
+                    <tr>
+                        <td class="<?= $cellClass ?>"><?= v::e($name) ?></td>
+                        <td class="<?= $cellClass ?>"><?= v::e($value) ?></td>
+                    </tr>
+                <?php endforeach; ?>
+            </tbody>
+        </table>
+    </div>
+</section>
 
-    .status-200 {
-        color: green;
-    }
-
-    .status-404 {
-        color: red;
-    }
-
-    .status-500 {
-        color: red;
-    }
-</style>
-
-<h2>Response Information</h2>
-<table>
-    <tr>
-        <th>Property</th>
-        <th>Value</th>
-    </tr>
-    <tr>
-        <td>Status Code</td>
-        <td class="status-<?= $status ?>"><?= $status ?></td>
-    </tr>
-</table>
-
-<h2>Response Headers</h2>
-<table>
-    <tr>
-        <th>Header Name</th>
-        <th>Value</th>
-    </tr>
-    <?php foreach ($headers as $name => $value): ?>
-        <tr>
-            <td><?= v::e($name) ?></td>
-            <td><?= v::e($value) ?></td>
-        </tr>
-    <?php endforeach; ?>
-</table>
-
-<h2>Test Different Status Codes</h2>
-<p>
-    <a href="?status=200">200 OK</a> |
-    <a href="?status=201">201 Created</a> |
-    <a href="?status=400">400 Bad Request</a> |
-    <a href="?status=404">404 Not Found</a> |
-    <a href="?status=500">500 Internal Server Error</a>
-</p>
+<section class="space-y-3">
+    <h2 class="text-xl font-semibold text-zinc-900">Test Different Status Codes</h2>
+    <div class="flex flex-wrap gap-2">
+        <?= c::LinkButton('200 OK', '?status=200', 'green') ?>
+        <?= c::LinkButton('201 Created', '?status=201', 'green') ?>
+        <?= c::LinkButton('400 Bad Request', '?status=400', 'red') ?>
+        <?= c::LinkButton('404 Not Found', '?status=404', 'red') ?>
+        <?= c::LinkButton('500 Internal Server Error', '?status=500', 'red') ?>
+    </div>
+</section>

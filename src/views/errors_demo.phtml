@@ -1,57 +1,32 @@
 <?php
 
 use Acheteteper\Utils\ViewUtils as v;
+use Components as c;
 
 $title = 'Error Handling Demo';
 ?>
-<style>
-    .error-box {
-        margin: 20px 0;
-        padding: 15px;
-        background: #f8d7da;
-        border: 1px solid #f5c6cb;
-        color: #721c24;
-    }
-
-    .routes {
-        margin: 20px 0;
-    }
-
-    .route {
-        margin: 10px 0;
-        padding: 10px;
-        background: #f9f9f9;
-        border: 1px solid #ddd;
-    }
-
-    button {
-        background: #dc3545;
-        color: white;
-        padding: 8px 15px;
-        border: none;
-        cursor: pointer;
-    }
-</style>
 
 <?php if (isset($error)): ?>
-    <div class="error-box">
-        <h2><?= v::e($error) ?></h2>
+    <div class="mb-4 rounded-sm border border-red-200 bg-red-50 px-4 py-3 text-sm text-red-900 shadow-sm">
+        <h2 class="text-lg font-semibold text-red-800 mb-1"><?= v::e($error) ?></h2>
         <p>This is a custom error page demonstrating error handling.</p>
     </div>
 <?php endif; ?>
 
-<h2>Test Error Responses</h2>
-<div class="routes">
-    <div class="route">
-        <strong>404 Not Found</strong>
-        <a href="/errors/notFound"><button>Trigger 404</button></a>
+<section class="space-y-3">
+    <h2 class="text-xl font-semibold text-zinc-900">Test Error Responses</h2>
+    <div class="grid gap-3 md:grid-cols-3">
+        <div class="rounded-sm border border-zinc-200 bg-zinc-50 p-4 shadow-sm space-y-2">
+            <div class="font-semibold text-zinc-900">404 Not Found</div>
+            <?= c::LinkButton('Trigger 404', '/errors/notFound', 'red') ?>
+        </div>
+        <div class="rounded-sm border border-zinc-200 bg-zinc-50 p-4 shadow-sm space-y-2">
+            <div class="font-semibold text-zinc-900">403 Forbidden</div>
+            <?= c::LinkButton('Trigger 403', '/errors/forbidden', 'red') ?>
+        </div>
+        <div class="rounded-sm border border-zinc-200 bg-zinc-50 p-4 shadow-sm space-y-2">
+            <div class="font-semibold text-zinc-900">500 Internal Server Error</div>
+            <?= c::LinkButton('Trigger 500', '/errors/serverError', 'red') ?>
+        </div>
     </div>
-    <div class="route">
-        <strong>403 Forbidden</strong>
-        <a href="/errors/forbidden"><button>Trigger 403</button></a>
-    </div>
-    <div class="route">
-        <strong>500 Internal Server Error</strong>
-        <a href="/errors/serverError"><button>Trigger 500</button></a>
-    </div>
-</div>
+</section>

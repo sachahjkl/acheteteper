@@ -1,100 +1,56 @@
 <?php
 
 use Acheteteper\Utils\ViewUtils as v;
+use Components as c;
 
 $title = 'Validation Demo';
 ?>
-<style>
-    form {
-        margin: 20px 0;
-    }
-
-    .form-group {
-        margin: 15px 0;
-    }
-
-    label {
-        display: block;
-        margin-bottom: 5px;
-        font-weight: bold;
-    }
-
-    input {
-        width: 100%;
-        padding: 8px;
-        box-sizing: border-box;
-    }
-
-    .error {
-        color: red;
-        font-size: 0.9em;
-        margin-top: 5px;
-    }
-
-    .success {
-        color: green;
-        padding: 15px;
-        background: #d4edda;
-        border: 1px solid #c3e6cb;
-        margin: 20px 0;
-    }
-
-    button {
-        background: #007bff;
-        color: white;
-        padding: 10px 20px;
-        border: none;
-        cursor: pointer;
-    }
-</style>
 
 <?php if (isset($success) && $success): ?>
-    <div class="success">
-        <strong>Success!</strong> <?= v::e($message) ?>
+    <div class="mb-4 rounded-sm border border-green-200 bg-green-50 px-4 py-3 text-sm text-green-900 shadow-sm">
+        <div class="font-semibold mb-1">Success!</div>
+        <div><?= v::e($message) ?></div>
     </div>
 <?php endif; ?>
 
-<h2>Registration Form</h2>
-<form method="POST" action="/validation/submit">
-    <div class="form-group">
-        <label>Name *</label>
-        <input type="text" name="name" value="<?= v::e($values['name'] ?? '') ?>" required>
-        <?php if (isset($errors['name'])): ?>
-            <div class="error"><?= v::e($errors['name']) ?></div>
-        <?php endif; ?>
-    </div>
+<div class="space-y-3 mb-6">
+    <h2 class="text-xl font-semibold text-zinc-900">Registration Form</h2>
+    <form method="POST" action="/validation/submit" class="space-y-4 rounded-sm border border-zinc-200 bg-zinc-50 p-4 shadow-sm">
+        <div class="grid gap-3 md:grid-cols-2">
+            <div class="space-y-1">
+                <?= c::FormInput('name', 'Name *', $values['name'] ?? '', ['required' => 'required']) ?>
+                <?php if (isset($errors['name'])): ?>
+                    <div class="text-xs text-red-700"><?= v::e($errors['name']) ?></div>
+                <?php endif; ?>
+            </div>
+            <div class="space-y-1">
+                <?= c::FormInput('email', 'Email *', $values['email'] ?? '', ['type' => 'email', 'required' => 'required']) ?>
+                <?php if (isset($errors['email'])): ?>
+                    <div class="text-xs text-red-700"><?= v::e($errors['email']) ?></div>
+                <?php endif; ?>
+            </div>
+            <div class="space-y-1">
+                <?= c::FormInput('phone', 'Phone *', $values['phone'] ?? '', ['placeholder' => '+1-555-123-4567', 'required' => 'required']) ?>
+                <?php if (isset($errors['phone'])): ?>
+                    <div class="text-xs text-red-700"><?= v::e($errors['phone']) ?></div>
+                <?php endif; ?>
+            </div>
+            <div class="space-y-1">
+                <?= c::FormInput('password', 'Password * (min 8 characters)', '', ['type' => 'password', 'required' => 'required']) ?>
+                <?php if (isset($errors['password'])): ?>
+                    <div class="text-xs text-red-700"><?= v::e($errors['password']) ?></div>
+                <?php endif; ?>
+            </div>
+            <div class="space-y-1">
+                <?= c::FormInput('password_confirm', 'Confirm Password *', '', ['type' => 'password', 'required' => 'required']) ?>
+                <?php if (isset($errors['password_confirm'])): ?>
+                    <div class="text-xs text-red-700"><?= v::e($errors['password_confirm']) ?></div>
+                <?php endif; ?>
+            </div>
+        </div>
 
-    <div class="form-group">
-        <label>Email *</label>
-        <input type="email" name="email" value="<?= v::e($values['email'] ?? '') ?>" required>
-        <?php if (isset($errors['email'])): ?>
-            <div class="error"><?= v::e($errors['email']) ?></div>
-        <?php endif; ?>
-    </div>
-
-    <div class="form-group">
-        <label>Phone *</label>
-        <input type="text" name="phone" value="<?= v::e($values['phone'] ?? '') ?>" placeholder="+1-555-123-4567" required>
-        <?php if (isset($errors['phone'])): ?>
-            <div class="error"><?= v::e($errors['phone']) ?></div>
-        <?php endif; ?>
-    </div>
-
-    <div class="form-group">
-        <label>Password * (min 8 characters)</label>
-        <input type="password" name="password" required>
-        <?php if (isset($errors['password'])): ?>
-            <div class="error"><?= v::e($errors['password']) ?></div>
-        <?php endif; ?>
-    </div>
-
-    <div class="form-group">
-        <label>Confirm Password *</label>
-        <input type="password" name="password_confirm" required>
-        <?php if (isset($errors['password_confirm'])): ?>
-            <div class="error"><?= v::e($errors['password_confirm']) ?></div>
-        <?php endif; ?>
-    </div>
-
-    <button type="submit">Register</button>
-</form>
+        <div>
+            <?= c::Button('Register', 'blue', ['type' => 'submit']) ?>
+        </div>
+    </form>
+</div>

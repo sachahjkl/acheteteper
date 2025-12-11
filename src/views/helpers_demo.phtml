@@ -3,70 +3,45 @@
 use Acheteteper\Utils\ViewUtils as v;
 
 $title = 'View Helpers Demo';
-
 ?>
-<style>
-    table {
-        width: 100%;
-        border-collapse: collapse;
-        margin: 20px 0;
-    }
 
-    th,
-    td {
-        padding: 10px;
-        text-align: left;
-        border: 1px solid #ddd;
-    }
+<section class="grid gap-4 md:grid-cols-2">
+    <div class="rounded-sm border border-zinc-200 bg-zinc-50 p-4 shadow-sm space-y-2">
+        <h2 class="text-lg font-semibold text-zinc-900">e() - HTML Escape</h2>
+        <p class="text-sm text-zinc-700">Input: <code class="rounded bg-zinc-100 px-1.5 py-0.5 text-xs text-zinc-800 border border-zinc-200"><?= v::e($htmlString) ?></code></p>
+        <p class="text-sm text-zinc-700">Output: <?= v::e($htmlString) ?></p>
+        <p class="text-sm text-zinc-700">Escapes unsafe characters to prevent XSS.</p>
+    </div>
 
-    th {
-        background: #f0f0f0;
-    }
+    <div class="rounded-sm border border-zinc-200 bg-zinc-50 p-4 shadow-sm space-y-2">
+        <h2 class="text-lg font-semibold text-zinc-900">url() - URL Generation</h2>
+        <p class="text-sm text-zinc-700">url('/request'): <code class="rounded bg-zinc-100 px-1.5 py-0.5 text-xs text-zinc-800 border border-zinc-200"><?= v::url('/request') ?></code></p>
+        <p class="text-sm text-zinc-700">url('/api/users'): <code class="rounded bg-zinc-100 px-1.5 py-0.5 text-xs text-zinc-800 border border-zinc-200"><?= v::url('/api/users') ?></code></p>
+    </div>
 
-    .example {
-        margin: 20px 0;
-        padding: 15px;
-        background: #f9f9f9;
-        border: 1px solid #ddd;
-    }
+    <div class="rounded-sm border border-zinc-200 bg-zinc-50 p-4 shadow-sm space-y-2">
+        <h2 class="text-lg font-semibold text-zinc-900">date() - Date Formatting</h2>
+        <p class="text-sm text-zinc-700">Timestamp: <code class="rounded bg-zinc-100 px-1.5 py-0.5 text-xs text-zinc-800 border border-zinc-200"><?= $timestamp ?></code></p>
+        <p class="text-sm text-zinc-700">Default: <?= v::date($timestamp) ?></p>
+        <p class="text-sm text-zinc-700">Custom (Y-m-d): <?= v::date($timestamp, 'Y-m-d') ?></p>
+        <p class="text-sm text-zinc-700">String: <?= $dateString ?></p>
+        <p class="text-sm text-zinc-700">Formatted: <?= v::date($dateString, 'F j, Y') ?></p>
+    </div>
 
-    code {
-        background: #f0f0f0;
-        padding: 2px 5px;
-    }
-</style>
+    <div class="rounded-sm border border-zinc-200 bg-zinc-50 p-4 shadow-sm space-y-2">
+        <h2 class="text-lg font-semibold text-zinc-900">truncate() - String Truncation</h2>
+        <p class="text-sm text-zinc-700">Original: <?= v::e($longText) ?></p>
+        <p class="text-sm text-zinc-700">30 chars: <?= v::truncate($longText, 30) ?></p>
+        <p class="text-sm text-zinc-700">50 chars: <?= v::truncate($longText, 50) ?></p>
+    </div>
 
-<div class="example">
-    <h2>e() - HTML Escape</h2>
-    <p><strong>Input:</strong> <code><?= v::e($htmlString) ?></code></p>
-    <p><strong>Output:</strong> <?= v::e($htmlString) ?></p>
-    <p>The script tag is escaped and displayed as text, preventing XSS attacks.</p>
-</div>
-
-<div class="example">
-    <h2>url() - URL Generation</h2>
-    <p><strong>url('/request'):</strong> <code><?= v::url('/request') ?></code></p>
-    <p><strong>url('/api/users'):</strong> <code><?= v::url('/api/users') ?></code></p>
-</div>
-
-<div class="example">
-    <h2>date() - Date Formatting</h2>
-    <p><strong>Timestamp:</strong> <?= $timestamp ?></p>
-    <p><strong>Default format:</strong> <?= v::date($timestamp) ?></p>
-    <p><strong>Custom format (Y-m-d):</strong> <?= v::date($timestamp, 'Y-m-d') ?></p>
-    <p><strong>Date string:</strong> <?= $dateString ?></p>
-    <p><strong>Formatted:</strong> <?= v::date($dateString, 'F j, Y') ?></p>
-</div>
-
-<div class="example">
-    <h2>truncate() - String Truncation</h2>
-    <p><strong>Original:</strong> <?= v::e($longText) ?></p>
-    <p><strong>Truncated (30 chars):</strong> <?= v::truncate($longText, 30) ?></p>
-    <p><strong>Truncated (50 chars):</strong> <?= v::truncate($longText, 50) ?></p>
-</div>
-
-<div class="example">
-    <h2>link() - Link Generation</h2>
-    <p><?= v::link('/request', 'Request Demo') ?></p>
-    <p><?= v::link('/api/users', 'API Users', ['target' => '_blank']) ?></p>
-</div>
+    <div class="rounded-sm border border-zinc-200 bg-zinc-50 p-4 shadow-sm space-y-2 md:col-span-2">
+        <h2 class="text-lg font-semibold text-zinc-900">link() - Link Generation</h2>
+        <div class="flex flex-col gap-2">
+            <?= v::link('/request', 'Request Demo') ?>
+            <?= v::link('/api/users', 'API Users', ['target' => '_blank']) ?>
+            <?= v::link('Visit Request Demo', '/request') ?>
+            <?= v::link('Open API Users', '/api/users', ['target' => '_blank']) ?>
+        </div>
+    </div>
+</section>

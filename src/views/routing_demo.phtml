@@ -1,98 +1,70 @@
 <?php
 
 use Acheteteper\Utils\ViewUtils as v;
+use Components as c;
 
 $title = 'Routing Demo';
+$tableClass = 'min-w-full text-sm text-left text-zinc-800 font-mono';
+$cellClass = 'px-4 py-3 border-b border-zinc-200';
 ?>
-<style>
-    table {
-        width: 100%;
-        border-collapse: collapse;
-        margin: 20px 0;
-    }
 
-    th,
-    td {
-        padding: 10px;
-        text-align: left;
-        border: 1px solid #ddd;
-    }
-
-    th {
-        background: #f0f0f0;
-    }
-
-    .routes {
-        margin: 20px 0;
-    }
-
-    .route {
-        margin: 10px 0;
-        padding: 10px;
-        background: #f9f9f9;
-        border: 1px solid #ddd;
-    }
-
-    button {
-        background: #007bff;
-        color: white;
-        padding: 8px 15px;
-        border: none;
-        cursor: pointer;
-    }
-</style>
-
-<h2>Current Route Information</h2>
-<table>
-    <tr>
-        <th>Property</th>
-        <th>Value</th>
-    </tr>
-    <tr>
-        <td>Action</td>
-        <td><?= v::e($action) ?></td>
-    </tr>
-    <tr>
-        <td>Method</td>
-        <td><?= v::e($method) ?></td>
-    </tr>
-    <tr>
-        <td>Path</td>
-        <td><?= v::e($path) ?></td>
-    </tr>
-    <?php if (isset($id)): ?>
-        <tr>
-            <td>ID Parameter</td>
-            <td><?= v::e($id) ?></td>
-        </tr>
-    <?php endif; ?>
-    <?php if (isset($message)): ?>
-        <tr>
-            <td>Message</td>
-            <td><?= v::e($message) ?></td>
-        </tr>
-    <?php endif; ?>
-</table>
-
-<h2>Available Routes</h2>
-<div class="routes">
-    <div class="route">
-        <strong>/routing</strong> → <code>index()</code>
-        <a href="/routing"><button>Visit</button></a>
+<section class="space-y-3 mb-6">
+    <h2 class="text-xl font-semibold text-zinc-900">Current Route Information</h2>
+    <div class="overflow-hidden rounded-sm border border-zinc-200 shadow-sm">
+        <table class="<?= $tableClass ?>">
+            <tbody class="divide-y divide-zinc-200">
+                <tr>
+                    <th class="w-1/3 bg-zinc-50 <?= $cellClass ?> font-semibold text-zinc-800">Action</th>
+                    <td class="<?= $cellClass ?>"><?= v::e($action) ?></td>
+                </tr>
+                <tr>
+                    <th class="bg-zinc-50 <?= $cellClass ?> font-semibold text-zinc-800">Method</th>
+                    <td class="<?= $cellClass ?>"><?= v::e($method) ?></td>
+                </tr>
+                <tr>
+                    <th class="bg-zinc-50 <?= $cellClass ?> font-semibold text-zinc-800">Path</th>
+                    <td class="<?= $cellClass ?>"><?= v::e($path) ?></td>
+                </tr>
+                <?php if (isset($id)): ?>
+                    <tr>
+                        <th class="bg-zinc-50 <?= $cellClass ?> font-semibold text-zinc-800">ID Parameter</th>
+                        <td class="<?= $cellClass ?>"><?= v::e($id) ?></td>
+                    </tr>
+                <?php endif; ?>
+                <?php if (isset($message)): ?>
+                    <tr>
+                        <th class="bg-zinc-50 <?= $cellClass ?> font-semibold text-zinc-800">Message</th>
+                        <td class="<?= $cellClass ?>"><?= v::e($message) ?></td>
+                    </tr>
+                <?php endif; ?>
+            </tbody>
+        </table>
     </div>
-    <div class="route">
-        <strong>/routing/show</strong> → <code>show()</code>
-        <a href="/routing/show"><button>Visit</button></a>
-        <a href="/routing/show?id=123"><button>With ID</button></a>
+</section>
+
+<section class="space-y-3">
+    <h2 class="text-xl font-semibold text-zinc-900">Available Routes</h2>
+    <div class="grid gap-3 md:grid-cols-2">
+        <div class="rounded-sm border border-zinc-200 bg-zinc-50 p-4 shadow-sm space-y-2">
+            <div><strong>/routing</strong> → <code>index()</code></div>
+            <?= c::LinkButton('Visit', '/routing') ?>
+        </div>
+        <div class="rounded-sm border border-zinc-200 bg-zinc-50 p-4 shadow-sm space-y-2">
+            <div><strong>/routing/show</strong> → <code>show()</code></div>
+            <div class="flex gap-2">
+                <?= c::LinkButton('Visit', '/routing/show') ?>
+                <?= c::LinkButton('With ID', '/routing/show?id=123', 'green') ?>
+            </div>
+        </div>
+        <div class="rounded-sm border border-zinc-200 bg-zinc-50 p-4 shadow-sm space-y-2">
+            <div><strong>/routing/edit</strong> → <code>edit()</code></div>
+            <?= c::LinkButton('Visit', '/routing/edit') ?>
+        </div>
+        <div class="rounded-sm border border-zinc-200 bg-zinc-50 p-4 shadow-sm space-y-2">
+            <div><strong>/routing/delete</strong> → <code>delete()</code> (POST required)</div>
+            <form method="POST" action="/routing/delete" class="inline">
+                <?= c::Button('Submit POST', 'red', ['type' => 'submit']) ?>
+            </form>
+        </div>
     </div>
-    <div class="route">
-        <strong>/routing/edit</strong> → <code>edit()</code>
-        <a href="/routing/edit"><button>Visit</button></a>
-    </div>
-    <div class="route">
-        <strong>/routing/delete</strong> → <code>delete()</code> (POST required)
-        <form method="POST" action="/routing/delete" style="display: inline;">
-            <button type="submit">Submit POST</button>
-        </form>
-    </div>
-</div>
+</section>

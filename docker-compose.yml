@@ -1,5 +1,3 @@
-version: "3.9"
-
 services:
   app:
     build: .
@@ -11,5 +9,6 @@ services:
     volumes:
       - ./data:/data
       - ./data/uploads:/tmp/uploads
+      - ./:/app
     restart: unless-stopped
 

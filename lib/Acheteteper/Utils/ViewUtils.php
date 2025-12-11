@@ -83,7 +83,8 @@ class ViewUtils
         foreach ($attributes as $key => $value) {
             $attrs .= ' ' . htmlspecialchars($key, ENT_QUOTES, 'UTF-8') . '="' . htmlspecialchars((string) $value, ENT_QUOTES, 'UTF-8') . '"';
         }
-        return '<a href="' . self::escape($url) . '"' . $attrs . '>' . self::escape($text) . '</a>';
+        $classes = 'text-blue-700 visited:text-purple-700 active:text-blue-800 font-semibold underline ';
+        return '<a class="' . $classes . '" href="' . self::escape($url) . '"' . $attrs . '>' . self::escape($text) . '</a>';
     }
 
     public static function date(string|int $date, string $format = 'Y-m-d H:i:s'): string

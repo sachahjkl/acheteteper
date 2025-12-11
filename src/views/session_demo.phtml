@@ -1,80 +1,55 @@
 <?php
 
 use Acheteteper\Utils\ViewUtils as v;
+use Components as c;
 
 $title = 'Session Demo';
+$tableClass = 'min-w-full text-sm text-left text-zinc-800 font-mono';
+$cellClass = 'px-4 py-3 border-b border-zinc-200';
 ?>
-<style>
-    table {
-        width: 100%;
-        border-collapse: collapse;
-        margin: 20px 0;
-    }
 
-    th,
-    td {
-        padding: 10px;
-        text-align: left;
-        border: 1px solid #ddd;
-    }
+<section class="space-y-2 mb-6">
+    <h2 class="text-xl font-semibold text-zinc-900">Session Counter</h2>
+    <p class="text-sm text-zinc-700">This page has been visited <span class="text-2xl font-semibold text-blue-700"><?= $counter ?></span> times.</p>
+</section>
 
-    th {
-        background: #f0f0f0;
-    }
+<section class="space-y-3 mb-6">
+    <h2 class="text-xl font-semibold text-zinc-900">Set Session Value</h2>
+    <form method="POST" class="space-y-3 rounded-sm border border-zinc-200 bg-zinc-50 p-4 shadow-sm">
+        <div class="grid gap-3 md:grid-cols-2">
+            <?= c::FormInput('key', 'Key', '', ['placeholder' => 'Key', 'required' => 'required']) ?>
+            <?= c::FormInput('value', 'Value', '', ['placeholder' => 'Value', 'required' => 'required']) ?>
+        </div>
+        <?= c::Button('Set Session Value', 'blue', ['type' => 'submit']) ?>
+    </form>
+</section>
 
-    form {
-        margin: 20px 0;
-        padding: 15px;
-        background: #f9f9f9;
-        border: 1px solid #ddd;
-    }
+<section class="space-y-3">
+    <h2 class="text-xl font-semibold text-zinc-900">All Session Data</h2>
+    <?php if (empty($allSession)): ?>
+        <p class="text-sm text-zinc-700">No session data stored.</p>
+    <?php else: ?>
+        <div class="overflow-hidden rounded-sm border border-zinc-200 shadow-sm">
+            <table class="<?= $tableClass ?>">
+                <thead class="bg-zinc-100 text-xs font-semibold uppercase tracking-wide text-zinc-700">
+                    <tr>
+                        <th class="px-4 py-3">Key</th>
+                        <th class="px-4 py-3">Value</th>
+                    </tr>
+                </thead>
+                <tbody class="divide-y divide-zinc-200">
+                    <?php foreach ($allSession as $key => $value): ?>
+                        <tr>
+                            <td class="<?= $cellClass ?>"><?= v::e($key) ?></td>
+                            <td class="<?= $cellClass ?>"><?= v::e(is_array($value) ? json_encode($value) : (string)$value) ?></td>
+                        </tr>
+                    <?php endforeach; ?>
+                </tbody>
+            </table>
+        </div>
+    <?php endif; ?>
+</section>
 
-    input,
-    button {
-        padding: 8px;
-        margin: 5px;
-    }
-
-    button {
-        background: #007bff;
-        color: white;
-        border: none;
-        cursor: pointer;
-    }
-
-    .counter {
-        font-size: 1.5em;
-        color: #007bff;
-        font-weight: bold;
-    }
-</style>
-
-<h2>Session Counter</h2>
-<p>This page has been visited <span class="counter"><?= $counter ?></span> times.</p>
-
-<h2>Set Session Value</h2>
-<form method="POST">
-    <input type="text" name="key" placeholder="Key" required>
-    <input type="text" name="value" placeholder="Value" required>
-    <button type="submit">Set Session Value</button>
-</form>
-
-<h2>All Session Data</h2>
-<?php if (empty($allSession)): ?>
-    <p>No session data stored.</p>
-<?php else: ?>
-    <table>
-        <tr>
-            <th>Key</th>
-            <th>Value</th>
-        </tr>
-        <?php foreach ($allSession as $key => $value): ?>
-            <tr>
-                <td><?= v::e($key) ?></td>
-                <td><?= v::e(is_array($value) ? json_encode($value) : (string)$value) ?></td>
-            </tr>
-        <?php endforeach; ?>
-    </table>
-<?php endif; ?>
-
-<p><a href="/session/clear"><button>Clear All Session Data</button></a></p>
+<div class="mt-4">
+    <?= c::LinkButton('Clear All Session Data', '/session/clear', 'red') ?>
+</div>

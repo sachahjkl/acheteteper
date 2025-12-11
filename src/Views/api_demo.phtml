@@ -1,0 +1,82 @@
+<?php
+
+use Components as c;
+
+$title = 'JSON API Demo';
+?>
+
+<section class="space-y-3 mb-6">
+    <h2 class="text-xl font-semibold text-zinc-900">API Endpoints</h2>
+    <div class="grid gap-4 md:grid-cols-2">
+        <div class="space-y-2 rounded-sm border border-zinc-200 bg-zinc-50 p-4 shadow-sm">
+            <div>
+                <h3 class="text-lg font-semibold text-zinc-900">GET /api/users</h3>
+                <p class="text-sm text-zinc-700">Get all users</p>
+            </div>
+            <?= c::Button('Fetch Users', 'blue', ['type' => 'button', 'onclick' => 'fetchUsers()']) ?>
+            <div id="users-result" class="text-sm text-zinc-800 rounded-sm border border-zinc-200 bg-white px-3 py-2 min-h-[48px]"></div>
+        </div>
+
+        <div class="space-y-2 rounded-sm border border-zinc-200 bg-zinc-50 p-4 shadow-sm">
+            <div>
+                <h3 class="text-lg font-semibold text-zinc-900">GET /api/user?id=1</h3>
+                <p class="text-sm text-zinc-700">Get a specific user</p>
+            </div>
+            <?= c::FormInput('userId', 'User ID', '1', ['type' => 'number', 'min' => '1', 'id' => 'userId']) ?>
+            <?= c::Button('Fetch User', 'blue', ['type' => 'button', 'onclick' => 'fetchUser()']) ?>
+            <div id="user-result" class="text-sm text-zinc-800 rounded-sm border border-zinc-200 bg-white px-3 py-2 min-h-[48px]"></div>
+        </div>
+
+        <div class="space-y-2 rounded-sm border border-zinc-200 bg-zinc-50 p-4 shadow-sm md:col-span-2">
+            <div>
+                <h3 class="text-lg font-semibold text-zinc-900">GET /api/error</h3>
+                <p class="text-sm text-zinc-700">Get error response (500 status)</p>
+            </div>
+            <?= c::Button('Fetch Error', 'red', ['type' => 'button', 'onclick' => 'fetchError()']) ?>
+            <div id="error-result" class="text-sm text-zinc-800 rounded-sm border border-zinc-200 bg-white px-3 py-2 min-h-[48px]"></div>
+        </div>
+    </div>
+</section>
+
+<script>
+    const renderPre = (target, content) => {
+        target.innerHTML = '<pre class="whitespace-pre-wrap break-words bg-zinc-100 border border-zinc-200 rounded-sm px-3 py-2 text-[13px] text-zinc-900">' + content + '</pre>';
+    };
+
+    async function fetchUsers() {
+        const result = document.getElementById('users-result');
+        result.textContent = 'Loading...';
+        try {
+            const response = await fetch('/api/users');
+            const data = await response.json();
+            renderPre(result, JSON.stringify(data, null, 2));
+        } catch (error) {
+            renderPre(result, 'Error: ' + error.message);
+        }
+    }
+
+    async function fetchUser() {
+        const result = document.getElementById('user-result');
+        const userId = document.getElementById('userId').value;
+        result.textContent = 'Loading...';
+        try {
+            const response = await fetch('/api/user?id=' + userId);
+            const data = await response.json();
+            renderPre(result, JSON.stringify(data, null, 2));
+        } catch (error) {
+            renderPre(result, 'Error: ' + error.message);
+        }
+    }
+
+    async function fetchError() {
+        const result = document.getElementById('error-result');
+        result.textContent = 'Loading...';
+        try {
+            const response = await fetch('/api/error');
+            const data = await response.json();
+            renderPre(result, 'Status: ' + response.status + '\n' + JSON.stringify(data, null, 2));
+        } catch (error) {
+            renderPre(result, 'Error: ' + error.message);
+        }
+    }
+</script>

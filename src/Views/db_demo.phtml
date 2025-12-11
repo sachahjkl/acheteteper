@@ -1,0 +1,54 @@
+<?php
+
+use Acheteteper\Utils\ViewUtils as v;
+use Components as c;
+
+$title = 'DB Demo (SQLite)';
+$tableClass = 'min-w-full text-sm text-left text-zinc-800 font-mono';
+$cellClass = 'px-4 py-3 border-b border-zinc-200';
+?>
+
+<p class="text-sm text-zinc-700 mb-4">Database file: <code class="rounded bg-zinc-100 px-1.5 py-0.5 text-xs text-zinc-800 border border-zinc-200"><?= v::e($dbPath) ?></code></p>
+
+<section class="space-y-3 mb-6">
+    <h2 class="text-xl font-semibold text-zinc-900">Add Item</h2>
+    <form method="POST" class="space-y-3 rounded-sm border border-zinc-200 bg-zinc-50 p-4 shadow-sm">
+        <input type="hidden" name="action" value="add">
+        <?= c::FormInput('name', 'Item name', '', ['placeholder' => 'Item name', 'required' => 'required']) ?>
+        <?= c::Button('Add', 'green', ['type' => 'submit']) ?>
+    </form>
+</section>
+
+<section class="space-y-3">
+    <h2 class="text-xl font-semibold text-zinc-900">Items</h2>
+    <?php if (empty($items)): ?>
+        <p class="text-sm text-zinc-700">No items yet.</p>
+    <?php else: ?>
+        <div class="overflow-hidden rounded-sm border border-zinc-200 shadow-sm">
+            <table class="<?= $tableClass ?>">
+                <thead class="bg-zinc-100 text-xs font-semibold uppercase tracking-wide text-zinc-700">
+                    <tr>
+                        <th class="px-4 py-3">ID</th>
+                        <th class="px-4 py-3">Name</th>
+                        <th class="px-4 py-3">Actions</th>
+                    </tr>
+                </thead>
+                <tbody class="divide-y divide-zinc-200">
+                    <?php foreach ($items as $item): ?>
+                        <tr>
+                            <td class="<?= $cellClass ?>"><?= (int)$item['id'] ?></td>
+                            <td class="<?= $cellClass ?>"><?= v::e($item['name']) ?></td>
+                            <td class="<?= $cellClass ?>">
+                                <form method="POST" class="inline">
+                                    <input type="hidden" name="action" value="delete">
+                                    <input type="hidden" name="id" value="<?= (int)$item['id'] ?>">
+                                    <?= c::Button('Delete', 'red', ['type' => 'submit']) ?>
+                                </form>
+                            </td>
+                        </tr>
+                    <?php endforeach; ?>
+                </tbody>
+            </table>
+        </div>
+    <?php endif; ?>
+</section>

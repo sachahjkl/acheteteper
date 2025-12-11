@@ -1,0 +1,44 @@
+<?php
+
+use Acheteteper\Utils\ViewUtils as v;
+use Components as c;
+
+$title = 'Flash Messages Demo';
+$successMsg = v::flash('success');
+$errorMsg = v::flash('error');
+$infoMsg = v::flash('info');
+$warningMsg = v::flash('warning');
+?>
+
+<?php if ($successMsg): ?>
+    <div class="mb-3 rounded-sm border border-green-200 bg-green-50 px-4 py-3 text-sm text-green-900 shadow-sm"><?= v::e($successMsg) ?></div>
+<?php endif; ?>
+
+<?php if ($errorMsg): ?>
+    <div class="mb-3 rounded-sm border border-red-200 bg-red-50 px-4 py-3 text-sm text-red-900 shadow-sm"><?= v::e($errorMsg) ?></div>
+<?php endif; ?>
+
+<?php if ($infoMsg): ?>
+    <div class="mb-3 rounded-sm border border-blue-200 bg-blue-50 px-4 py-3 text-sm text-blue-900 shadow-sm"><?= v::e($infoMsg) ?></div>
+<?php endif; ?>
+
+<?php if ($warningMsg): ?>
+    <div class="mb-3 rounded-sm border border-amber-200 bg-amber-50 px-4 py-3 text-sm text-amber-900 shadow-sm"><?= v::e($warningMsg) ?></div>
+<?php endif; ?>
+
+<section class="space-y-3">
+    <h2 class="text-xl font-semibold text-zinc-900">Send Flash Message</h2>
+    <p class="text-sm text-zinc-700">Flash messages display once after redirect. Pick a type and message.</p>
+    <form method="POST" action="/flash/submit" class="space-y-3 rounded-sm border border-zinc-200 bg-zinc-50 p-4 shadow-sm">
+        <div class="grid gap-3 md:grid-cols-2">
+            <?= c::Select('type', 'Type', [
+                'success' => 'Success',
+                'error' => 'Error',
+                'info' => 'Info',
+                'warning' => 'Warning',
+            ], null, ['required' => 'required']) ?>
+            <?= c::FormInput('message', 'Message', 'This is a flash message!', ['required' => 'required']) ?>
+        </div>
+        <?= c::Button('Send Flash Message', 'blue', ['type' => 'submit']) ?>
+    </form>
+</section>

@@ -1,0 +1,20 @@
+<?php
+
+use Components as c;
+?>
+
+<nav class="flex gap-2 flex-wrap mb-4">
+    <?= c::LinkButton('Home', '/') ?>
+    <?= c::LinkButton('Request', '/request') ?>
+    <?= c::LinkButton('Response', '/response') ?>
+    <?= c::LinkButton('Validation', '/validation') ?>
+    <?= c::LinkButton('Session', '/session') ?>
+    <?= c::LinkButton('Flash', '/flash') ?>
+    <?= c::LinkButton('CSRF', '/csrf') ?>
+    <?= c::LinkButton('Upload', '/upload') ?>
+    <?= c::LinkButton('API', '/api') ?>
+    <?= c::LinkButton('Helpers', '/helpers') ?>
+    <?= c::LinkButton('Routing', '/routing') ?>
+    <?= c::LinkButton('Errors', '/errors', 'red') ?>
+    <?= c::LinkButton('DB', '/db', 'green') ?>
+</nav>

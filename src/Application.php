@@ -66,7 +66,7 @@ class Application
         self::ensureUploadsDir($config['uploadsPath']);
 
         $configBuilder = new ConfigBuilder();
-        $configBuilder->setViewDir(__DIR__ . '/views');
+        $configBuilder->setViewDir(__DIR__ . '/Views');
         $configBuilder->setDbPath($config['dbPath']);
         $configBuilder->setUserConfig('uploadsPath', $config['uploadsPath']);
         $configBuilder->enableDebug();

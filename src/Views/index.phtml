@@ -1,0 +1,52 @@
+<?php
+
+use Acheteteper\Utils\ViewUtils as v;
+use Components as c;
+
+$title = 'Acheteteper Framework - Demo Pages';
+?>
+
+<p class="mb-4 text-2xl font-bold tracking-tight text-zinc-900">
+    Welcome to the
+    <span class="align-baseline">
+        <span class="font-black text-xl tracking-wide bg-gradient-to-r from-red-500 via-amber-500 to-green-300 bg-clip-text text-transparent drop-shadow-xs animate-gradient-x text">
+            Acheteteper
+        </span>
+    </span>
+    framework demo.
+</p>
+<style>
+    @keyframes gradient-x {
+
+        0%,
+        100% {
+            background-position: 0% 50%;
+        }
+
+        50% {
+            background-position: 100% 50%;
+        }
+    }
+
+    .animate-gradient-x {
+        background-size: 200% 200%;
+        animation: gradient-x 4s ease-in-out infinite;
+    }
+</style>
+<p class="mb-4 text-lg text-zinc-700">Explore the features below:</p>
+
+<h2 class="text-xl font-semibold text-zinc-900">Available Demos</h2>
+<ul class="demo-list">
+    <?= c::DemoHeadingItem('Request Demo', '/request', 'Access request data, headers, IP, method, etc.') ?>
+    <?= c::DemoHeadingItem('Response Demo', '/response', 'Manipulate response status codes and headers') ?>
+    <?= c::DemoHeadingItem('Validation Demo', '/validation', 'Form validation with all validation rules') ?>
+    <?= c::DemoHeadingItem('Session Demo', '/session', 'Session management and data storage') ?>
+    <?= c::DemoHeadingItem('Flash Messages Demo', '/flash', 'Temporary messages after redirects') ?>
+    <?= c::DemoHeadingItem('CSRF Demo', '/csrf', 'CSRF token generation and validation') ?>
+    <?= c::DemoHeadingItem('File Upload Demo', '/upload', 'File upload handling with validation') ?>
+    <?= c::DemoHeadingItem('JSON API Demo', '/api', 'JSON responses and API endpoints') ?>
+    <?= c::DemoHeadingItem('View Helpers Demo', '/helpers', 'Helper functions for views') ?>
+    <?= c::DemoHeadingItem('Routing Demo', '/routing', 'Different routes and actions') ?>
+    <?= c::DemoHeadingItem('Error Handling Demo', '/errors', 'Error responses and status codes') ?>
+    <?= c::DemoHeadingItem('DB Demo', '/db', 'Datasource / service / repository with SQLite') ?>
+</ul>

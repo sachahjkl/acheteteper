@@ -1,5 +1,23 @@
 # Framework PHP minimal (Acheteteper)
 
+## Démarrage
+### Docker (recommandé)
+```bash
+docker compose up --build
+```
+- Accès: http://localhost:8000
+- Persistance: `./data` monté sur `/data`, `./data/uploads` monté sur `/tmp/uploads`
+- Variables utiles: `DB_PATH=/data/database.db`, `UPLOADS_PATH=/tmp/uploads`
+
+### Démarrer le serveur de développement (build.bat)
+```bash
+build serve              # 127.0.0.1:8000
+build serve 8080         # port custom
+build serve 0.0.0.0 8080 # host + port custom
+```
+
+/!\ Attention c'est GIIIIGA lent (300ms ajoutées à chaques requêtes).
+
 ## Usage
 
 ### Point d'entrée
@@ -100,29 +118,21 @@ Les vues sont des fichiers PHP dans le répertoire configuré (`viewDir`). Exten
 
 Exemple de demo : `/db` (DbDemoController) utilise SQLite, un service et un repository pour un CRUD simple sur `demo_items`.
 
-## Démarrage
+### Assets / favicon
+- Favicon: `src/public/logo.png`
+- Footer badges: `src/public/php-power-micro.png` et images dans `src/public/footer/`
 
-Démarrer le serveur de développement :
+### Uploads et statiques
+- `DB_PATH` et `UPLOADS_PATH` peuvent être définis via l'env.
+- Les uploads sont servis statiquement via `/uploads` (voir `Application::bootstrap()` et `Engine::registerStaticDir`).
 
-```bash
-build serve
-```
-
-Par défaut, le serveur écoute sur `127.0.0.1:8000`. Pour changer le port :
-
-```bash
-build serve 8080
-```
-
-Pour changer l'hôte et le port :
-
-```bash
-build serve 0.0.0.0 8080
-```
+### UI
+- Composants Tailwind (boutons, inputs, select) disponibles dans `src/Components.php`.
 
 ## Inspirations
 
 - https://gregwar.com/php/components.html
+- https://symfony.com/ (Cocorico)
 
 ## Liens utiles
 

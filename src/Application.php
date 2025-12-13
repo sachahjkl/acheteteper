@@ -35,16 +35,19 @@ class Application
     {
         $dbFromEnv = getenv('DB_PATH');
         $uploadsFromEnv = getenv('UPLOADS_PATH');
+
         if ($dbFromEnv) {
             $dbPath = $dbFromEnv;
         } else {
             $dbPath = __DIR__ . '/../data/database.db';
         }
+
         if ($uploadsFromEnv) {
             $uploadsPath = $uploadsFromEnv;
         } else {
             $uploadsPath = __DIR__ . '/../data/uploads';
         }
+
         $debug = getenv('DEBUG');
         if ($debug === 'true') {
             $debug = true;
@@ -52,10 +55,18 @@ class Application
             $debug = false;
         }
 
+        $viewDir = getenv('VIEW_DIR');
+        if ($viewDir) {
+            $viewDir = $viewDir;
+        } else {
+            $viewDir = __DIR__ . '/views';
+        }
+
         return [
             'dbPath' => $dbPath,
             'uploadsPath' => $uploadsPath,
-            'debug' => $debug
+            'debug' => $debug,
+            'viewDir' => $viewDir
         ];
     }
 
@@ -73,7 +84,7 @@ class Application
         self::ensureUploadsDir($config['uploadsPath']);
 
         $configBuilder = new ConfigBuilder();
-        $configBuilder->setViewDir(__DIR__ . '/Views');
+        $configBuilder->setViewDir($config['viewDir']);
         $configBuilder->setDbPath($config['dbPath']);
         $configBuilder->setUserConfig('uploadsPath', $config['uploadsPath']);
 

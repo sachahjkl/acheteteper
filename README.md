@@ -37,7 +37,7 @@ use Repositories\DbDemoRepository;
 
 $configBuilder = new ConfigBuilder();
 $configBuilder->setViewDir(__DIR__ . '/../views');
-$configBuilder->setDbPath(__DIR__ . '/../database.sqlite');
+$configBuilder->setDbPath(__DIR__ . '/../database.db');
 $config = $configBuilder->build();
 
 $engine = new Engine($config);

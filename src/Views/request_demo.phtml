@@ -12,7 +12,7 @@ $cellClass = 'px-4 py-3 border-b border-zinc-200 font-mono';
 
 <section class="space-y-3 mb-6">
     <h2 class="text-xl font-semibold text-zinc-900">Request Information</h2>
-    <div class="overflow-hidden rounded-sm border border-zinc-200 shadow-sm">
+    <div class="table-container rounded-sm border border-zinc-200 shadow-sm">
         <table class="<?= $tableClass ?>">
             <tbody class="divide-y divide-zinc-200">
                 <tr>
@@ -65,7 +65,7 @@ $cellClass = 'px-4 py-3 border-b border-zinc-200 font-mono';
     <?php if (empty($getParams)): ?>
         <p class="text-sm text-zinc-700">No GET parameters. Add some: <a class="text-blue-700 font-semibold hover:underline" href="?foo=bar&test=123">?foo=bar&test=123</a></p>
     <?php else: ?>
-        <div class="overflow-hidden rounded-sm border border-zinc-200 shadow-sm">
+        <div class="table-container rounded-sm border border-zinc-200 shadow-sm">
             <table class="<?= $tableClass ?>">
                 <thead class="<?= $theadClass ?>">
                     <tr>
@@ -91,7 +91,7 @@ $cellClass = 'px-4 py-3 border-b border-zinc-200 font-mono';
     <?php if (empty($postParams)): ?>
         <p class="text-sm text-zinc-700">No POST parameters. Submit the form below to test POST.</p>
     <?php else: ?>
-        <div class="overflow-hidden rounded-sm border border-zinc-200 shadow-sm">
+        <div class="table-container rounded-sm border border-zinc-200 shadow-sm">
             <table class="<?= $tableClass ?>">
                 <thead class="<?= $theadClass ?>">
                     <tr>

@@ -15,13 +15,15 @@ use Controllers\{
     HelpersDemoController,
     RoutingDemoController,
     ErrorsDemoController,
-    DBDemoController
+    DBDemoController,
+    ConfigController
 };
 
 use Acheteteper\ConfigBuilder;
 use Acheteteper\Engine;
 use Repositories\DbDemoRepository;
 use Services\DbDemoService;
+use Utils\Utils;
 
 class Application
 {
@@ -77,11 +79,10 @@ class Application
         $configBuilder->setDbPath($config['dbPath']);
         $configBuilder->setUserConfig('uploadsPath', $config['uploadsPath']);
 
-        if ($config['debug']) {
-            $configBuilder->enableDebug();
-        } else {
-            $configBuilder->disableDebug();
-        }
+        $configDebug = $config['debug'];
+        $configBuilder->setDebugResolver(function () use ($configDebug): bool {
+            return Utils::debugFromSession() ?? $configDebug;
+        });
 
         $config = $configBuilder->build();
 
@@ -104,6 +105,7 @@ class Application
         $engine->registerController('/routing', RoutingDemoController::class);
         $engine->registerController('/errors', ErrorsDemoController::class);
         $engine->registerController('/db', DBDemoController::class);
+        $engine->registerController('/config', ConfigController::class);
 
         $engine->registerStaticDir('/uploads', $config->getUserConfig('uploadsPath'));
 

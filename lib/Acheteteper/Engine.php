@@ -89,9 +89,7 @@ class Engine
      */
     public function run()
     {
-        $this->checkDebugSession();
-
-        if ($this->config->debug) {
+        if ($this->config->debug()) {
             $this->timings->startMeasurement('engine');
         }
 
@@ -123,13 +121,13 @@ class Engine
 
         try {
 
-            if ($this->config->debug) {
+            if ($this->config->debug()) {
                 $this->timings->startMeasurement('action');
             }
 
             $controller->$action();
 
-            if ($this->config->debug) {
+            if ($this->config->debug()) {
                 $this->timings->stopMeasurement('action');
             }
         } catch (HttpException $e) {
@@ -142,7 +140,7 @@ class Engine
             return;
         }
 
-        if ($this->config->debug) {
+        if ($this->config->debug()) {
             $this->timings->stopMeasurement('engine');
         }
         $this->timings->setRequestMeta($this->request->method(), $this->request->path());
@@ -151,7 +149,7 @@ class Engine
 
     private function printTimings(): void
     {
-        if ($this->config->debug) {
+        if ($this->config->debug()) {
             $timingsHtml = $this->timings->toHtml();
             echo $timingsHtml;
         }
@@ -160,10 +158,10 @@ class Engine
     private function printError(int $status, string $message, \Throwable $e): void
     {
         echo "{$status} {$message}";
-        if ($this->config->debug) {
+        if ($this->config->debug()) {
             echo "<br>";
             echo "<br>";
-            echo "Debug mode: <b>" . ($this->config->debug ? "enabled" : "disabled") . "</b>";
+            echo "Debug mode: <b>" . ($this->config->debug() ? "enabled" : "disabled") . "</b>";
             echo "<br>";
             echo "<br>";
             echo "<b>Message:</b> <code style='background-color: #f0f0f0; padding: 5px; border-radius: 5px;'>" . $e->getMessage() . "</code>";
@@ -519,13 +517,5 @@ class Engine
         }
         header('Content-Length: ' . filesize($path));
         readfile($path);
-    }
-
-    private function checkDebugSession(): void
-    {
-        $debug = Session::get('DEBUG', "none");
-        if ($debug !== "none") {
-            $this->config->debug = $debug === "true";
-        }
     }
 }

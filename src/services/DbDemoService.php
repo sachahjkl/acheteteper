@@ -9,7 +9,7 @@ class DbDemoService extends ServiceBase
 {
     public function dbPath(): string
     {
-        return $this->config->dbPath;
+        return $this->config->dbPath();
     }
 
     public function listItems(): array

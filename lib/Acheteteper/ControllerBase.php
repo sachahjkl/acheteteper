@@ -58,11 +58,11 @@ class ControllerBase
      */
     public function render(string $view, array $data = [])
     {
-        if ($this->config->debug) {
+        if ($this->config->debug()) {
             $this->timings->startMeasurement('render');
         }
 
-        $viewBasename = $this->config->viewDir . DIRECTORY_SEPARATOR . $view;
+        $viewBasename = $this->config->viewDir() . DIRECTORY_SEPARATOR . $view;
         $viewFile = null;
         foreach (Config::$viewExtensions as $extension) {
             $viewPath = $viewBasename . '.' . $extension;
@@ -79,10 +79,10 @@ class ControllerBase
         extract($data);
 
         ViewUtils::setContext($this->request, $this->response, $this->config);
-        $layoutFile = $this->config->viewDir . DIRECTORY_SEPARATOR . '_layout.phtml';
+        $layoutFile = $this->config->viewDir() . DIRECTORY_SEPARATOR . '_layout.phtml';
 
         if ($this->layout) {
-            $layoutFile = $this->config->viewDir . DIRECTORY_SEPARATOR . $this->layout . '.phtml';
+            $layoutFile = $this->config->viewDir() . DIRECTORY_SEPARATOR . $this->layout . '.phtml';
         }
 
         try {
@@ -97,7 +97,7 @@ class ControllerBase
         } finally {
             ViewUtils::clearContext();
 
-            if ($this->config->debug) {
+            if ($this->config->debug()) {
                 $this->timings->stopMeasurement('render');
             }
         }

@@ -11,7 +11,7 @@ class SqliteDataSource implements DataSourceInterface
 
     public function __construct(private Config $config)
     {
-        $path = $this->config->dbPath ?? 'database.sqlite';
+        $path = $this->config->dbPath() ?? 'database.db';
         $this->pdo = new PDO('sqlite:' . $path);
         $this->pdo->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
         $this->pdo->setAttribute(PDO::ATTR_DEFAULT_FETCH_MODE, PDO::FETCH_ASSOC);

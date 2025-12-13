@@ -3,6 +3,7 @@
 namespace Acheteteper;
 
 use Acheteteper\Utils\PathUtils;
+use Closure;
 
 /**
  * Builder for creating Config instances.
@@ -11,11 +12,14 @@ use Acheteteper\Utils\PathUtils;
  */
 class ConfigBuilder
 {
-    private Config $config;
+    private ?Closure $debugResolver = null;
+    private string $viewDir = "views";
+    private string $dbPath = "database.db";
+    private array $userConfigs = [];
 
     public function __construct()
     {
-        $this->config = new Config();
+        $this->debugResolver = fn() => false;
     }
 
     /**
@@ -26,7 +30,7 @@ class ConfigBuilder
      */
     public function setViewDir(string $viewDir)
     {
-        $this->config->viewDir = PathUtils::realpath($viewDir);
+        $this->viewDir = PathUtils::realpath($viewDir);
         return $this;
     }
 
@@ -38,42 +42,25 @@ class ConfigBuilder
      */
     public function setDbPath(string $dbPath)
     {
-        $this->config->dbPath = $dbPath;
-        return $this;
-    }
-
-    public function enableDebug()
-    {
-        $this->config->debug = true;
+        $this->dbPath = $dbPath;
         return $this;
     }
 
     public function disableDebug()
     {
-        $this->config->debug = false;
+        $this->debugResolver = fn() => false;
         return $this;
     }
 
-    public function setUserConfig(string $key, mixed $value)
+    public function setUserConfig(string $key, mixed $value): self
     {
-        $this->config->setUserConfig($key, $value);
+        $this->userConfigs[$key] = $value;
         return $this;
     }
 
-    public function getUserConfig(string $key)
+    public function setDebugResolver(Closure $debugResolver): self
     {
-        return $this->config->getUserConfig($key);
-    }
-
-    public function clearUserConfig($key)
-    {
-        $this->config->clearUserConfig($key);
-        return $this;
-    }
-
-    public function clearUserConfigs()
-    {
-        $this->config->clearUserConfigs();
+        $this->debugResolver = $debugResolver;
         return $this;
     }
 
@@ -84,6 +71,6 @@ class ConfigBuilder
      */
     public function build()
     {
-        return $this->config;
+        return new Config($this->viewDir, $this->dbPath,  $this->userConfigs, $this->debugResolver);
     }
 }

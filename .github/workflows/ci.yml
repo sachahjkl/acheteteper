@@ -1,0 +1,43 @@
+name: CI
+
+on:
+  push:
+    branches: ["**"]
+    tags: ["**"]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  packages: write
+
+concurrency:
+  group: image-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  image:
+    runs-on: [self-hosted, nixos]
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          persist-credentials: false
+      - name: Select image tag
+        run: |
+          image="ghcr.io/${GITHUB_REPOSITORY,,}"
+          if [[ "$GITHUB_REF_TYPE" == "branch" && "$GITHUB_REF_NAME" == "${{ github.event.repository.default_branch }}" ]]; then
+            tag=latest
+          else
+            tag="$(printf '%s' "$GITHUB_REF_NAME" | tr '[:upper:]' '[:lower:]' | sed -E 's/[^a-z0-9]+/-/g; s/^-+//; s/-+$//' | cut -c1-63)"
+          fi
+          printf 'IMAGE=%s\nTAG=%s\n' "$image" "$tag" >> "$GITHUB_ENV"
+      - name: Build and push image
+        env:
+          GHCR_TOKEN: ${{ github.token }}
+        run: |
+          umask 077
+          authfile="$RUNNER_TEMP/podman-auth-${GITHUB_RUN_ID}-${GITHUB_RUN_ATTEMPT}.json"
+          trap 'rm -f "$authfile"' EXIT
+          printf '%s' "$GHCR_TOKEN" | nix --extra-experimental-features "nix-command flakes" shell nixpkgs#podman --command podman login --authfile "$authfile" ghcr.io --username "$GITHUB_ACTOR" --password-stdin
+          nix --extra-experimental-features "nix-command flakes" shell nixpkgs#podman --command podman pull --authfile "$authfile" "$IMAGE:latest" || true
+          nix --extra-experimental-features "nix-command flakes" shell nixpkgs#podman --command podman build --authfile "$authfile" --pull=always --tag "$IMAGE:$TAG" .
+          nix --extra-experimental-features "nix-command flakes" shell nixpkgs#podman --command podman push --authfile "$authfile" "$IMAGE:$TAG"

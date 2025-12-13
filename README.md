@@ -1,9 +1,9 @@
 # Framework PHP minimal (Acheteteper)
 
 ## Démarrage
-### Docker (recommandé)
+### Podman rootless
 ```bash
-docker compose up --build
+podman compose up --build
 ```
 - Accès: http://localhost:8000
 - Persistance: `./data` monté sur `/data`, `./data/uploads` monté sur `/tmp/uploads`

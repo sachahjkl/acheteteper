@@ -28,7 +28,7 @@ Créer un fichier `index.php` dans le répertoire public :
 <?php
 require '../../vendor/autoload.php';
 
-use Controllers\IndexController;
+use controllers\IndexController;
 use Acheteteper\ConfigBuilder;
 use Acheteteper\Engine;
 use Acheteteper\SqliteDataSource;

@@ -1,6 +1,6 @@
 <?php
 
-use Controllers\{
+use controllers\{
     IndexController,
     RequestDemoController,
     ResponseDemoController,

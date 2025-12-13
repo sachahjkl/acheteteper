@@ -12,9 +12,9 @@ $title = 'File Upload Demo';
         <div>File uploaded successfully.</div>
     </div>
 
-    <div class="mb-6 table-container rounded-sm border border-zinc-200 shadow-sm">
+    <div class="mb-6 scroll-container rounded-sm border border-zinc-200 shadow-sm">
         <div class="bg-zinc-50 px-4 py-3 text-sm font-semibold text-zinc-800">Uploaded File Information</div>
-        <div class="table-container">
+        <div class="scroll-container">
             <table class="min-w-full text-sm font-mono">
                 <tbody class="divide-y divide-zinc-200">
                     <tr>
@@ -69,7 +69,7 @@ $title = 'File Upload Demo';
     </form>
 </div>
 
-<div class="flex items-center justify-between text-sm text-zinc-700">
+<div class="flex items-center flex-wrap gap-2 text-sm text-zinc-700">
     <p>Uploaded files are stored in <code class="rounded bg-zinc-100 px-1.5 py-0.5 text-xs text-zinc-800 border border-zinc-200"><?= v::e(v::config()->getUserConfig('uploadsPath')) ?></code>.</p>
     <a class="text-blue-700 font-semibold hover:underline" href="/uploads" hx-boost="false">View uploaded files</a>
 </div>

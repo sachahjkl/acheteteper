@@ -7,10 +7,10 @@ class Components
     private static function buttonBaseClasses(string $color): string
     {
         $colorStyles = [
-            'blue' => 'h-9 bg-blue-600 shadow-[0_-1px_0_1px_#1e3a8a_inset,0_0_0_1px_#1d4ed8_inset,0_0.5px_0_1.5px_#60a5fa_inset] hover:bg-blue-700 active:bg-blue-800',
-            'green' => 'h-9 bg-green-600 shadow-[0_-1px_0_1px_#166534_inset,0_0_0_1px_#15803d_inset,0_0.5px_0_1.5px_#4ade80_inset] hover:bg-green-700 active:bg-green-800',
-            'red' => 'h-9 bg-red-600 shadow-[0_-1px_0_1px_#991b1b_inset,0_0_0_1px_#dc2626_inset,0_0.5px_0_1.5px_#f87171_inset] hover:bg-red-700 active:bg-red-800',
-            'gray' => 'h-9 bg-zinc-600 shadow-[0_-1px_0_1px_#3f3f46_inset,0_0_0_1px_#52525b_inset,0_0.5px_0_1.5px_#a1a1aa_inset] hover:bg-zinc-700 active:bg-zinc-800',
+            'blue' => 'bg-blue-600 shadow-[0_-1px_0_1px_#1e3a8a_inset,0_0_0_1px_#1d4ed8_inset,0_0.5px_0_1.5px_#60a5fa_inset] hover:bg-blue-700 active:bg-blue-800',
+            'green' => 'bg-green-600 shadow-[0_-1px_0_1px_#166534_inset,0_0_0_1px_#15803d_inset,0_0.5px_0_1.5px_#4ade80_inset] hover:bg-green-700 active:bg-green-800',
+            'red' => 'bg-red-600 shadow-[0_-1px_0_1px_#991b1b_inset,0_0_0_1px_#dc2626_inset,0_0.5px_0_1.5px_#f87171_inset] hover:bg-red-700 active:bg-red-800',
+            'gray' => 'bg-zinc-600 shadow-[0_-1px_0_1px_#3f3f46_inset,0_0_0_1px_#52525b_inset,0_0.5px_0_1.5px_#a1a1aa_inset] hover:bg-zinc-700 active:bg-zinc-800',
         ];
         $base = 'inline-flex items-center justify-center select-none px-3 text-sm font-semibold leading-9 text-zinc-50 rounded-sm transition-colors duration-150 cursor-pointer';
         $style = $colorStyles[$color] ?? $colorStyles['blue'];

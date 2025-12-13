@@ -8,7 +8,11 @@ $title = 'CSRF Demo';
 
 <section class="space-y-2 mb-4">
     <h2 class="text-xl font-semibold text-zinc-900">CSRF Token</h2>
-    <p class="text-sm text-zinc-700">Current CSRF Token: <code class="rounded bg-zinc-100 px-1.5 py-0.5 text-xs text-zinc-800 border border-zinc-200"><?= isset($token) ? v::e($token) : 'None' ?></code></p>
+    <p class="text-sm text-zinc-700">Current CSRF Token:
+        <code class="rounded bg-zinc-100 px-1.5 py-0.5 text-xs text-zinc-800 border border-zinc-200 font-mono break-all">
+            <?= isset($token) ? v::e($token) : 'None' ?>
+        </code>
+    </p>
 </section>
 
 <?php if (isset($success) && $success): ?>

@@ -5,7 +5,7 @@ use Acheteteper\Utils\ViewUtils as v;
 $title = 'View Helpers Demo';
 ?>
 
-<section class="grid gap-4 md:grid-cols-2">
+<section class="grid gap-4 md:grid-cols-2 scroll-container">
     <div class="rounded-sm border border-zinc-200 bg-zinc-50 p-4 shadow-sm space-y-2">
         <h2 class="text-lg font-semibold text-zinc-900">e() - HTML Escape</h2>
         <p class="text-sm text-zinc-700">Input: <code class="rounded bg-zinc-100 px-1.5 py-0.5 text-xs text-zinc-800 border border-zinc-200"><?= v::e($htmlString) ?></code></p>

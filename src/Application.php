@@ -19,9 +19,9 @@ use controllers\{
 
 use Acheteteper\ConfigBuilder;
 use Acheteteper\Engine;
-use Repositories\DbDemoRepository;
-use Services\DbDemoService;
-use Utils\Utils;
+use repositories\DbDemoRepository;
+use services\DbDemoService;
+use utils\Utils;
 
 class Application
 {

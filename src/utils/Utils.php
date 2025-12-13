@@ -1,6 +1,6 @@
 <?php
 
-namespace Utils;
+namespace utils;
 
 use Acheteteper\Session;
 

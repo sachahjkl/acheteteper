@@ -1,6 +1,6 @@
 <?php
 
-namespace Services;
+namespace services;
 
 use Acheteteper\ServiceBase;
 use Repositories\DbDemoRepository;

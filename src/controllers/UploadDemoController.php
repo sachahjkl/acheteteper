@@ -1,6 +1,6 @@
 <?php
 
-namespace Controllers;
+namespace controllers;
 
 use Acheteteper\ControllerBase;
 use Acheteteper\FileUpload;

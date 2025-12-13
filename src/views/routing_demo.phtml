@@ -1,0 +1,70 @@
+<?php
+
+use Acheteteper\Utils\ViewUtils as v;
+use Components as c;
+
+$title = 'Routing Demo';
+$tableClass = 'min-w-full text-sm text-left text-zinc-800 font-mono';
+$cellClass = 'px-4 py-3 border-b border-zinc-200';
+?>
+
+<section class="space-y-3 mb-6">
+    <h2 class="text-xl font-semibold text-zinc-900">Current Route Information</h2>
+    <div class="table-container rounded-sm border border-zinc-200 shadow-sm">
+        <table class="<?= $tableClass ?>">
+            <tbody class="divide-y divide-zinc-200">
+                <tr>
+                    <th class="w-1/3 bg-zinc-50 <?= $cellClass ?> font-semibold text-zinc-800">Action</th>
+                    <td class="<?= $cellClass ?>"><?= v::e($action) ?></td>
+                </tr>
+                <tr>
+                    <th class="bg-zinc-50 <?= $cellClass ?> font-semibold text-zinc-800">Method</th>
+                    <td class="<?= $cellClass ?>"><?= v::e($method) ?></td>
+                </tr>
+                <tr>
+                    <th class="bg-zinc-50 <?= $cellClass ?> font-semibold text-zinc-800">Path</th>
+                    <td class="<?= $cellClass ?>"><?= v::e($path) ?></td>
+                </tr>
+                <?php if (isset($id)): ?>
+                    <tr>
+                        <th class="bg-zinc-50 <?= $cellClass ?> font-semibold text-zinc-800">ID Parameter</th>
+                        <td class="<?= $cellClass ?>"><?= v::e($id) ?></td>
+                    </tr>
+                <?php endif; ?>
+                <?php if (isset($message)): ?>
+                    <tr>
+                        <th class="bg-zinc-50 <?= $cellClass ?> font-semibold text-zinc-800">Message</th>
+                        <td class="<?= $cellClass ?>"><?= v::e($message) ?></td>
+                    </tr>
+                <?php endif; ?>
+            </tbody>
+        </table>
+    </div>
+</section>
+
+<section class="space-y-3">
+    <h2 class="text-xl font-semibold text-zinc-900">Available Routes</h2>
+    <div class="grid gap-3 md:grid-cols-2">
+        <div class="rounded-sm border border-zinc-200 bg-zinc-50 p-4 shadow-sm space-y-2">
+            <div><strong>/routing</strong> → <code>index()</code></div>
+            <?= c::LinkButton('Visit', '/routing') ?>
+        </div>
+        <div class="rounded-sm border border-zinc-200 bg-zinc-50 p-4 shadow-sm space-y-2">
+            <div><strong>/routing/show</strong> → <code>show()</code></div>
+            <div class="flex gap-2">
+                <?= c::LinkButton('Visit', '/routing/show') ?>
+                <?= c::LinkButton('With ID', '/routing/show?id=123', 'green') ?>
+            </div>
+        </div>
+        <div class="rounded-sm border border-zinc-200 bg-zinc-50 p-4 shadow-sm space-y-2">
+            <div><strong>/routing/edit</strong> → <code>edit()</code></div>
+            <?= c::LinkButton('Visit', '/routing/edit') ?>
+        </div>
+        <div class="rounded-sm border border-zinc-200 bg-zinc-50 p-4 shadow-sm space-y-2">
+            <div><strong>/routing/delete</strong> → <code>delete()</code> (POST required)</div>
+            <form method="POST" action="/routing/delete" class="inline">
+                <?= c::Button('Submit POST', 'red', ['type' => 'submit']) ?>
+            </form>
+        </div>
+    </div>
+</section>

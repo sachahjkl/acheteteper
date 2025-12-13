@@ -1,9 +1,9 @@
 <?php
 
-namespace Controllers;
+namespace controllers;
 
 use Acheteteper\ControllerBase;
-use Services\DbDemoService;
+use services\DbDemoService;
 
 class DBDemoController extends ControllerBase
 {

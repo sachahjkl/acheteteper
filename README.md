@@ -57,7 +57,7 @@ Les contrôleurs étendent `ControllerBase` :
 ```php
 <?php
 
-namespace Controllers;
+namespace controllers;
 
 use Acheteteper\ControllerBase;
 

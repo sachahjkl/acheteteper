@@ -1,7 +1,5 @@
 <?php
 
-// namespace Application;
-
 use Controllers\{
     IndexController,
     RequestDemoController,

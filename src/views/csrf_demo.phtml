@@ -1,0 +1,42 @@
+<?php
+
+use Acheteteper\Utils\ViewUtils as v;
+use Components as c;
+
+$title = 'CSRF Demo';
+?>
+
+<section class="space-y-2 mb-4">
+    <h2 class="text-xl font-semibold text-zinc-900">CSRF Token</h2>
+    <p class="text-sm text-zinc-700">Current CSRF Token: <code class="rounded bg-zinc-100 px-1.5 py-0.5 text-xs text-zinc-800 border border-zinc-200"><?= isset($token) ? v::e($token) : 'None' ?></code></p>
+</section>
+
+<?php if (isset($success) && $success): ?>
+    <div class="mb-3 rounded-sm border border-green-200 bg-green-50 px-4 py-3 text-sm text-green-900 shadow-sm">
+        <strong class="font-semibold">Success!</strong> <?= v::e($message) ?>
+    </div>
+<?php endif; ?>
+
+<?php if (isset($error) && $error): ?>
+    <div class="mb-3 rounded-sm border border-red-200 bg-red-50 px-4 py-3 text-sm text-red-900 shadow-sm">
+        <strong class="font-semibold">Error!</strong> <?= v::e($message) ?>
+    </div>
+<?php endif; ?>
+
+<section class="space-y-3 mb-6">
+    <h2 class="text-lg font-semibold text-zinc-900">Form with CSRF Protection</h2>
+    <form method="POST" action="/csrf/submit" class="space-y-3 rounded-sm border border-zinc-200 bg-zinc-50 p-4 shadow-sm">
+        <?= v::csrfField() ?>
+        <?= c::FormInput('data', 'Data', 'Test data', ['placeholder' => 'Enter some data']) ?>
+        <?= c::Button('Submit (with CSRF token)', 'blue', ['type' => 'submit']) ?>
+    </form>
+</section>
+
+<section class="space-y-3">
+    <h2 class="text-lg font-semibold text-zinc-900">Form without CSRF Protection</h2>
+    <p class="text-sm text-zinc-700">This form will fail validation:</p>
+    <form method="POST" action="/csrf/submit" class="space-y-3 rounded-sm border border-zinc-200 bg-zinc-50 p-4 shadow-sm">
+        <?= c::FormInput('data', 'Data', 'Test data', ['placeholder' => 'Enter some data']) ?>
+        <?= c::Button('Submit (without token)', 'red', ['type' => 'submit']) ?>
+    </form>
+</section>

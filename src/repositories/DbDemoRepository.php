@@ -1,6 +1,6 @@
 <?php
 
-namespace Repositories;
+namespace repositories;
 
 use Acheteteper\RepositoryBase;
 

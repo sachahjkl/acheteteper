@@ -1,0 +1,25 @@
+<?php
+
+use Acheteteper\Utils\ViewUtils as v;
+use Components as c;
+
+$title = 'Config Demo';
+
+$debug = v::config()->debug();
+
+$newDebugValue = $debug ? 'false' : 'true';
+$debugLabel = $debug ? 'Disable Debug Mode' : 'Enable Debug Mode';
+$debugBtnColor = $debug ? 'red' : 'green';
+?>
+
+<section class="space-y-3">
+    <h2 class="text-xl font-semibold text-zinc-900">Debug Mode</h2>
+    <p class="text-sm text-zinc-700">Toggle debug mode on or off. Debug mode is currently <span class="font-semibold"><?= $debug ? 'enabled' : 'disabled' ?></span>.</p>
+    <form method="POST" class="space-y-3 rounded-sm border border-zinc-200 bg-zinc-50 p-4 shadow-sm">
+        <div class="grid gap-3 md:grid-cols-2 hidden">
+            <?= c::FormInput('key', 'Key', 'DEBUG', ['placeholder' => 'Key', "type" => "hidden", 'required' => 'required']) ?>
+            <?= c::FormInput('value', 'Value', $newDebugValue, ['placeholder' => 'Value', "type" => "hidden", 'required' => 'required']) ?>
+        </div>
+        <?= c::Button($debugLabel, $debugBtnColor, ['type' => 'submit']) ?>
+    </form>
+</section>

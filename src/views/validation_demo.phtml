@@ -1,0 +1,56 @@
+<?php
+
+use Acheteteper\Utils\ViewUtils as v;
+use Components as c;
+
+$title = 'Validation Demo';
+?>
+
+<?php if (isset($success) && $success): ?>
+    <div class="mb-4 rounded-sm border border-green-200 bg-green-50 px-4 py-3 text-sm text-green-900 shadow-sm">
+        <div class="font-semibold mb-1">Success!</div>
+        <div><?= v::e($message) ?></div>
+    </div>
+<?php endif; ?>
+
+<div class="space-y-3 mb-6">
+    <h2 class="text-xl font-semibold text-zinc-900">Registration Form</h2>
+    <form method="POST" action="/validation/submit" class="space-y-4 rounded-sm border border-zinc-200 bg-zinc-50 p-4 shadow-sm">
+        <div class="grid gap-3 md:grid-cols-2">
+            <div class="space-y-1">
+                <?= c::FormInput('name', 'Name *', $values['name'] ?? '', ['required' => 'required']) ?>
+                <?php if (isset($errors['name'])): ?>
+                    <div class="text-xs text-red-700"><?= v::e($errors['name']) ?></div>
+                <?php endif; ?>
+            </div>
+            <div class="space-y-1">
+                <?= c::FormInput('email', 'Email *', $values['email'] ?? '', ['type' => 'email', 'required' => 'required']) ?>
+                <?php if (isset($errors['email'])): ?>
+                    <div class="text-xs text-red-700"><?= v::e($errors['email']) ?></div>
+                <?php endif; ?>
+            </div>
+            <div class="space-y-1">
+                <?= c::FormInput('phone', 'Phone *', $values['phone'] ?? '', ['placeholder' => '+1-555-123-4567', 'required' => 'required']) ?>
+                <?php if (isset($errors['phone'])): ?>
+                    <div class="text-xs text-red-700"><?= v::e($errors['phone']) ?></div>
+                <?php endif; ?>
+            </div>
+            <div class="space-y-1">
+                <?= c::FormInput('password', 'Password * (min 8 characters)', '', ['type' => 'password', 'required' => 'required']) ?>
+                <?php if (isset($errors['password'])): ?>
+                    <div class="text-xs text-red-700"><?= v::e($errors['password']) ?></div>
+                <?php endif; ?>
+            </div>
+            <div class="space-y-1">
+                <?= c::FormInput('password_confirm', 'Confirm Password *', '', ['type' => 'password', 'required' => 'required']) ?>
+                <?php if (isset($errors['password_confirm'])): ?>
+                    <div class="text-xs text-red-700"><?= v::e($errors['password_confirm']) ?></div>
+                <?php endif; ?>
+            </div>
+        </div>
+
+        <div>
+            <?= c::Button('Register', 'blue', ['type' => 'submit']) ?>
+        </div>
+    </form>
+</div>

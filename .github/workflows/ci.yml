@@ -37,7 +37,7 @@ jobs:
           umask 077
           authfile="$RUNNER_TEMP/podman-auth-${GITHUB_RUN_ID}-${GITHUB_RUN_ATTEMPT}.json"
           trap 'rm -f "$authfile"' EXIT
-          printf '%s' "$GHCR_TOKEN" | nix --extra-experimental-features "nix-command flakes" shell nixpkgs#podman --command podman login --authfile "$authfile" ghcr.io --username "$GITHUB_ACTOR" --password-stdin
-          nix --extra-experimental-features "nix-command flakes" shell nixpkgs#podman --command podman pull --authfile "$authfile" "$IMAGE:latest" || true
-          nix --extra-experimental-features "nix-command flakes" shell nixpkgs#podman --command podman build --authfile "$authfile" --pull=always --tag "$IMAGE:$TAG" .
-          nix --extra-experimental-features "nix-command flakes" shell nixpkgs#podman --command podman push --authfile "$authfile" "$IMAGE:$TAG"
+          printf '%s' "$GHCR_TOKEN" | podman login --authfile "$authfile" ghcr.io --username "$GITHUB_ACTOR" --password-stdin
+          podman pull --authfile "$authfile" "$IMAGE:latest" || true
+          podman build --authfile "$authfile" --pull=always --tag "$IMAGE:$TAG" .
+          podman push --authfile "$authfile" "$IMAGE:$TAG"

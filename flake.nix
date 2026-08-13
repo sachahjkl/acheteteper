@@ -121,6 +121,17 @@
                 exec nginx -c ${nginxConfig}
             '';
           };
+          serve = pkgs.writeShellApplication {
+            name = "acheteteper-serve";
+            runtimeInputs = [ php ];
+            text = ''
+              : "''${DB_PATH:=''${XDG_DATA_HOME:-$HOME/.local/share}/acheteteper/database.db}"
+              : "''${UPLOADS_PATH:=''${XDG_DATA_HOME:-$HOME/.local/share}/acheteteper/uploads}"
+              export DB_PATH UPLOADS_PATH
+              mkdir -p "$(dirname "$DB_PATH")" "$UPLOADS_PATH"
+              exec php -S 127.0.0.1:8000 -t ${app}/share/acheteteper/src/public ${app}/share/acheteteper/src/public/index.php
+            '';
+          };
           tests =
             pkgs.runCommand "acheteteper-tests"
               {
@@ -169,7 +180,7 @@
 
           apps.default = {
             type = "app";
-            program = "${start}/bin/acheteteper";
+            program = "${serve}/bin/acheteteper-serve";
           };
 
           checks = {

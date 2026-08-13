@@ -68,6 +68,18 @@ request 200 "http://127.0.0.1:$port/api/users"
 grep -q 'application/json' "$tmp/headers"
 grep -q 'John Doe' "$tmp/body"
 
+request 200 "http://127.0.0.1:$port/realtime/search?q=web"
+grep -q 'WebSocket' "$tmp/body"
+if grep -q 'Server-Sent Events' "$tmp/body"; then
+  printf 'Live search returned an unrelated result\n' >&2
+  exit 1
+fi
+
+request 200 --max-time 5 "http://127.0.0.1:$port/realtime/events"
+grep -qi '^Content-Type: text/event-stream' "$tmp/headers"
+grep -q 'event: tick' "$tmp/body"
+grep -q 'id: 5' "$tmp/body"
+
 request 404 "http://127.0.0.1:$port/routing/show/extra"
 request 404 "http://127.0.0.1:$port/uploads"
 request 404 --path-as-is "http://127.0.0.1:$port/uploads/../config/app.php"

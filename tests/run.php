@@ -11,6 +11,7 @@ use Acheteteper\Request;
 use Acheteteper\Response;
 use Acheteteper\Session;
 use Acheteteper\SqliteDataSource;
+use Acheteteper\ServerSentEvents;
 use Tests\Fuzz;
 
 $tests = [];
@@ -115,6 +116,20 @@ test('response stores normalized headers and JSON', function (): void {
     assertSame('second', $response->getHeader('X-Test'));
     assertSame(['x-test' => 'second', 'Content-Type' => 'application/json; charset=utf-8'], $response->getHeaders());
     assertSame('{"ok":true}', $response->getBody());
+});
+
+test('response configures an SSE stream', function (): void {
+    $response = (new Response())->eventStream(function (): void {});
+    assertTrue($response->isStreamed());
+    assertSame('text/event-stream', $response->getHeader('Content-Type'));
+    assertSame('no', $response->getHeader('X-Accel-Buffering'));
+});
+
+test('SSE encodes event fields and multiline data', function (): void {
+    ob_start();
+    ServerSentEvents::send("first\nsecond", "tick\nignored", "1\nignored");
+    $event = ob_get_clean();
+    assertSame("id: 1ignored\nevent: tickignored\ndata: first\ndata: second\n\n", $event);
 });
 
 test('CSRF accepts one session token and rejects another', function (): void {

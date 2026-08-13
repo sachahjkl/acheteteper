@@ -1,0 +1,58 @@
+<div class="space-y-8">
+    <section class="space-y-3">
+        <h2 class="text-xl font-semibold">Recherche en direct</h2>
+        <input
+            name="q"
+            type="search"
+            placeholder="Rechercher dans le framework..."
+            class="w-full border border-zinc-300 px-3 py-2"
+            hx-get="/realtime/search"
+            hx-trigger="input changed delay:150ms, search"
+            hx-target="#search-results"
+            hx-push-url="false"
+        >
+        <div id="search-results">
+            <?php require __DIR__ . '/realtime_search_results.phtml'; ?>
+        </div>
+    </section>
+
+    <div class="grid gap-6 lg:grid-cols-2">
+        <section class="space-y-3 border border-zinc-200 p-4">
+            <h2 class="text-xl font-semibold">Server-Sent Events</h2>
+            <p class="text-sm text-zinc-600">Le serveur émet cinq événements sur une connexion HTTP.</p>
+            <button id="sse-start" class="border border-emerald-700 bg-emerald-600 px-3 py-2 text-white">Démarrer SSE</button>
+            <pre id="sse-log" class="min-h-32 overflow-auto bg-zinc-950 p-3 text-emerald-300"></pre>
+        </section>
+
+        <section class="space-y-3 border border-zinc-200 p-4">
+            <h2 class="text-xl font-semibold">WebSocket</h2>
+            <p class="text-sm text-zinc-600">Le serveur renvoie chaque message avec un horodatage.</p>
+            <div class="flex gap-2">
+                <input id="ws-message" value="Bonjour WebSocket" class="min-w-0 flex-1 border border-zinc-300 px-3 py-2">
+                <button id="ws-send" class="border border-blue-700 bg-blue-600 px-3 py-2 text-white">Envoyer</button>
+            </div>
+            <pre id="ws-log" class="min-h-32 overflow-auto bg-zinc-950 p-3 text-sky-300"></pre>
+        </section>
+    </div>
+</div>
+
+<script>
+document.querySelector('#sse-start').addEventListener('click', () => {
+    const log = document.querySelector('#sse-log');
+    log.textContent = '';
+    const events = new EventSource('/realtime/events');
+    events.addEventListener('tick', event => {
+        log.textContent += event.data + '\n';
+        if (event.lastEventId === '5') events.close();
+    });
+});
+
+const wsLog = document.querySelector('#ws-log');
+const socket = new WebSocket(`${location.protocol === 'https:' ? 'wss' : 'ws'}://${location.host}/realtime/socket`);
+socket.addEventListener('open', () => wsLog.textContent += 'connecté\n');
+socket.addEventListener('message', event => wsLog.textContent += event.data + '\n');
+socket.addEventListener('close', () => wsLog.textContent += 'déconnecté\n');
+document.querySelector('#ws-send').addEventListener('click', () => {
+    if (socket.readyState === WebSocket.OPEN) socket.send(document.querySelector('#ws-message').value);
+});
+</script>

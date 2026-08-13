@@ -80,6 +80,10 @@
                 fastcgi_temp_path /tmp/fastcgi;
                 client_max_body_size 3M;
                 include ${pkgs.nginx}/conf/mime.types;
+                map $http_upgrade $connection_upgrade {
+                  default upgrade;
+                  "" close;
+                }
 
                 server {
                   listen 8000 default_server;
@@ -88,6 +92,14 @@
 
                   location / {
                     try_files $uri $uri/ /index.php?$query_string;
+                  }
+
+                  location = /realtime/socket {
+                    proxy_pass http://127.0.0.1:9001;
+                    proxy_http_version 1.1;
+                    proxy_set_header Upgrade $http_upgrade;
+                    proxy_set_header Connection $connection_upgrade;
+                    proxy_read_timeout 1h;
                   }
 
                   location ~ \.php$ {
@@ -110,15 +122,17 @@
               pkgs.nginx
             ];
             text = ''
-                : "''${DB_PATH:=/data/database.db}"
-                : "''${UPLOADS_PATH:=/data/uploads}"
-                export DB_PATH UPLOADS_PATH
+              : "''${DB_PATH:=/data/database.db}"
+              : "''${UPLOADS_PATH:=/data/uploads}"
+              export DB_PATH UPLOADS_PATH
 
               mkdir -p "$(dirname "$DB_PATH")" "$UPLOADS_PATH" /tmp/client-body /tmp/fastcgi /var/log/nginx
-                chown -R nobody:nobody "$(dirname "$DB_PATH")" "$UPLOADS_PATH" /tmp/client-body /tmp/fastcgi
+              chmod 1777 /tmp
+              chown -R nobody:nobody "$(dirname "$DB_PATH")" "$UPLOADS_PATH" /tmp/client-body /tmp/fastcgi
 
-                php-fpm --fpm-config ${phpFpmConfig}
-                exec nginx -c ${nginxConfig}
+              php ${app}/share/acheteteper/src/websocket.php &
+              php-fpm --fpm-config ${phpFpmConfig}
+              exec nginx -c ${nginxConfig}
             '';
           };
           serve = pkgs.writeShellApplication {

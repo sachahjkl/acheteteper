@@ -144,7 +144,7 @@ class Engine
             if ($this->config->debug()) {
                 $this->timings->stopMeasurement('action');
             }
-            if ($this->config->debug()) {
+            if ($this->config->debug() && !$response->isStreamed()) {
                 $this->timings->stopMeasurement('engine');
                 $this->timings->setRequestMeta($this->request->method(), $this->request->path());
                 $response->setBody($response->getBody() . $this->timings->toHtml());

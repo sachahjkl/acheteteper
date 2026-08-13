@@ -1,0 +1,13 @@
+<?php
+
+use Acheteteper\Utils\ViewUtils as v;
+?>
+<?php if ($items === []): ?>
+    <p class="text-zinc-500">Aucun résultat pour « <?= v::e($query) ?> ».</p>
+<?php else: ?>
+    <ul class="grid gap-2 sm:grid-cols-2">
+        <?php foreach ($items as $item): ?>
+            <li class="border border-zinc-200 bg-zinc-50 px-3 py-2 font-mono"><?= v::e($item) ?></li>
+        <?php endforeach; ?>
+    </ul>
+<?php endif; ?>

@@ -2,6 +2,8 @@
 
 namespace Acheteteper;
 
+use Closure;
+
 /**
  * Simple response wrapper.
  * 
@@ -12,6 +14,7 @@ class Response
     private int $status = 200;
     private array $headers = [];
     private string $body = '';
+    private ?Closure $stream = null;
 
     /**
      * Create a Response instance from current PHP globals.
@@ -92,7 +95,20 @@ class Response
     public function setBody(string $body): self
     {
         $this->body = $body;
+        $this->stream = null;
         return $this;
+    }
+
+    public function setStream(callable $stream): self
+    {
+        $this->body = '';
+        $this->stream = Closure::fromCallable($stream);
+        return $this;
+    }
+
+    public function isStreamed(): bool
+    {
+        return $this->stream !== null;
     }
 
     /**
@@ -116,7 +132,11 @@ class Response
         foreach ($this->headers as [$name, $value]) {
             header("$name: $value");
         }
-        echo $this->body;
+        if ($this->stream !== null) {
+            ($this->stream)();
+        } else {
+            echo $this->body;
+        }
     }
 
     /**
@@ -146,5 +166,14 @@ class Response
         $this->setHeader('Content-Type', 'application/json; charset=utf-8');
         $this->setBody(json_encode($data, JSON_THROW_ON_ERROR));
         return $this;
+    }
+
+    public function eventStream(callable $stream): self
+    {
+        return $this
+            ->setHeader('Content-Type', 'text/event-stream')
+            ->setHeader('Cache-Control', 'no-cache')
+            ->setHeader('X-Accel-Buffering', 'no')
+            ->setStream($stream);
     }
 }

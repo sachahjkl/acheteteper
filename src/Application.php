@@ -14,7 +14,8 @@ use controllers\{
     RoutingDemoController,
     ErrorsDemoController,
     DBDemoController,
-    ConfigController
+    ConfigController,
+    RealtimeDemoController
 };
 
 use Acheteteper\Config;
@@ -73,6 +74,7 @@ class Application
         $engine->registerController('/errors', ErrorsDemoController::class);
         $engine->registerController('/db', DBDemoController::class);
         $engine->registerController('/config', ConfigController::class);
+        $engine->registerController('/realtime', RealtimeDemoController::class);
 
         $engine->registerStaticDir('/uploads', $config->getUserConfig('uploadsPath'));
 

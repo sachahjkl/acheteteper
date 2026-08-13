@@ -19,6 +19,6 @@ class ResponseDemoController extends ControllerBase
             'headers' => $this->response->getHeaders(),
         ];
 
-        $this->render('response_demo', $data);
+        return $this->render('response_demo', $data);
     }
 }

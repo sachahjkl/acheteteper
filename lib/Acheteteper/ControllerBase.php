@@ -40,6 +40,7 @@ class ControllerBase
     public ?DataSourceInterface $datasource = null;
 
     private ?string $layout = null;
+    private bool $csrfVerified = false;
 
     public function setLayout(string $layout): void
     {
@@ -56,7 +57,7 @@ class ControllerBase
      * @return void
      * @throws \Exception If the view file is not found.
      */
-    public function render(string $view, array $data = [])
+    public function render(string $view, array $data = []): Response
     {
         if ($this->config->debug()) {
             $this->timings->startMeasurement('render');
@@ -66,8 +67,9 @@ class ControllerBase
         $viewFile = null;
         foreach (Config::$viewExtensions as $extension) {
             $viewPath = $viewBasename . '.' . $extension;
-            if (file_exists($viewPath)) {
-                $viewFile = $viewPath;
+            $resolved = realpath($viewPath);
+            if ($resolved !== false && $this->isInViewDir($resolved)) {
+                $viewFile = $resolved;
                 break;
             }
         }
@@ -76,7 +78,7 @@ class ControllerBase
             throw new \Exception("View not found: $viewBasename");
         }
 
-        extract($data);
+        extract($data, EXTR_SKIP);
 
         ViewUtils::setContext($this->request, $this->response, $this->config);
         $layoutFile = $this->config->viewDir() . DIRECTORY_SEPARATOR . '_layout.phtml';
@@ -84,7 +86,10 @@ class ControllerBase
         if ($this->layout) {
             $layoutFile = $this->config->viewDir() . DIRECTORY_SEPARATOR . $this->layout . '.phtml';
         }
+        $resolvedLayout = realpath($layoutFile);
+        $layoutFile = $resolvedLayout !== false && $this->isInViewDir($resolvedLayout) ? $resolvedLayout : '';
 
+        ob_start();
         try {
             if (file_exists($layoutFile)) {
                 ViewUtils::startCaptureViewContent();
@@ -95,12 +100,20 @@ class ControllerBase
                 require $viewFile;
             }
         } finally {
+            $this->response->setBody((string) ob_get_clean());
             ViewUtils::clearContext();
 
             if ($this->config->debug()) {
                 $this->timings->stopMeasurement('render');
             }
         }
+        return $this->response;
+    }
+
+    private function isInViewDir(string $path): bool
+    {
+        $base = rtrim($this->config->viewDir(), DIRECTORY_SEPARATOR);
+        return $path === $base || str_starts_with($path, $base . DIRECTORY_SEPARATOR);
     }
 
     /**
@@ -109,9 +122,9 @@ class ControllerBase
      * @param string $url Target URL.
      * @return void
      */
-    public function redirect(string $url)
+    public function redirect(string $url): Response
     {
-        $this->response->redirect($url);
+        return $this->response->redirect($url);
     }
 
     /**
@@ -120,9 +133,9 @@ class ControllerBase
      * @param array $data Data to encode as JSON.
      * @return void
      */
-    public function json(array $data)
+    public function json(array $data): Response
     {
-        $this->response->json($data);
+        return $this->response->json($data);
     }
 
     /**
@@ -155,6 +168,7 @@ class ControllerBase
      */
     public function getFieldsValues(array $keys)
     {
+        $values = [];
         foreach ($keys as $key) {
             $values[$key] = $this->getFieldValue($key);
         }
@@ -239,10 +253,10 @@ class ControllerBase
      * @param mixed $value Flash message value.
      * @return void
      */
-    public function redirectWithFlash(string $url, string $key, mixed $value): void
+    public function redirectWithFlash(string $url, string $key, mixed $value): Response
     {
         Session::setFlash($key, $value);
-        $this->redirect($url);
+        return $this->redirect($url);
     }
 
     /**
@@ -337,6 +351,34 @@ class ControllerBase
         }
     }
 
+    public function requireOptions(): void
+    {
+        if (!$this->request->isOptions()) {
+            throw new HttpException(405, 'This action requires OPTIONS method');
+        }
+    }
+
+    public function requireTrace(): void
+    {
+        if (!$this->request->isTrace()) {
+            throw new HttpException(405, 'This action requires TRACE method');
+        }
+    }
+
+    public function requireConnect(): void
+    {
+        if (!$this->request->isConnect()) {
+            throw new HttpException(405, 'This action requires CONNECT method');
+        }
+    }
+
+    public function requireQuery(): void
+    {
+        if (!$this->request->isQuery()) {
+            throw new HttpException(405, 'This action requires QUERY method');
+        }
+    }
+
     /**
      * Require valid CSRF token, throw exception if not.
      * 
@@ -345,13 +387,21 @@ class ControllerBase
      */
     public function requireCsrf(): void
     {
+        if ($this->csrfVerified) {
+            return;
+        }
         Csrf::verify();
+        $this->csrfVerified = true;
+    }
+
+    public function verifyGlobalCsrf(): void
+    {
+        $this->requireCsrf();
     }
 
     public function setDatasourceProvider(callable $provider): void
     {
         $this->datasourceProvider = $provider;
-        $this->datasource = $provider();
     }
 
     public function setServiceProvider(callable $provider): void

@@ -1,15 +1,39 @@
 # Framework PHP minimal (Acheteteper)
 
 ## Démarrage
-### Podman rootless
-```bash
-podman compose up --build
-```
-- Accès: http://localhost:8000
-- Persistance: `./data` monté sur `/data`, `./data/uploads` monté sur `/tmp/uploads`
-- Variables utiles: `DB_PATH=/data/database.db`, `UPLOADS_PATH=/tmp/uploads`
+### Nix
 
-### Démarrer le serveur de développement (build.bat)
+```bash
+nix run
+```
+
+L'application écoute sur http://localhost:8000.
+
+Exécutez tous les contrôles avec :
+
+```bash
+nix flake check
+```
+
+### Image OCI
+
+```bash
+nix build .#dockerImage
+podman load --input result
+podman run --rm -p 8000:8000 -v acheteteper-data:/data acheteteper:1.0.0
+```
+
+L'image conserve la base SQLite et les uploads dans `/data`.
+
+### Configuration
+
+`config/app.php` retourne un objet `Config` construit avec `ConfigBuilder`.
+
+Définissez `APP_CONFIG` pour charger un autre fichier PHP.
+
+Les variables principales sont `DB_PATH`, `UPLOADS_PATH`, `DEBUG`, `PUBLIC_URL` et `TRUSTED_PROXIES`.
+
+### Ancien serveur de développement
 ```bash
 build serve              # 127.0.0.1:8000
 build serve 8080         # port custom
@@ -65,7 +89,7 @@ class IndexController extends ControllerBase
 {
     public function index()
     {
-        $this->render('index', [
+        return $this->render('index', [
             'name' => 'Sacha',
             'items' => ['Item 1', 'Item 2']
         ]);
@@ -88,11 +112,13 @@ $engine->registerController('/', IndexController::class);
 $engine->registerController('/about', AboutController::class);
 ```
 
+Chaque action publique déclarée dans le contrôleur doit retourner une `Response`.
+
 ### Méthodes du contrôleur
 
-- `render(string $view, array $data = [])` - Rend une vue avec des données
-- `redirect(string $url)` - Redirige vers une URL
-- `json(array $data)` - Retourne une réponse JSON
+- `render(string $view, array $data = []): Response` - Rend une vue avec des données
+- `redirect(string $url): Response` - Redirige vers une URL
+- `json(array $data): Response` - Retourne une réponse JSON
 - `getFieldValue(string $key)` - Récupère une valeur POST/GET
 - `getFieldsValues(array $keys)` - Récupère plusieurs valeurs POST/GET
 - `datasource(string $name = 'default')` - Récupère un datasource

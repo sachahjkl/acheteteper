@@ -19,6 +19,7 @@ class DBDemoController extends ControllerBase
         $service = $this->dbService();
 
         if ($this->isPost()) {
+            $this->requireCsrf();
             $action = $this->request->post('action');
             if ($action === 'add') {
                 $name = trim((string)$this->request->post('name', ''));
@@ -26,19 +27,19 @@ class DBDemoController extends ControllerBase
                     $this->fail(400, 'Name is required');
                 }
                 $service->addItem($name);
-                $this->redirect('/db');
+                    return $this->redirect('/db');
             } elseif ($action === 'delete') {
                 $id = (int)$this->request->post('id', 0);
                 if ($id > 0) {
                     $service->deleteItem($id);
                 }
-                $this->redirect('/db');
+                    return $this->redirect('/db');
             }
         }
 
         $items = $service->listItems();
 
-        $this->render('db_demo', [
+        return $this->render('db_demo', [
             'items' => $items,
             'dbPath' => $service->dbPath(),
         ]);

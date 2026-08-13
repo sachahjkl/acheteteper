@@ -61,7 +61,7 @@ class Engine
     public function __construct(private Config $config)
     {
         $this->timings = new Timings();
-        $this->request = Request::fromGlobals();
+        $this->request = Request::fromGlobals($config);
         $this->response = Response::fromGlobals();
     }
 
@@ -89,62 +89,72 @@ class Engine
      */
     public function run()
     {
-        if ($this->config->debug()) {
-            $this->timings->startMeasurement('engine');
-        }
-
-        $path = $this->pathname();
-        $action = "index";
-
-        if ($this->tryServeStatic($path)) {
-            return;
-        }
-
-        $controller = $this->tryFindController($path);
-
-        if ($controller === null) {
-            $parsedPath = $this->parsePath($path);
-            $action = $parsedPath["actionRoute"];
-            $controllerRoute = $parsedPath["controllerRoute"];
-            $controller = $this->tryFindController($controllerRoute);
-        }
-
-        if ($controller === null) {
-            $this->notFound();
-            return;
-        }
-
-        if (!method_exists($controller, $action)) {
-            $this->notFound();
-            return;
-        }
-
         try {
+            if ($this->config->debug()) {
+                $this->timings->startMeasurement('engine');
+            }
+
+            $path = $this->pathname();
+            if (!in_array($this->request->method(), $this->config->allowedMethods(), true)) {
+                $this->response
+                    ->setStatus(405)
+                    ->setHeader('Allow', implode(', ', $this->config->allowedMethods()))
+                    ->setBody('405 Method Not Allowed')
+                    ->send();
+                return;
+            }
+            if ($this->tryServeStatic($path)) {
+                return;
+            }
+
+            $action = "index";
+            $controller = $this->tryFindController($path);
+            if ($controller === null) {
+                $parsedPath = $this->parsePath($path);
+                if ($parsedPath === null) {
+                    $this->notFound()->send();
+                    return;
+                }
+                $action = $parsedPath["actionRoute"];
+                $controller = $this->tryFindController($parsedPath["controllerRoute"]);
+            }
+
+            if ($controller !== null && $this->request->isOptions()) {
+                $action = 'options';
+            }
+
+            if ($controller === null || !$this->isAction($controller, $action)) {
+                $this->notFound()->send();
+                return;
+            }
+
+            if ($this->config->csrfProtection() && !$this->request->isSafe()) {
+                $controller->verifyGlobalCsrf();
+            }
 
             if ($this->config->debug()) {
                 $this->timings->startMeasurement('action');
             }
 
-            $controller->$action();
+            $response = $controller->$action();
+            if (!$response instanceof Response) {
+                throw new HttpException(500, "Controller action must return a Response: " . $controller::class . "::$action");
+            }
 
             if ($this->config->debug()) {
                 $this->timings->stopMeasurement('action');
             }
+            if ($this->config->debug()) {
+                $this->timings->stopMeasurement('engine');
+                $this->timings->setRequestMeta($this->request->method(), $this->request->path());
+                $response->setBody($response->getBody() . $this->timings->toHtml());
+            }
         } catch (HttpException $e) {
-            $this->setStatus($e->getStatus());
-            $this->printError($e->getStatus(), $e->getMessage(), $e);
-            return;
+            $response = $this->errorResponse($e->getStatus(), $e->getMessage(), $e);
         } catch (\Throwable $e) {
-            $this->setStatus(500);
-            $this->printError(500, "Internal Server Error", $e);
-            return;
+            $response = $this->errorResponse(500, "Internal Server Error", $e);
         }
-
-        if ($this->config->debug()) {
-            $this->timings->stopMeasurement('engine');
-        }
-        $this->timings->setRequestMeta($this->request->method(), $this->request->path());
-        $this->printTimings();
+        $response->send();
     }
 
     private function printTimings(): void
@@ -155,24 +165,15 @@ class Engine
         }
     }
 
-    private function printError(int $status, string $message, \Throwable $e): void
+    private function errorResponse(int $status, string $message, \Throwable $e): Response
     {
-        echo "{$status} {$message}";
+        $body = $status . ' ' . htmlspecialchars($message, ENT_QUOTES | ENT_SUBSTITUTE, 'UTF-8');
         if ($this->config->debug()) {
-            echo "<br>";
-            echo "<br>";
-            echo "Debug mode: <b>" . ($this->config->debug() ? "enabled" : "disabled") . "</b>";
-            echo "<br>";
-            echo "<br>";
-            echo "<b>Message:</b> <code style='background-color: #f0f0f0; padding: 5px; border-radius: 5px;'>" . $e->getMessage() . "</code>";
-            echo "<br>";
-            echo "<br>";
-            echo "<b>Trace:</b> 
-                <pre style='background-color: #f0f0f0; padding: 5px; border-radius: 5px;'>" . $e->getTraceAsString() . "</pre>";
-            echo "<br>";
-            echo "<br>";
-            DebugUtils::dump($e);
+            $error = htmlspecialchars($e->getMessage(), ENT_QUOTES | ENT_SUBSTITUTE, 'UTF-8');
+            $trace = htmlspecialchars($e->getTraceAsString(), ENT_QUOTES | ENT_SUBSTITUTE, 'UTF-8');
+            $body .= "<br><br><b>Message:</b> <code>$error</code><br><br><b>Trace:</b><pre>$trace</pre>";
         }
+        return $this->response->setStatus($status)->setBody($body);
     }
 
     /**
@@ -251,7 +252,7 @@ class Engine
      * @param string $path URL path to parse.
      * @return array{controllerRoute: string, actionRoute: string}
      */
-    private function parsePath(string $path)
+    private function parsePath(string $path): ?array
     {
         $parsedPath = [
             "controllerRoute" => "/",
@@ -259,6 +260,9 @@ class Engine
         ];
 
         $pathParts = StringUtils::splitPath($path);
+        if (count($pathParts) > 2) {
+            return null;
+        }
 
         if (isset($pathParts[0]) && !StringUtils::isWhitespaceOrNull($pathParts[0])) {
             $parsedPath["controllerRoute"] = $pathParts[0];
@@ -352,10 +356,6 @@ class Engine
             if (method_exists($controller, 'setRepositoryProvider')) {
                 $controller->setRepositoryProvider($repositoryResolver);
             }
-            if (property_exists($controller, 'datasource')) {
-                $controller->datasource = $datasourceFactory($this->defaultDatasource);
-            }
-
             return $controller;
         } else {
             return null;
@@ -369,7 +369,7 @@ class Engine
      */
     private function pathname()
     {
-        return parse_url($_SERVER['REQUEST_URI'], PHP_URL_PATH);
+        return $this->request->path();
     }
 
     /**
@@ -377,11 +377,20 @@ class Engine
      * 
      * @return void
      */
-    private function notFound()
+    private function notFound(): Response
     {
-        $this->setStatus(404);
-        echo "404 Not Found";
-        die();
+        return $this->response->setStatus(404)->setBody("404 Not Found");
+    }
+
+    private function isAction(ControllerBase $controller, string $action): bool
+    {
+        if (str_starts_with($action, '_') || !method_exists($controller, $action)) {
+            return false;
+        }
+        $method = new \ReflectionMethod($controller, $action);
+        return $method->isPublic()
+            && $method->getDeclaringClass()->getName() === $controller::class
+            && $method->getNumberOfRequiredParameters() === 0;
     }
 
     /**
@@ -435,18 +444,24 @@ class Engine
             $candidate = $staticDir['base'] . ($relative !== '' ? DIRECTORY_SEPARATOR . $relative : '');
             $resolved = PathUtils::realpath($candidate);
 
-            if (!$resolved || !str_starts_with($resolved, $staticDir['base'])) {
-                $this->notFound();
+            $insideBase = $resolved === $staticDir['base']
+                || ($resolved !== false && str_starts_with($resolved, $staticDir['base'] . DIRECTORY_SEPARATOR));
+            if (!$insideBase) {
+                $this->notFound()->send();
                 return true;
             }
 
             if (is_dir($resolved)) {
-                $this->renderDirectoryListing($staticDir['base'], $prefix, $relative);
+                if ($this->config->staticDirectoryListing()) {
+                    $this->renderDirectoryListing($resolved, $prefix, $relative);
+                } else {
+                    $this->notFound()->send();
+                }
                 return true;
             }
 
             if (!is_file($resolved)) {
-                $this->notFound();
+                $this->notFound()->send();
                 return true;
             }
 
@@ -457,57 +472,6 @@ class Engine
         return false;
     }
 
-    private function renderDirectoryListing(string $basePath, string $prefix, string $relative): void
-    {
-        $virtualPrefix = rtrim($prefix, '/');
-        $dir = $basePath . ($relative !== '' ? DIRECTORY_SEPARATOR . $relative : '');
-
-        $entries = @scandir($dir) ?: [];
-        $items = [];
-        foreach ($entries as $entry) {
-            if ($entry === '.' || $entry === '..') {
-                continue;
-            }
-            $fullPath = $dir . DIRECTORY_SEPARATOR . $entry;
-            $isDir = is_dir($fullPath);
-            $items[] = [
-                'name' => $entry,
-                'isDir' => $isDir,
-            ];
-        }
-
-        header('Content-Type: text/html; charset=utf-8');
-
-        echo "<!doctype html><html><head><meta charset='utf-8'><title>Index of " . htmlspecialchars($virtualPrefix . '/' . $relative) . "</title></head><body>";
-        echo "<h1>Index of " . htmlspecialchars($virtualPrefix . '/' . $relative) . "</h1>";
-        echo "<ul>";
-
-        if ($relative !== '') {
-            $parentRelative = '';
-            $parts = explode('/', trim($relative, '/'));
-            array_pop($parts);
-            if (!empty($parts)) {
-                $parentRelative = implode('/', $parts);
-            }
-            $parentHref = $virtualPrefix . ($parentRelative !== '' ? '/' . $parentRelative : '');
-            if ($parentHref === '') {
-                $parentHref = '/';
-            }
-            echo "<li><a href=\"" . htmlspecialchars($parentHref === '' ? '/' : $parentHref) . "\">..</a></li>";
-        }
-
-        foreach ($items as $item) {
-            $nameEsc = htmlspecialchars($item['name'], ENT_QUOTES | ENT_SUBSTITUTE, 'UTF-8');
-            $href = $virtualPrefix . ($relative !== '' ? '/' . $relative : '') . '/' . $item['name'];
-            if ($item['isDir']) {
-                $href .= '/';
-            }
-            echo "<li><a href=\"" . htmlspecialchars($href, ENT_QUOTES | ENT_SUBSTITUTE, 'UTF-8') . "\">" . $nameEsc . ($item['isDir'] ? '/' : '') . "</a></li>";
-        }
-
-        echo "</ul></body></html>";
-    }
-
     private function streamFile(string $path): void
     {
         // NOTE: requires enabled fileinfo extension in php.ini
@@ -515,7 +479,27 @@ class Engine
         if ($mime) {
             header('Content-Type: ' . $mime);
         }
+        header('X-Content-Type-Options: nosniff');
         header('Content-Length: ' . filesize($path));
-        readfile($path);
+        if (!$this->request->isHead()) {
+            readfile($path);
+        }
+    }
+
+    private function renderDirectoryListing(string $directory, string $prefix, string $relative): void
+    {
+        $items = [];
+        foreach (scandir($directory) ?: [] as $name) {
+            if ($name === '.' || $name === '..') {
+                continue;
+            }
+            $href = rtrim($prefix . '/' . $relative, '/') . '/' . rawurlencode($name);
+            $items[] = '<li><a href="' . htmlspecialchars($href, ENT_QUOTES | ENT_SUBSTITUTE, 'UTF-8') . '">'
+                . htmlspecialchars($name, ENT_QUOTES | ENT_SUBSTITUTE, 'UTF-8') . '</a></li>';
+        }
+        $this->response
+            ->setHeader('Content-Type', 'text/html; charset=utf-8')
+            ->setBody('<!doctype html><title>Index</title><ul>' . implode('', $items) . '</ul>')
+            ->send();
     }
 }

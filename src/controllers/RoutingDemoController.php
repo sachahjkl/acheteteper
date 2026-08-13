@@ -14,7 +14,7 @@ class RoutingDemoController extends ControllerBase
             'path' => $this->request->path(),
         ];
 
-        $this->render('routing_demo', $data);
+        return $this->render('routing_demo', $data);
     }
 
     public function show()
@@ -27,7 +27,7 @@ class RoutingDemoController extends ControllerBase
             'path' => $this->request->path(),
         ];
 
-        $this->render('routing_demo', $data);
+        return $this->render('routing_demo', $data);
     }
 
     public function edit()
@@ -38,12 +38,13 @@ class RoutingDemoController extends ControllerBase
             'path' => $this->request->path(),
         ];
 
-        $this->render('routing_demo', $data);
+        return $this->render('routing_demo', $data);
     }
 
     public function delete()
     {
         $this->requirePost();
+        $this->requireCsrf();
 
         $data = [
             'action' => 'delete',
@@ -52,6 +53,6 @@ class RoutingDemoController extends ControllerBase
             'message' => 'Delete action executed (POST required)',
         ];
 
-        $this->render('routing_demo', $data);
+        return $this->render('routing_demo', $data);
     }
 }

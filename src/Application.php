@@ -17,11 +17,10 @@ use controllers\{
     ConfigController
 };
 
-use Acheteteper\ConfigBuilder;
+use Acheteteper\Config;
 use Acheteteper\Engine;
 use repositories\DbDemoRepository;
 use services\DbDemoService;
-use utils\Utils;
 
 class Application
 {
@@ -31,43 +30,14 @@ class Application
     ) {}
 
 
-    public static function loadConfig(): array
+    public static function loadConfig(): Config
     {
-        $dbFromEnv = getenv('DB_PATH');
-        $uploadsFromEnv = getenv('UPLOADS_PATH');
-
-        if ($dbFromEnv) {
-            $dbPath = $dbFromEnv;
-        } else {
-            $dbPath = __DIR__ . '/../data/database.db';
+        $path = getenv('APP_CONFIG') ?: __DIR__ . '/../config/app.php';
+        $config = require $path;
+        if (!$config instanceof Config) {
+            throw new \RuntimeException("Config file must return a Config: $path");
         }
-
-        if ($uploadsFromEnv) {
-            $uploadsPath = $uploadsFromEnv;
-        } else {
-            $uploadsPath = __DIR__ . '/../data/uploads';
-        }
-
-        $debug = getenv('DEBUG');
-        if ($debug === 'true') {
-            $debug = true;
-        } else {
-            $debug = false;
-        }
-
-        $viewDir = getenv('VIEW_DIR');
-        if ($viewDir) {
-            $viewDir = $viewDir;
-        } else {
-            $viewDir = __DIR__ . '/views';
-        }
-
-        return [
-            'dbPath' => $dbPath,
-            'uploadsPath' => $uploadsPath,
-            'debug' => $debug,
-            'viewDir' => $viewDir
-        ];
+        return $config;
     }
 
     public static function ensureUploadsDir(string $uploadsPath): void
@@ -81,19 +51,7 @@ class Application
     {
 
         $config = self::loadConfig();
-        self::ensureUploadsDir($config['uploadsPath']);
-
-        $configBuilder = new ConfigBuilder();
-        $configBuilder->setViewDir($config['viewDir']);
-        $configBuilder->setDbPath($config['dbPath']);
-        $configBuilder->setUserConfig('uploadsPath', $config['uploadsPath']);
-
-        $configDebug = $config['debug'];
-        $configBuilder->setDebugResolver(function () use ($configDebug): bool {
-            return Utils::debugFromSession() ?? $configDebug;
-        });
-
-        $config = $configBuilder->build();
+        self::ensureUploadsDir($config->getUserConfig('uploadsPath'));
 
         $engine = new Engine($config);
 

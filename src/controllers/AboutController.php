@@ -8,12 +8,12 @@ class AboutController extends ControllerBase
 {
     public function index()
     {
-        $this->render('about');
+        return $this->render('about');
     }
 
     public function contact()
     {
-        $this->render('about_contact');
+        return $this->render('about_contact');
     }
 
     public function contact_submit()
@@ -35,6 +35,6 @@ class AboutController extends ControllerBase
             $data["email"] = $values['email'];
         }
 
-        $this->render('about_contact', $data);
+        return $this->render('about_contact', $data);
     }
 }

@@ -16,6 +16,7 @@ $title = 'Validation Demo';
 <div class="space-y-3 mb-6">
     <h2 class="text-xl font-semibold text-zinc-900">Registration Form</h2>
     <form method="POST" action="/validation/submit" class="space-y-4 rounded-sm border border-zinc-200 bg-zinc-50 p-4 shadow-sm">
+        <?= v::csrfField() ?>
         <div class="grid gap-3 md:grid-cols-2">
             <div class="space-y-1">
                 <?= c::FormInput('name', 'Name *', $values['name'] ?? '', ['required' => 'required']) ?>

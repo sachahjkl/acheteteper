@@ -30,6 +30,7 @@ $warningMsg = v::flash('warning');
     <h2 class="text-xl font-semibold text-zinc-900">Send Flash Message</h2>
     <p class="text-sm text-zinc-700">Flash messages display once after redirect. Pick a type and message.</p>
     <form method="POST" action="/flash/submit" class="space-y-3 rounded-sm border border-zinc-200 bg-zinc-50 p-4 shadow-sm">
+        <?= v::csrfField() ?>
         <div class="grid gap-3 md:grid-cols-2">
             <?= c::Select('type', 'Type', [
                 'success' => 'Success',

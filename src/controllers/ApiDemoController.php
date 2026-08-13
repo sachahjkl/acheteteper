@@ -8,7 +8,7 @@ class ApiDemoController extends ControllerBase
 {
     public function index()
     {
-        $this->render('api_demo');
+        return $this->render('api_demo');
     }
 
     public function users()
@@ -19,7 +19,7 @@ class ApiDemoController extends ControllerBase
             ['id' => 3, 'name' => 'Bob Johnson', 'email' => 'bob@example.com'],
         ];
 
-        $this->json(['users' => $users]);
+        return $this->json(['users' => $users]);
     }
 
     public function user()
@@ -27,11 +27,11 @@ class ApiDemoController extends ControllerBase
         $id = $this->request->get('id', 1);
         $user = ['id' => (int)$id, 'name' => 'User ' . $id, 'email' => 'user' . $id . '@example.com'];
 
-        $this->json(['user' => $user]);
+        return $this->json(['user' => $user]);
     }
 
     public function error()
     {
-        $this->response->json(['error' => 'Something went wrong'], 500);
+        return $this->response->json(['error' => 'Something went wrong'], 500);
     }
 }

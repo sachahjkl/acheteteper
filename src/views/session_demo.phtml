@@ -16,6 +16,7 @@ $cellClass = 'px-4 py-3 border-b border-zinc-200';
 <section class="space-y-3 mb-6">
     <h2 class="text-xl font-semibold text-zinc-900">Set Session Value</h2>
     <form method="POST" class="space-y-3 rounded-sm border border-zinc-200 bg-zinc-50 p-4 shadow-sm">
+        <?= v::csrfField() ?>
         <div class="grid gap-3 md:grid-cols-2">
             <?= c::FormInput('key', 'Key', '', ['placeholder' => 'Key', 'required' => 'required']) ?>
             <?= c::FormInput('value', 'Value', '', ['placeholder' => 'Value', 'required' => 'required']) ?>
@@ -50,6 +51,7 @@ $cellClass = 'px-4 py-3 border-b border-zinc-200';
     <?php endif; ?>
 </section>
 
-<div class="mt-4">
-    <?= c::LinkButton('Clear All Session Data', '/session/clear', 'red') ?>
-</div>
+<form method="POST" action="/session/clear" class="mt-4">
+    <?= v::csrfField() ?>
+    <?= c::Button('Clear All Session Data', 'red', ['type' => 'submit']) ?>
+</form>

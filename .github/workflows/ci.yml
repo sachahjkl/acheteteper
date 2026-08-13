@@ -2,42 +2,57 @@ name: CI
 
 on:
   push:
-    branches: ["**"]
-    tags: ["**"]
+    branches: ['**']
+    tags: ['**']
+  pull_request:
   workflow_dispatch:
 
-permissions:
-  contents: read
-  packages: write
+env:
+  NIX_CONFIG: extra-experimental-features = nix-command flakes
+  IMAGE_NAME: ghcr.io/${{ github.repository }}
 
 concurrency:
-  group: image-${{ github.ref }}
+  group: ci-${{ github.ref }}
   cancel-in-progress: true
 
 jobs:
-  image:
+  check:
     runs-on: [self-hosted, nixos]
+    permissions:
+      contents: read
     steps:
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
         with:
           persist-credentials: false
-      - name: Select image tag
-        run: |
-          image="ghcr.io/${GITHUB_REPOSITORY,,}"
-          if [[ "$GITHUB_REF_TYPE" == "branch" && "$GITHUB_REF_NAME" == "${{ github.event.repository.default_branch }}" ]]; then
-            tag=latest
-          else
-            tag="$(printf '%s' "$GITHUB_REF_NAME" | tr '[:upper:]' '[:lower:]' | sed -E 's/[^a-z0-9]+/-/g; s/^-+//; s/-+$//' | cut -c1-63)"
-          fi
-          printf 'IMAGE=%s\nTAG=%s\n' "$image" "$tag" >> "$GITHUB_ENV"
-      - name: Build and push image
+      - run: nix flake check --print-build-logs
+
+  publish:
+    if: github.event_name == 'push'
+    needs: check
+    runs-on: [self-hosted, nixos]
+    permissions:
+      contents: read
+      packages: write
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          persist-credentials: false
+      - id: metadata
+        uses: docker/metadata-action@c1e51972afc2121e065aed6d45c65596fe445f3f # v5.8.0
+        with:
+          images: ${{ env.IMAGE_NAME }}
+          tags: |
+            type=raw,value=latest,enable=${{ github.ref_type == 'branch' && github.ref_name == github.event.repository.default_branch }}
+            type=ref,event=branch,enable=${{ github.ref_name != github.event.repository.default_branch }}
+            type=ref,event=tag
+      - run: nix build .#dockerImage --print-build-logs
+      - name: Push OCI image
         env:
           GHCR_TOKEN: ${{ github.token }}
+          IMAGE_TAG: ${{ steps.metadata.outputs.version }}
         run: |
           umask 077
-          authfile="$RUNNER_TEMP/podman-auth-${GITHUB_RUN_ID}-${GITHUB_RUN_ATTEMPT}.json"
+          authfile="$RUNNER_TEMP/skopeo-auth-${GITHUB_RUN_ID}-${GITHUB_RUN_ATTEMPT}.json"
           trap 'rm -f "$authfile"' EXIT
-          printf '%s' "$GHCR_TOKEN" | podman login --authfile "$authfile" ghcr.io --username "$GITHUB_ACTOR" --password-stdin
-          podman pull --authfile "$authfile" "$IMAGE:latest" || true
-          podman build --authfile "$authfile" --pull=always --tag "$IMAGE:$TAG" .
-          podman push --authfile "$authfile" "$IMAGE:$TAG"
+          printf '%s' "$GHCR_TOKEN" | nix run nixpkgs#skopeo -- login --authfile "$authfile" ghcr.io --username "$GITHUB_ACTOR" --password-stdin
+          nix run nixpkgs#skopeo -- copy --authfile "$authfile" --insecure-policy docker-archive:result "docker://${IMAGE_NAME}:${IMAGE_TAG}"

@@ -14,7 +14,7 @@ class CsrfDemoController extends ControllerBase
             'token' => Csrf::token(),
         ];
 
-        $this->render('csrf_demo', $data);
+        return $this->render('csrf_demo', $data);
     }
 
     public function submit()
@@ -35,6 +35,6 @@ class CsrfDemoController extends ControllerBase
             ];
         }
 
-        $this->render('csrf_demo', $data);
+        return $this->render('csrf_demo', $data);
     }
 }

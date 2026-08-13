@@ -32,7 +32,13 @@ class Config
         private string $viewDir = "views",
         private string $dbPath = "database.db",
         private array $userConfigs = [],
-        private ?Closure $debugResolver = null
+        private ?Closure $debugResolver = null,
+        private bool $csrfProtection = false,
+        private array $allowedMethods = ['GET', 'HEAD', 'POST', 'PUT', 'PATCH', 'DELETE', 'OPTIONS', 'TRACE', 'CONNECT', 'QUERY'],
+        private ?string $publicUrl = null,
+        private array $trustedProxies = [],
+        private int $maxJsonBodyBytes = 1048576,
+        private bool $staticDirectoryListing = false
     ) {
         if ($this->debugResolver == null) {
             $this->debugResolver = fn() => false;
@@ -115,4 +121,15 @@ class Config
     {
         return $this->dbPath;
     }
+
+    public function csrfProtection(): bool
+    {
+        return $this->csrfProtection;
+    }
+
+    public function allowedMethods(): array { return $this->allowedMethods; }
+    public function publicUrl(): ?string { return $this->publicUrl; }
+    public function trustedProxies(): array { return $this->trustedProxies; }
+    public function maxJsonBodyBytes(): int { return $this->maxJsonBodyBytes; }
+    public function staticDirectoryListing(): bool { return $this->staticDirectoryListing; }
 }

@@ -61,6 +61,7 @@ $title = 'File Upload Demo';
     <h2 class="text-xl font-semibold text-zinc-900">Upload File</h2>
     <p class="text-sm text-zinc-700">Upload an image file (jpg, jpeg, png, gif) - max 2MB</p>
     <form method="POST" action="/upload/submit" enctype="multipart/form-data" class="space-y-3 rounded-sm border border-zinc-200 bg-zinc-50 p-4 shadow-sm">
+        <?= v::csrfField() ?>
         <label class="block text-sm font-medium text-zinc-800" for="file">Choose a file</label>
         <input class="block w-full text-sm text-zinc-900 file:mr-4 file:rounded-sm file:border-0 file:bg-blue-600 file:px-3 file:py-2 file:text-sm file:font-semibold file:text-white file:shadow-[0_-1px_0_1px_#1e3a8a_inset,0_0_0_1px_#1d4ed8_inset,0_0.5px_0_1.5px_#60a5fa_inset] hover:file:bg-blue-700 active:file:bg-blue-800 cursor-pointer" type="file" name="file" id="file" accept="image/*" required>
         <div>

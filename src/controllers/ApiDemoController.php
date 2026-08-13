@@ -22,6 +22,13 @@ class ApiDemoController extends ControllerBase
         return $this->json(['users' => $users]);
     }
 
+    public function echo()
+    {
+        return $this->json([
+            'message' => (string) $this->request->get('message', 'hello'),
+        ]);
+    }
+
     public function user()
     {
         $id = $this->request->get('id', 1);

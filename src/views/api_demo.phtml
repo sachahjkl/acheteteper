@@ -10,6 +10,15 @@ $title = 'JSON API Demo';
     <div class="grid gap-4 md:grid-cols-2">
         <div class="space-y-2 rounded-sm border border-zinc-200 bg-zinc-50 p-4 shadow-sm">
             <div>
+                <h3 class="text-lg font-semibold text-zinc-900">GET /api/echo?message=hello</h3>
+                <p class="text-sm text-zinc-700">Minimal JSON echo endpoint</p>
+            </div>
+            <?= c::Button('Fetch Echo', 'green', ['type' => 'button', 'onclick' => 'fetchEcho()']) ?>
+            <div id="echo-result" class="text-sm text-zinc-800 rounded-sm border border-zinc-200 bg-white px-3 py-2 min-h-[48px]"></div>
+        </div>
+
+        <div class="space-y-2 rounded-sm border border-zinc-200 bg-zinc-50 p-4 shadow-sm">
+            <div>
                 <h3 class="text-lg font-semibold text-zinc-900">GET /api/users</h3>
                 <p class="text-sm text-zinc-700">Get all users</p>
             </div>
@@ -53,6 +62,12 @@ $title = 'JSON API Demo';
         } catch (error) {
             renderPre(result, 'Error: ' + error.message);
         }
+    }
+
+    async function fetchEcho() {
+        const result = document.getElementById('echo-result');
+        const response = await fetch('/api/echo?message=hello');
+        renderPre(result, JSON.stringify(await response.json(), null, 2));
     }
 
     async function fetchUser() {

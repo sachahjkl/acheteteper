@@ -11,6 +11,7 @@ use Closure;
  */
 class Config
 {
+    private ?bool $debug = null;
     /**
      * Supported view file extensions, in order of preference.
      * 
@@ -99,7 +100,7 @@ class Config
      */
     public function debug(): bool
     {
-        return ($this->debugResolver)();
+        return $this->debug ??= ($this->debugResolver)();
     }
 
     /**

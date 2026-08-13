@@ -73,6 +73,17 @@ test('config builder rejects invalid values', function (): void {
     assertThrows(InvalidArgumentException::class, fn() => (new ConfigBuilder())->setViewDir('/missing/views'));
 });
 
+test('config resolves debug mode once per request', function (): void {
+    $calls = 0;
+    $config = new Config(debugResolver: function () use (&$calls): bool {
+        $calls++;
+        return false;
+    });
+    assertTrue(!$config->debug());
+    assertTrue(!$config->debug());
+    assertSame(1, $calls);
+});
+
 test('request handles standard and QUERY methods', function (): void {
     $request = new Request([], [], ['REQUEST_METHOD' => 'QUERY', 'REQUEST_URI' => '/items?q=1'], '{"active":true}');
     assertTrue($request->isQuery());

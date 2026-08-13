@@ -70,6 +70,10 @@ grep -q 'John Doe' "$tmp/body"
 
 request 200 "http://127.0.0.1:$port/api/echo?message=benchmark"
 grep -q '"message":"benchmark"' "$tmp/body"
+if grep -qi '^Set-Cookie:' "$tmp/headers"; then
+  printf 'Stateless API response created a session cookie\n' >&2
+  exit 1
+fi
 
 request 200 -H 'HX-Request: true' "http://127.0.0.1:$port/realtime/search?q=web"
 grep -q 'WebSocket' "$tmp/body"

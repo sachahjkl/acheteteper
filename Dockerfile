@@ -15,6 +15,7 @@ RUN mkdir -p /data /var/run/php /var/cache/nginx /var/log/nginx \
     && if [ -f /app/data/database.db ]; then cp /app/data/database.db ${DB_PATH}; fi \
     && mkdir -p ${UPLOADS_PATH} \
     && if [ -d /app/src/uploads ] && [ -z "$(ls -A ${UPLOADS_PATH})" ]; then cp -r /app/src/uploads/. ${UPLOADS_PATH}/; fi \
+    && chmod -R a+rX ${APP_DIR} \
     && chown -R www-data:www-data /data ${UPLOADS_PATH}
 
 COPY docker/nginx.conf /etc/nginx/http.d/default.conf
@@ -25,4 +26,3 @@ RUN chmod +x /entrypoint.sh
 EXPOSE 8000
 
 CMD ["/entrypoint.sh"]
-

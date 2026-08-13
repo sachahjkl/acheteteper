@@ -3,7 +3,7 @@
 namespace services;
 
 use Acheteteper\ServiceBase;
-use Repositories\DbDemoRepository;
+use repositories\DbDemoRepository;
 
 class DbDemoService extends ServiceBase
 {

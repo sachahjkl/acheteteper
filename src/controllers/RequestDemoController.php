@@ -20,6 +20,7 @@ class RequestDemoController extends ControllerBase
             'isGet' => $this->request->isGet(),
             'isPost' => $this->request->isPost(),
             'isAjax' => $this->request->isAjax(),
+            'isSafe' => $this->request->isSafe(),
             'path' => $this->request->path(),
             'url' => $this->request->url(),
             'ip' => $this->request->ip(),
@@ -31,5 +32,15 @@ class RequestDemoController extends ControllerBase
         ];
 
         return $this->render('request_demo', $data);
+    }
+
+    public function jsonInput()
+    {
+        $this->requirePost();
+        $data = $this->request->json();
+        return $this->json([
+            'received' => $data,
+            'bytes' => strlen($this->request->body()),
+        ]);
     }
 }

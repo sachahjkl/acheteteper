@@ -397,7 +397,7 @@ class ControllerBase
         if ($this->csrfVerified) {
             return;
         }
-        Csrf::verify();
+        Csrf::verify($this->request->post('_token') ?? $this->request->header('X-CSRF-Token'));
         $this->csrfVerified = true;
     }
 

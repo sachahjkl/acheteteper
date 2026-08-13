@@ -1,6 +1,7 @@
 <?php
 
 use Acheteteper\Utils\ViewUtils as v;
+use Acheteteper\Csrf;
 use Components as c;
 
 $title = 'Request Demo';
@@ -32,6 +33,10 @@ $cellClass = 'px-4 py-3 border-b border-zinc-200 font-mono';
                     <td class="<?= $cellClass ?>"><?= $isAjax ? 'Yes' : 'No' ?></td>
                 </tr>
                 <tr>
+                    <th class="bg-zinc-50 <?= $cellClass ?> font-semibold text-zinc-800">Is Safe</th>
+                    <td class="<?= $cellClass ?>"><?= $isSafe ? 'Yes' : 'No' ?></td>
+                </tr>
+                <tr>
                     <th class="bg-zinc-50 <?= $cellClass ?> font-semibold text-zinc-800">Path</th>
                     <td class="<?= $cellClass ?>"><?= v::e($path) ?></td>
                 </tr>
@@ -61,6 +66,30 @@ $cellClass = 'px-4 py-3 border-b border-zinc-200 font-mono';
 </section>
 
 <section class="space-y-3 mb-6">
+    <h2 class="text-xl font-semibold text-zinc-900">HTTP Methods</h2>
+    <p class="text-sm text-zinc-700"><code class="font-mono">QUERY</code> is a safe method from RFC 10008. Disallowed methods return <code class="font-mono">405</code> with an <code class="font-mono">Allow</code> header.</p>
+    <div class="flex flex-wrap gap-2">
+        <?= c::Button('Send OPTIONS', 'gray', ['type' => 'button', 'data-method' => 'OPTIONS']) ?>
+        <?= c::Button('Send QUERY', 'blue', ['type' => 'button', 'data-method' => 'QUERY']) ?>
+        <?= c::Button('Send TRACE', 'red', ['type' => 'button', 'data-method' => 'TRACE']) ?>
+    </div>
+    <pre id="method-result" class="min-h-20 overflow-auto rounded-sm border border-zinc-800 bg-zinc-950 p-3 font-mono text-sm text-green-300"></pre>
+</section>
+
+<section class="space-y-3 mb-6">
+    <h2 class="text-xl font-semibold text-zinc-900">JSON Request Body</h2>
+    <p class="text-sm text-zinc-700"><code class="font-mono">Request::json()</code> rejects malformed JSON with <code class="font-mono">400</code> and oversized bodies with <code class="font-mono">413</code>.</p>
+    <form id="json-form" class="space-y-3 rounded-sm border border-zinc-200 bg-zinc-50 p-4 shadow-sm">
+        <label class="block space-y-1 text-sm font-medium text-zinc-800" for="json-body">
+            <span class="block ms-1 mb-1">JSON body</span>
+            <textarea id="json-body" class="min-h-28 w-full rounded-sm border border-zinc-300 bg-white px-3 py-2 font-mono text-sm shadow-sm focus:border-blue-500 focus:outline-none focus:ring-2 focus:ring-blue-500">{"framework":"Achetétéper","feature":"JSON input"}</textarea>
+        </label>
+        <?= c::Button('Send JSON', 'green', ['type' => 'submit']) ?>
+    </form>
+    <pre id="json-result" class="min-h-20 overflow-auto rounded-sm border border-zinc-800 bg-zinc-950 p-3 font-mono text-sm text-blue-300"></pre>
+</section>
+
+<section class="space-y-3 mb-6">
     <h2 class="text-xl font-semibold text-zinc-900">GET Parameters</h2>
     <?php if (empty($getParams)): ?>
         <p class="text-sm text-zinc-700">No GET parameters. Add some: <a class="text-blue-700 font-semibold hover:underline" href="?foo=bar&test=123">?foo=bar&test=123</a></p>
@@ -85,6 +114,32 @@ $cellClass = 'px-4 py-3 border-b border-zinc-200 font-mono';
         </div>
     <?php endif; ?>
 </section>
+
+<script>
+document.querySelectorAll('[data-method]').forEach(button => {
+    button.addEventListener('click', async () => {
+        const response = await fetch('/request', { method: button.dataset.method });
+        document.querySelector('#method-result').textContent = [
+            `${button.dataset.method} ${response.status}`,
+            `Allow: ${response.headers.get('Allow') ?? '(none)'}`,
+        ].join('\n');
+    });
+});
+
+document.querySelector('#json-form').addEventListener('submit', async event => {
+    event.preventDefault();
+    const response = await fetch('/request/jsonInput', {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+            'X-CSRF-Token': <?= json_encode(Csrf::token(), JSON_THROW_ON_ERROR) ?>,
+        },
+        body: document.querySelector('#json-body').value,
+    });
+    const body = await response.text();
+    document.querySelector('#json-result').textContent = `${response.status}\n${body}`;
+});
+</script>
 
 <section class="space-y-3 mb-6">
     <h2 class="text-xl font-semibold text-zinc-900">POST Parameters</h2>

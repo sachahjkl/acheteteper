@@ -19,6 +19,6 @@ class ConfigController extends ControllerBase
             return $this->redirect('/config');
         }
 
-        return $this->render('config');
+        return $this->render('config', ['config' => $this->config()]);
     }
 }

@@ -8,6 +8,7 @@ $title = 'Real-time Demo';
 <div class="space-y-6">
     <section class="space-y-3">
         <h2 class="text-xl font-semibold text-zinc-900">Live Search</h2>
+        <p class="text-sm text-zinc-700"><code class="font-mono">renderPartial()</code> returns only the result fragment for HTMX.</p>
         <form class="rounded-sm border border-zinc-200 bg-zinc-50 p-4 shadow-sm" role="search">
             <?= c::FormInput('q', 'Framework feature', '', [
                 'type' => 'search',
@@ -28,6 +29,7 @@ $title = 'Real-time Demo';
         <section class="space-y-3 rounded-sm border border-zinc-200 bg-zinc-50 p-4 shadow-sm">
             <h2 class="text-xl font-semibold text-zinc-900">Server-Sent Events</h2>
             <p class="text-sm text-zinc-700">The server sends five events through one HTTP connection.</p>
+            <p class="text-xs text-zinc-600"><code class="font-mono">Response::eventStream()</code> disables proxy buffering and streams each event.</p>
             <?= c::Button('Start SSE', 'green', ['type' => 'button', 'id' => 'sse-start']) ?>
             <pre id="sse-log" class="min-h-32 overflow-auto rounded-sm border border-zinc-800 bg-zinc-950 p-3 font-mono text-sm text-green-300"></pre>
         </section>
@@ -35,6 +37,7 @@ $title = 'Real-time Demo';
         <section class="space-y-3 rounded-sm border border-zinc-200 bg-zinc-50 p-4 shadow-sm">
             <h2 class="text-xl font-semibold text-zinc-900">WebSocket</h2>
             <p class="text-sm text-zinc-700">The server returns each message with a timestamp.</p>
+            <p class="text-xs text-zinc-600"><code class="font-mono">WebSocketServer</code> handles the upgraded connection behind Nginx.</p>
             <div class="space-y-3">
                 <?= c::FormInput('ws-message', 'Message', 'Hello WebSocket', ['autocomplete' => 'off']) ?>
                 <?= c::Button('Send', 'blue', ['type' => 'button', 'id' => 'ws-send']) ?>

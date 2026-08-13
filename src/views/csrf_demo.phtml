@@ -6,6 +6,12 @@ use Components as c;
 $title = 'CSRF Demo';
 ?>
 
+<section class="mb-6 rounded-sm border-l-4 border-blue-500 bg-zinc-50 p-4 shadow-sm">
+    <h2 class="text-lg font-semibold text-zinc-900">Global Protection</h2>
+    <p class="mt-1 text-sm text-zinc-700">The engine verifies every unsafe request before it calls the controller action.</p>
+    <p class="mt-1 text-sm text-zinc-700">Send the token as <code class="font-mono">_token</code> or <code class="font-mono">X-CSRF-Token</code>. Safe methods do not require it.</p>
+</section>
+
 <section class="space-y-2 mb-4">
     <h2 class="text-xl font-semibold text-zinc-900">CSRF Token</h2>
     <p class="text-sm text-zinc-700">Current CSRF Token:
@@ -37,8 +43,8 @@ $title = 'CSRF Demo';
 </section>
 
 <section class="space-y-3">
-    <h2 class="text-lg font-semibold text-zinc-900">Form without CSRF Protection</h2>
-    <p class="text-sm text-zinc-700">This form will fail validation:</p>
+    <h2 class="text-lg font-semibold text-zinc-900">Blocked Form</h2>
+    <p class="text-sm text-zinc-700">The engine rejects this request before <code class="font-mono">submit()</code> runs.</p>
     <form method="POST" action="/csrf/submit" class="space-y-3 rounded-sm border border-zinc-200 bg-zinc-50 p-4 shadow-sm">
         <?= c::FormInput('data', 'Data', 'Test data', ['placeholder' => 'Enter some data']) ?>
         <?= c::Button('Submit (without token)', 'red', ['type' => 'submit']) ?>

@@ -35,6 +35,7 @@ class UploadDemoController extends ControllerBase
 
             if (empty($data['errors'])) {
                 $file = FileUpload::get('file');
+                $detectedExtension = FileUpload::detectedExtension('file');
                 $filename = FileUpload::randomImageName('file');
                 if ($filename === null) {
                     $this->fail(400, 'Invalid image');
@@ -47,6 +48,7 @@ class UploadDemoController extends ControllerBase
                         'name' => $file['name'],
                         'size' => $file['size'],
                         'type' => $file['type'],
+                        'detectedExtension' => $detectedExtension,
                         'filename' => $filename,
                     ];
                 } else {

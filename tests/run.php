@@ -138,6 +138,11 @@ test('CSRF accepts one session token and rejects another', function (): void {
     assertTrue(!Csrf::validate(str_repeat('0', 64)));
 });
 
+test('request reads CSRF headers case-insensitively', function (): void {
+    $request = new Request([], [], ['HTTP_X_CSRF_TOKEN' => 'header-token']);
+    assertSame('header-token', $request->header('x-csrf-token'));
+});
+
 test('session flash values are consumed once', function (): void {
     Session::setFlash('notice', 'saved');
     assertSame('saved', Session::flash('notice'));

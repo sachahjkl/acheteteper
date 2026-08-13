@@ -4,23 +4,44 @@ use Acheteteper\Utils\ViewUtils as v;
 use Components as c;
 
 $title = 'Config Demo';
-
-$debug = v::config()->debug();
-
+$debug = $config->debug();
 $newDebugValue = $debug ? 'false' : 'true';
 $debugLabel = $debug ? 'Disable Debug Mode' : 'Enable Debug Mode';
 $debugBtnColor = $debug ? 'red' : 'green';
+$rows = [
+    'CSRF protection' => $config->csrfProtection() ? 'enabled' : 'disabled',
+    'Allowed methods' => implode(', ', $config->allowedMethods()),
+    'Public URL' => $config->publicUrl() ?? 'derived from request',
+    'Trusted proxies' => $config->trustedProxies() === [] ? 'none' : implode(', ', $config->trustedProxies()),
+    'Maximum JSON body' => number_format($config->maxJsonBodyBytes()) . ' bytes',
+    'Static directory listing' => $config->staticDirectoryListing() ? 'enabled' : 'disabled',
+];
 ?>
+
+<section class="space-y-3 mb-6">
+    <h2 class="text-xl font-semibold text-zinc-900">Runtime Policies</h2>
+    <p class="text-sm text-zinc-700">These policies are immutable after <code class="font-mono">ConfigBuilder::build()</code>.</p>
+    <div class="scroll-container rounded-sm border border-zinc-200 shadow-sm">
+        <table class="min-w-full text-sm text-left text-zinc-800">
+            <tbody class="divide-y divide-zinc-200">
+                <?php foreach ($rows as $label => $value): ?>
+                    <tr>
+                        <th class="w-1/3 bg-zinc-50 px-4 py-3 font-semibold"><?= v::e($label) ?></th>
+                        <td class="px-4 py-3 font-mono"><?= v::e($value) ?></td>
+                    </tr>
+                <?php endforeach; ?>
+            </tbody>
+        </table>
+    </div>
+</section>
 
 <section class="space-y-3">
     <h2 class="text-xl font-semibold text-zinc-900">Debug Mode</h2>
-    <p class="text-sm text-zinc-700">Toggle debug mode on or off. Debug mode is currently <span class="font-semibold"><?= $debug ? 'enabled' : 'disabled' ?></span>.</p>
-    <form method="POST" class="space-y-3 rounded-sm border border-zinc-200 bg-zinc-50 p-4 shadow-sm">
+    <p class="text-sm text-zinc-700">Debug mode is currently <span class="font-semibold"><?= $debug ? 'enabled' : 'disabled' ?></span>.</p>
+    <form method="POST" class="rounded-sm border border-zinc-200 bg-zinc-50 p-4 shadow-sm">
         <?= v::csrfField() ?>
-        <div class="grid gap-3 md:grid-cols-2 hidden">
-            <?= c::FormInput('key', 'Key', 'DEBUG', ['placeholder' => 'Key', "type" => "hidden", 'required' => 'required']) ?>
-            <?= c::FormInput('value', 'Value', $newDebugValue, ['placeholder' => 'Value', "type" => "hidden", 'required' => 'required']) ?>
-        </div>
+        <input type="hidden" name="key" value="DEBUG">
+        <input type="hidden" name="value" value="<?= v::e($newDebugValue) ?>">
         <?= c::Button($debugLabel, $debugBtnColor, ['type' => 'submit']) ?>
     </form>
 </section>

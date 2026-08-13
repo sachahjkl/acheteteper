@@ -57,3 +57,11 @@ $cellClass = 'px-4 py-3 border-b border-zinc-200';
         <?= c::LinkButton('500 Internal Server Error', '?status=500', 'red') ?>
     </div>
 </section>
+
+<section class="mt-6 space-y-3">
+    <h2 class="text-xl font-semibold text-zinc-900">Controller Response Contract</h2>
+    <div class="rounded-sm border-l-4 border-blue-500 bg-zinc-50 p-4 text-sm text-zinc-700 shadow-sm">
+        <p>Every controller action returns a <code class="font-mono">Response</code>.</p>
+        <p class="mt-2"><code class="font-mono">render()</code>, <code class="font-mono">renderPartial()</code>, <code class="font-mono">json()</code>, and <code class="font-mono">redirect()</code> all satisfy this contract.</p>
+    </div>
+</section>

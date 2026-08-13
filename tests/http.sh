@@ -74,6 +74,12 @@ if grep -qi '<!DOCTYPE html>' "$tmp/body"; then
   printf 'Live search returned the full page layout\n' >&2
   exit 1
 fi
+
+token=$(curl -sS -c "$tmp/json-cookies" "http://127.0.0.1:$port/csrf" | sed -n 's/.*name="_token" value="\([^"]*\)".*/\1/p' | head -n 1)
+request 200 -b "$tmp/json-cookies" -H "Content-Type: application/json" -H "X-CSRF-Token: $token" --data '{"feature":"json"}' "http://127.0.0.1:$port/request/jsonInput"
+grep -q '"received":{"feature":"json"}' "$tmp/body"
+request 400 -b "$tmp/json-cookies" -H "Content-Type: application/json" -H "X-CSRF-Token: $token" --data '{invalid' "http://127.0.0.1:$port/request/jsonInput"
+grep -q 'Invalid JSON body' "$tmp/body"
 if grep -q 'Server-Sent Events' "$tmp/body"; then
   printf 'Live search returned an unrelated result\n' >&2
   exit 1

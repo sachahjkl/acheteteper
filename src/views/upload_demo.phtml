@@ -26,8 +26,12 @@ $title = 'File Upload Demo';
                         <td class="px-4 py-3 text-zinc-800"><?= number_format($file['size'] / 1024, 2) ?> KB</td>
                     </tr>
                     <tr>
-                        <th class="bg-zinc-50 px-4 py-3 text-left font-semibold text-zinc-800">Type</th>
+                        <th class="bg-zinc-50 px-4 py-3 text-left font-semibold text-zinc-800">Client Type</th>
                         <td class="px-4 py-3 text-zinc-800"><?= v::e($file['type']) ?></td>
+                    </tr>
+                    <tr>
+                        <th class="bg-zinc-50 px-4 py-3 text-left font-semibold text-zinc-800">Detected Extension</th>
+                        <td class="px-4 py-3 text-zinc-800"><?= v::e($file['detectedExtension']) ?></td>
                     </tr>
                     <tr>
                         <th class="bg-zinc-50 px-4 py-3 text-left font-semibold text-zinc-800">Saved As</th>
@@ -59,7 +63,10 @@ $title = 'File Upload Demo';
 
 <div class="space-y-3 mb-6">
     <h2 class="text-xl font-semibold text-zinc-900">Upload File</h2>
-    <p class="text-sm text-zinc-700">Upload an image file (jpg, jpeg, png, gif) - max 2MB</p>
+    <p class="text-sm text-zinc-700">Upload a JPG, PNG, GIF, or WebP image up to 2 MB.</p>
+    <div class="rounded-sm border-l-4 border-blue-500 bg-zinc-50 p-3 text-sm text-zinc-700 shadow-sm">
+        The server detects the MIME type from file bytes. It stores accepted images with a random 32-character name.
+    </div>
     <form method="POST" action="/upload/submit" enctype="multipart/form-data" class="space-y-3 rounded-sm border border-zinc-200 bg-zinc-50 p-4 shadow-sm">
         <?= v::csrfField() ?>
         <label class="block text-sm font-medium text-zinc-800" for="file">Choose a file</label>
@@ -70,7 +77,7 @@ $title = 'File Upload Demo';
     </form>
 </div>
 
-<div class="flex items-center flex-wrap gap-2 text-sm text-zinc-700">
+<div class="text-sm text-zinc-700">
     <p>Uploaded files are stored in <code class="rounded bg-zinc-100 px-1.5 py-0.5 text-xs text-zinc-800 border border-zinc-200"><?= v::e(v::config()->getUserConfig('uploadsPath')) ?></code>.</p>
-    <a class="text-blue-700 font-semibold hover:underline" href="/uploads" hx-boost="false">View uploaded files</a>
+    <p class="mt-2">Directory listing and path traversal are disabled. Only exact file URLs are public.</p>
 </div>

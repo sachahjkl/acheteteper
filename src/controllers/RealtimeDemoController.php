@@ -25,7 +25,7 @@ class RealtimeDemoController extends ControllerBase
             self::ITEMS,
             fn(string $item): bool => $query === '' || stripos($item, $query) !== false
         ));
-        return $this->render('realtime_search_results', ['items' => $items, 'query' => $query]);
+        return $this->renderPartial('realtime_search_results', ['items' => $items, 'query' => $query]);
     }
 
     public function events()

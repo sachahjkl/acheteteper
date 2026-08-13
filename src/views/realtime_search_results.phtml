@@ -3,11 +3,11 @@
 use Acheteteper\Utils\ViewUtils as v;
 ?>
 <?php if ($items === []): ?>
-    <p class="text-zinc-500">Aucun résultat pour « <?= v::e($query) ?> ».</p>
+    <p class="text-sm text-zinc-700">No result for <strong><?= v::e($query) ?></strong>.</p>
 <?php else: ?>
-    <ul class="grid gap-2 sm:grid-cols-2">
+    <ul class="grid gap-2 sm:grid-cols-2" aria-live="polite">
         <?php foreach ($items as $item): ?>
-            <li class="border border-zinc-200 bg-zinc-50 px-3 py-2 font-mono"><?= v::e($item) ?></li>
+            <li class="border-l-4 border-blue-500 bg-zinc-50 p-3 font-mono text-sm text-zinc-800 shadow-sm"><?= v::e($item) ?></li>
         <?php endforeach; ?>
     </ul>
 <?php endif; ?>

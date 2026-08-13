@@ -40,6 +40,7 @@ class ControllerBase
     public ?DataSourceInterface $datasource = null;
 
     private ?string $layout = null;
+    private bool $useLayout = true;
     private bool $csrfVerified = false;
 
     public function setLayout(string $layout): void
@@ -91,7 +92,7 @@ class ControllerBase
 
         ob_start();
         try {
-            if (file_exists($layoutFile)) {
+            if ($this->useLayout && file_exists($layoutFile)) {
                 ViewUtils::startCaptureViewContent();
                 require $viewFile;
                 ViewUtils::endCaptureViewContent();
@@ -108,6 +109,12 @@ class ControllerBase
             }
         }
         return $this->response;
+    }
+
+    public function renderPartial(string $view, array $data = []): Response
+    {
+        $this->useLayout = false;
+        return $this->render($view, $data);
     }
 
     private function isInViewDir(string $path): bool

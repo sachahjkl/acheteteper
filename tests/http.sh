@@ -68,8 +68,12 @@ request 200 "http://127.0.0.1:$port/api/users"
 grep -q 'application/json' "$tmp/headers"
 grep -q 'John Doe' "$tmp/body"
 
-request 200 "http://127.0.0.1:$port/realtime/search?q=web"
+request 200 -H 'HX-Request: true' "http://127.0.0.1:$port/realtime/search?q=web"
 grep -q 'WebSocket' "$tmp/body"
+if grep -qi '<!DOCTYPE html>' "$tmp/body"; then
+  printf 'Live search returned the full page layout\n' >&2
+  exit 1
+fi
 if grep -q 'Server-Sent Events' "$tmp/body"; then
   printf 'Live search returned an unrelated result\n' >&2
   exit 1

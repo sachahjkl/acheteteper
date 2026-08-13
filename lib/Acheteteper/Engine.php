@@ -61,7 +61,7 @@ class Engine
     public function __construct(private Config $config)
     {
         $this->timings = new Timings();
-        $this->request = Request::fromGlobals();
+        $this->request = Request::fromGlobals($config);
         $this->response = Response::fromGlobals();
     }
 
@@ -95,6 +95,14 @@ class Engine
             }
 
             $path = $this->pathname();
+            if (!in_array($this->request->method(), $this->config->allowedMethods(), true)) {
+                $this->response
+                    ->setStatus(405)
+                    ->setHeader('Allow', implode(', ', $this->config->allowedMethods()))
+                    ->setBody('405 Method Not Allowed')
+                    ->send();
+                return;
+            }
             if ($this->tryServeStatic($path)) {
                 return;
             }
@@ -111,9 +119,17 @@ class Engine
                 $controller = $this->tryFindController($parsedPath["controllerRoute"]);
             }
 
+            if ($controller !== null && $this->request->isOptions()) {
+                $action = 'options';
+            }
+
             if ($controller === null || !$this->isAction($controller, $action)) {
                 $this->notFound()->send();
                 return;
+            }
+
+            if ($this->config->csrfProtection() && !$this->request->isSafe()) {
+                $controller->verifyGlobalCsrf();
             }
 
             if ($this->config->debug()) {
@@ -353,7 +369,7 @@ class Engine
      */
     private function pathname()
     {
-        return parse_url($_SERVER['REQUEST_URI'], PHP_URL_PATH);
+        return $this->request->path();
     }
 
     /**
@@ -436,7 +452,11 @@ class Engine
             }
 
             if (is_dir($resolved)) {
-                $this->notFound()->send();
+                if ($this->config->staticDirectoryListing()) {
+                    $this->renderDirectoryListing($resolved, $prefix, $relative);
+                } else {
+                    $this->notFound()->send();
+                }
                 return true;
             }
 
@@ -464,5 +484,22 @@ class Engine
         if (!$this->request->isHead()) {
             readfile($path);
         }
+    }
+
+    private function renderDirectoryListing(string $directory, string $prefix, string $relative): void
+    {
+        $items = [];
+        foreach (scandir($directory) ?: [] as $name) {
+            if ($name === '.' || $name === '..') {
+                continue;
+            }
+            $href = rtrim($prefix . '/' . $relative, '/') . '/' . rawurlencode($name);
+            $items[] = '<li><a href="' . htmlspecialchars($href, ENT_QUOTES | ENT_SUBSTITUTE, 'UTF-8') . '">'
+                . htmlspecialchars($name, ENT_QUOTES | ENT_SUBSTITUTE, 'UTF-8') . '</a></li>';
+        }
+        $this->response
+            ->setHeader('Content-Type', 'text/html; charset=utf-8')
+            ->setBody('<!doctype html><title>Index</title><ul>' . implode('', $items) . '</ul>')
+            ->send();
     }
 }

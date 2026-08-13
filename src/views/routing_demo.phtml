@@ -63,6 +63,7 @@ $cellClass = 'px-4 py-3 border-b border-zinc-200';
         <div class="rounded-sm border border-zinc-200 bg-zinc-50 p-4 shadow-sm space-y-2">
             <div><strong>/routing/delete</strong> → <code>delete()</code> (POST required)</div>
             <form method="POST" action="/routing/delete" class="inline">
+                <?= v::csrfField() ?>
                 <?= c::Button('Submit POST', 'red', ['type' => 'submit']) ?>
             </form>
         </div>

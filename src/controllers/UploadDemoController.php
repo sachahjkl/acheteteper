@@ -15,6 +15,7 @@ class UploadDemoController extends ControllerBase
     public function submit()
     {
         $this->requirePost();
+        $this->requireCsrf();
 
         $data = [
             'errors' => [],

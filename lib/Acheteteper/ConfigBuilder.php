@@ -16,6 +16,12 @@ class ConfigBuilder
     private string $viewDir = "views";
     private string $dbPath = "database.db";
     private array $userConfigs = [];
+    private bool $csrfProtection = false;
+    private array $allowedMethods = ['GET', 'HEAD', 'POST', 'PUT', 'PATCH', 'DELETE', 'OPTIONS', 'TRACE', 'CONNECT', 'QUERY'];
+    private ?string $publicUrl = null;
+    private array $trustedProxies = [];
+    private int $maxJsonBodyBytes = 1048576;
+    private bool $staticDirectoryListing = false;
 
     public function __construct()
     {
@@ -30,7 +36,11 @@ class ConfigBuilder
      */
     public function setViewDir(string $viewDir)
     {
-        $this->viewDir = PathUtils::realpath($viewDir);
+        $resolved = PathUtils::realpath($viewDir);
+        if ($resolved === false || !is_dir($resolved)) {
+            throw new \InvalidArgumentException("View directory not found: $viewDir");
+        }
+        $this->viewDir = $resolved;
         return $this;
     }
 
@@ -64,6 +74,49 @@ class ConfigBuilder
         return $this;
     }
 
+    public function enableCsrfProtection(): self
+    {
+        $this->csrfProtection = true;
+        return $this;
+    }
+
+    public function setAllowedMethods(array $methods): self
+    {
+        $methods = array_values(array_unique(array_map('strtoupper', $methods)));
+        if ($methods === []) {
+            throw new \InvalidArgumentException('At least one HTTP method must be allowed');
+        }
+        $this->allowedMethods = $methods;
+        return $this;
+    }
+
+    public function setPublicUrl(?string $url): self
+    {
+        $this->publicUrl = $url === null ? null : rtrim($url, '/');
+        return $this;
+    }
+
+    public function setTrustedProxies(array $addresses): self
+    {
+        $this->trustedProxies = array_values($addresses);
+        return $this;
+    }
+
+    public function setMaxJsonBodyBytes(int $bytes): self
+    {
+        if ($bytes < 1) {
+            throw new \InvalidArgumentException('JSON body limit must be positive');
+        }
+        $this->maxJsonBodyBytes = $bytes;
+        return $this;
+    }
+
+    public function enableStaticDirectoryListing(): self
+    {
+        $this->staticDirectoryListing = true;
+        return $this;
+    }
+
     /**
      * Build and return the configured Config instance.
      * 
@@ -71,6 +124,17 @@ class ConfigBuilder
      */
     public function build()
     {
-        return new Config($this->viewDir, $this->dbPath,  $this->userConfigs, $this->debugResolver);
+        return new Config(
+            $this->viewDir,
+            $this->dbPath,
+            $this->userConfigs,
+            $this->debugResolver,
+            $this->csrfProtection,
+            $this->allowedMethods,
+            $this->publicUrl,
+            $this->trustedProxies,
+            $this->maxJsonBodyBytes,
+            $this->staticDirectoryListing
+        );
     }
 }

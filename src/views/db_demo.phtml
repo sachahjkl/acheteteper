@@ -13,6 +13,7 @@ $cellClass = 'px-4 py-3 border-b border-zinc-200';
 <section class="space-y-3 mb-6">
     <h2 class="text-xl font-semibold text-zinc-900">Add Item</h2>
     <form method="POST" class="space-y-3 rounded-sm border border-zinc-200 bg-zinc-50 p-4 shadow-sm">
+        <?= v::csrfField() ?>
         <input type="hidden" name="action" value="add">
         <?= c::FormInput('name', 'Item name', '', ['placeholder' => 'Item name', 'required' => 'required']) ?>
         <?= c::Button('Add', 'green', ['type' => 'submit']) ?>
@@ -40,6 +41,7 @@ $cellClass = 'px-4 py-3 border-b border-zinc-200';
                             <td class="<?= $cellClass ?>"><?= v::e($item['name']) ?></td>
                             <td class="<?= $cellClass ?>">
                                 <form method="POST" class="inline">
+                                    <?= v::csrfField() ?>
                                     <input type="hidden" name="action" value="delete">
                                     <input type="hidden" name="id" value="<?= (int)$item['id'] ?>">
                                     <?= c::Button('Delete', 'red', ['type' => 'submit']) ?>

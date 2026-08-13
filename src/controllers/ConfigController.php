@@ -10,6 +10,7 @@ class ConfigController extends ControllerBase
     public function index()
     {
         if ($this->request->isPost()) {
+            $this->requireCsrf();
             $key = $this->request->post('key');
             $value = $this->request->post('value');
             if ($key === 'DEBUG') {

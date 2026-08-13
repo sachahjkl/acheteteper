@@ -40,6 +40,7 @@ class ControllerBase
     public ?DataSourceInterface $datasource = null;
 
     private ?string $layout = null;
+    private bool $csrfVerified = false;
 
     public function setLayout(string $layout): void
     {
@@ -350,6 +351,34 @@ class ControllerBase
         }
     }
 
+    public function requireOptions(): void
+    {
+        if (!$this->request->isOptions()) {
+            throw new HttpException(405, 'This action requires OPTIONS method');
+        }
+    }
+
+    public function requireTrace(): void
+    {
+        if (!$this->request->isTrace()) {
+            throw new HttpException(405, 'This action requires TRACE method');
+        }
+    }
+
+    public function requireConnect(): void
+    {
+        if (!$this->request->isConnect()) {
+            throw new HttpException(405, 'This action requires CONNECT method');
+        }
+    }
+
+    public function requireQuery(): void
+    {
+        if (!$this->request->isQuery()) {
+            throw new HttpException(405, 'This action requires QUERY method');
+        }
+    }
+
     /**
      * Require valid CSRF token, throw exception if not.
      * 
@@ -358,7 +387,16 @@ class ControllerBase
      */
     public function requireCsrf(): void
     {
+        if ($this->csrfVerified) {
+            return;
+        }
         Csrf::verify();
+        $this->csrfVerified = true;
+    }
+
+    public function verifyGlobalCsrf(): void
+    {
+        $this->requireCsrf();
     }
 
     public function setDatasourceProvider(callable $provider): void

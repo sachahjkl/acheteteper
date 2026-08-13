@@ -14,6 +14,7 @@ class FlashDemoController extends ControllerBase
     public function submit()
     {
         $this->requirePost();
+        $this->requireCsrf();
 
         $type = $this->request->post('type', 'success');
         $message = $this->request->post('message', 'Flash message sent!');

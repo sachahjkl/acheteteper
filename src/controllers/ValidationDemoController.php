@@ -14,6 +14,7 @@ class ValidationDemoController extends ControllerBase
     public function submit()
     {
         $this->requirePost();
+        $this->requireCsrf();
 
         $validator = $this->validate();
         $validator

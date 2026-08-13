@@ -6,6 +6,13 @@ use Acheteteper\ControllerBase;
 
 class RequestDemoController extends ControllerBase
 {
+    public function options()
+    {
+        return $this->response
+            ->setStatus(204)
+            ->setHeader('Allow', 'GET, HEAD, POST, OPTIONS, QUERY');
+    }
+
     public function index()
     {
         $data = [

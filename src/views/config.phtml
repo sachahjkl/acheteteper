@@ -16,6 +16,7 @@ $debugBtnColor = $debug ? 'red' : 'green';
     <h2 class="text-xl font-semibold text-zinc-900">Debug Mode</h2>
     <p class="text-sm text-zinc-700">Toggle debug mode on or off. Debug mode is currently <span class="font-semibold"><?= $debug ? 'enabled' : 'disabled' ?></span>.</p>
     <form method="POST" class="space-y-3 rounded-sm border border-zinc-200 bg-zinc-50 p-4 shadow-sm">
+        <?= v::csrfField() ?>
         <div class="grid gap-3 md:grid-cols-2 hidden">
             <?= c::FormInput('key', 'Key', 'DEBUG', ['placeholder' => 'Key', "type" => "hidden", 'required' => 'required']) ?>
             <?= c::FormInput('value', 'Value', $newDebugValue, ['placeholder' => 'Value', "type" => "hidden", 'required' => 'required']) ?>

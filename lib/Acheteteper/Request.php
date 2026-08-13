@@ -12,15 +12,16 @@ class Request
     private array $post;
     private array $get;
     private array $server;
+    private ?string $body;
 
     /**
      * Create a Request instance from current PHP globals.
      * 
      * @return self
      */
-    public static function fromGlobals(): self
+    public static function fromGlobals(?Config $config = null): self
     {
-        return new self($_POST, $_GET, $_SERVER);
+        return new self($_POST, $_GET, $_SERVER, null, $config);
     }
 
     /**
@@ -28,11 +29,12 @@ class Request
      * @param array $get GET data.
      * @param array $server SERVER data.
      */
-    public function __construct(array $post = [], array $get = [], array $server = [])
+    public function __construct(array $post = [], array $get = [], array $server = [], ?string $body = null, private ?Config $config = null)
     {
         $this->post = $post;
         $this->get = $get;
         $this->server = $server;
+        $this->body = $body;
     }
 
     /**
@@ -42,7 +44,7 @@ class Request
      */
     public function method(): string
     {
-        return $this->server['REQUEST_METHOD'] ?? 'GET';
+        return strtoupper($this->server['REQUEST_METHOD'] ?? 'GET');
     }
 
     /**
@@ -103,6 +105,56 @@ class Request
     public function isHead(): bool
     {
         return $this->method() === 'HEAD';
+    }
+
+    public function isOptions(): bool
+    {
+        return $this->method() === 'OPTIONS';
+    }
+
+    public function isTrace(): bool
+    {
+        return $this->method() === 'TRACE';
+    }
+
+    public function isConnect(): bool
+    {
+        return $this->method() === 'CONNECT';
+    }
+
+    public function isQuery(): bool
+    {
+        return $this->method() === 'QUERY';
+    }
+
+    public function isMethod(string $method): bool
+    {
+        return $this->method() === strtoupper($method);
+    }
+
+    public function isSafe(): bool
+    {
+        return in_array($this->method(), ['GET', 'HEAD', 'OPTIONS', 'TRACE', 'QUERY'], true);
+    }
+
+    public function body(): string
+    {
+        if ($this->body === null) {
+            $this->body = (string) file_get_contents('php://input');
+        }
+        return $this->body;
+    }
+
+    public function json(): mixed
+    {
+        if (strlen($this->body()) > ($this->config?->maxJsonBodyBytes() ?? 1048576)) {
+            throw new HttpException(413, 'JSON body is too large');
+        }
+        try {
+            return json_decode($this->body(), true, 512, JSON_THROW_ON_ERROR);
+        } catch (\JsonException $e) {
+            throw new HttpException(400, 'Invalid JSON body', $e);
+        }
     }
 
     /**
@@ -196,6 +248,9 @@ class Request
      */
     public function url(): string
     {
+        if ($this->config?->publicUrl() !== null) {
+            return $this->config->publicUrl() . ($this->server['REQUEST_URI'] ?? '/');
+        }
         $scheme = (!empty($this->server['HTTPS']) && $this->server['HTTPS'] !== 'off') ? 'https' : 'http';
         $host = $this->server['HTTP_HOST'] ?? 'localhost';
         $uri = $this->server['REQUEST_URI'] ?? '/';
@@ -209,7 +264,11 @@ class Request
      */
     public function ip(): string
     {
-        return $this->server['REMOTE_ADDR'] ?? '';
+        $remote = $this->server['REMOTE_ADDR'] ?? '';
+        if (in_array($remote, $this->config?->trustedProxies() ?? [], true)) {
+            return trim(explode(',', $this->server['HTTP_X_FORWARDED_FOR'] ?? $remote)[0]);
+        }
+        return $remote;
     }
 
     /**

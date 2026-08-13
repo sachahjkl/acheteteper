@@ -14,6 +14,7 @@ class SessionDemoController extends ControllerBase
         Session::set('counter', $counter);
 
         if ($this->request->isPost()) {
+            $this->requireCsrf();
             $key = $this->request->post('key');
             $value = $this->request->post('value');
             if ($key) {
@@ -36,6 +37,8 @@ class SessionDemoController extends ControllerBase
 
     public function clear()
     {
+        $this->requirePost();
+        $this->requireCsrf();
         Session::clear();
         return $this->redirect('/session');
     }

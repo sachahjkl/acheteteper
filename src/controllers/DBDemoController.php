@@ -19,6 +19,7 @@ class DBDemoController extends ControllerBase
         $service = $this->dbService();
 
         if ($this->isPost()) {
+            $this->requireCsrf();
             $action = $this->request->post('action');
             if ($action === 'add') {
                 $name = trim((string)$this->request->post('name', ''));

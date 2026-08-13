@@ -44,6 +44,7 @@ class RoutingDemoController extends ControllerBase
     public function delete()
     {
         $this->requirePost();
+        $this->requireCsrf();
 
         $data = [
             'action' => 'delete',

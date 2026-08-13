@@ -26,19 +26,19 @@ class DBDemoController extends ControllerBase
                     $this->fail(400, 'Name is required');
                 }
                 $service->addItem($name);
-                $this->redirect('/db');
+                    return $this->redirect('/db');
             } elseif ($action === 'delete') {
                 $id = (int)$this->request->post('id', 0);
                 if ($id > 0) {
                     $service->deleteItem($id);
                 }
-                $this->redirect('/db');
+                    return $this->redirect('/db');
             }
         }
 
         $items = $service->listItems();
 
-        $this->render('db_demo', [
+        return $this->render('db_demo', [
             'items' => $items,
             'dbPath' => $service->dbPath(),
         ]);

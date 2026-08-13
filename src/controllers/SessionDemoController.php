@@ -31,12 +31,12 @@ class SessionDemoController extends ControllerBase
             'allSession' => $allSession,
         ];
 
-        $this->render('session_demo', $data);
+        return $this->render('session_demo', $data);
     }
 
     public function clear()
     {
         Session::clear();
-        $this->redirect('/session');
+        return $this->redirect('/session');
     }
 }

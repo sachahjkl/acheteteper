@@ -23,6 +23,6 @@ class RequestDemoController extends ControllerBase
             'acceptLanguage' => $this->request->header('Accept-Language'),
         ];
 
-        $this->render('request_demo', $data);
+        return $this->render('request_demo', $data);
     }
 }

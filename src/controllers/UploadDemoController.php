@@ -9,7 +9,7 @@ class UploadDemoController extends ControllerBase
 {
     public function index()
     {
-        $this->render('upload_demo');
+        return $this->render('upload_demo');
     }
 
     public function submit()
@@ -52,6 +52,6 @@ class UploadDemoController extends ControllerBase
             }
         }
 
-        $this->render('upload_demo', $data);
+        return $this->render('upload_demo', $data);
     }
 }

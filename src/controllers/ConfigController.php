@@ -15,9 +15,9 @@ class ConfigController extends ControllerBase
             if ($key === 'DEBUG') {
                 Session::set($key, $value);
             }
-            $this->redirect('/config');
+            return $this->redirect('/config');
         }
 
-        $this->render('config');
+        return $this->render('config');
     }
 }

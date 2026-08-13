@@ -14,6 +14,6 @@ class HelpersDemoController extends ControllerBase
             'dateString' => '2024-01-15 14:30:00',
         ];
 
-        $this->render('helpers_demo', $data);
+        return $this->render('helpers_demo', $data);
     }
 }

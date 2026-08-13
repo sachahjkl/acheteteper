@@ -89,62 +89,56 @@ class Engine
      */
     public function run()
     {
-        if ($this->config->debug()) {
-            $this->timings->startMeasurement('engine');
-        }
-
-        $path = $this->pathname();
-        $action = "index";
-
-        if ($this->tryServeStatic($path)) {
-            return;
-        }
-
-        $controller = $this->tryFindController($path);
-
-        if ($controller === null) {
-            $parsedPath = $this->parsePath($path);
-            $action = $parsedPath["actionRoute"];
-            $controllerRoute = $parsedPath["controllerRoute"];
-            $controller = $this->tryFindController($controllerRoute);
-        }
-
-        if ($controller === null) {
-            $this->notFound();
-            return;
-        }
-
-        if (!method_exists($controller, $action)) {
-            $this->notFound();
-            return;
-        }
-
         try {
+            if ($this->config->debug()) {
+                $this->timings->startMeasurement('engine');
+            }
+
+            $path = $this->pathname();
+            if ($this->tryServeStatic($path)) {
+                return;
+            }
+
+            $action = "index";
+            $controller = $this->tryFindController($path);
+            if ($controller === null) {
+                $parsedPath = $this->parsePath($path);
+                if ($parsedPath === null) {
+                    $this->notFound()->send();
+                    return;
+                }
+                $action = $parsedPath["actionRoute"];
+                $controller = $this->tryFindController($parsedPath["controllerRoute"]);
+            }
+
+            if ($controller === null || !$this->isAction($controller, $action)) {
+                $this->notFound()->send();
+                return;
+            }
 
             if ($this->config->debug()) {
                 $this->timings->startMeasurement('action');
             }
 
-            $controller->$action();
+            $response = $controller->$action();
+            if (!$response instanceof Response) {
+                throw new HttpException(500, "Controller action must return a Response: " . $controller::class . "::$action");
+            }
 
             if ($this->config->debug()) {
                 $this->timings->stopMeasurement('action');
             }
+            if ($this->config->debug()) {
+                $this->timings->stopMeasurement('engine');
+                $this->timings->setRequestMeta($this->request->method(), $this->request->path());
+                $response->setBody($response->getBody() . $this->timings->toHtml());
+            }
         } catch (HttpException $e) {
-            $this->setStatus($e->getStatus());
-            $this->printError($e->getStatus(), $e->getMessage(), $e);
-            return;
+            $response = $this->errorResponse($e->getStatus(), $e->getMessage(), $e);
         } catch (\Throwable $e) {
-            $this->setStatus(500);
-            $this->printError(500, "Internal Server Error", $e);
-            return;
+            $response = $this->errorResponse(500, "Internal Server Error", $e);
         }
-
-        if ($this->config->debug()) {
-            $this->timings->stopMeasurement('engine');
-        }
-        $this->timings->setRequestMeta($this->request->method(), $this->request->path());
-        $this->printTimings();
+        $response->send();
     }
 
     private function printTimings(): void
@@ -155,24 +149,15 @@ class Engine
         }
     }
 
-    private function printError(int $status, string $message, \Throwable $e): void
+    private function errorResponse(int $status, string $message, \Throwable $e): Response
     {
-        echo "{$status} {$message}";
+        $body = $status . ' ' . htmlspecialchars($message, ENT_QUOTES | ENT_SUBSTITUTE, 'UTF-8');
         if ($this->config->debug()) {
-            echo "<br>";
-            echo "<br>";
-            echo "Debug mode: <b>" . ($this->config->debug() ? "enabled" : "disabled") . "</b>";
-            echo "<br>";
-            echo "<br>";
-            echo "<b>Message:</b> <code style='background-color: #f0f0f0; padding: 5px; border-radius: 5px;'>" . $e->getMessage() . "</code>";
-            echo "<br>";
-            echo "<br>";
-            echo "<b>Trace:</b> 
-                <pre style='background-color: #f0f0f0; padding: 5px; border-radius: 5px;'>" . $e->getTraceAsString() . "</pre>";
-            echo "<br>";
-            echo "<br>";
-            DebugUtils::dump($e);
+            $error = htmlspecialchars($e->getMessage(), ENT_QUOTES | ENT_SUBSTITUTE, 'UTF-8');
+            $trace = htmlspecialchars($e->getTraceAsString(), ENT_QUOTES | ENT_SUBSTITUTE, 'UTF-8');
+            $body .= "<br><br><b>Message:</b> <code>$error</code><br><br><b>Trace:</b><pre>$trace</pre>";
         }
+        return $this->response->setStatus($status)->setBody($body);
     }
 
     /**
@@ -251,7 +236,7 @@ class Engine
      * @param string $path URL path to parse.
      * @return array{controllerRoute: string, actionRoute: string}
      */
-    private function parsePath(string $path)
+    private function parsePath(string $path): ?array
     {
         $parsedPath = [
             "controllerRoute" => "/",
@@ -259,6 +244,9 @@ class Engine
         ];
 
         $pathParts = StringUtils::splitPath($path);
+        if (count($pathParts) > 2) {
+            return null;
+        }
 
         if (isset($pathParts[0]) && !StringUtils::isWhitespaceOrNull($pathParts[0])) {
             $parsedPath["controllerRoute"] = $pathParts[0];
@@ -352,10 +340,6 @@ class Engine
             if (method_exists($controller, 'setRepositoryProvider')) {
                 $controller->setRepositoryProvider($repositoryResolver);
             }
-            if (property_exists($controller, 'datasource')) {
-                $controller->datasource = $datasourceFactory($this->defaultDatasource);
-            }
-
             return $controller;
         } else {
             return null;
@@ -377,11 +361,20 @@ class Engine
      * 
      * @return void
      */
-    private function notFound()
+    private function notFound(): Response
     {
-        $this->setStatus(404);
-        echo "404 Not Found";
-        die();
+        return $this->response->setStatus(404)->setBody("404 Not Found");
+    }
+
+    private function isAction(ControllerBase $controller, string $action): bool
+    {
+        if (str_starts_with($action, '_') || !method_exists($controller, $action)) {
+            return false;
+        }
+        $method = new \ReflectionMethod($controller, $action);
+        return $method->isPublic()
+            && $method->getDeclaringClass()->getName() === $controller::class
+            && $method->getNumberOfRequiredParameters() === 0;
     }
 
     /**

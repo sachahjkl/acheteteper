@@ -54,7 +54,7 @@ class Response
      */
     public function setHeader(string $name, string $value): self
     {
-        $this->headers[$name] = $value;
+        $this->headers[strtolower($name)] = [$name, $value];
         return $this;
     }
 
@@ -66,7 +66,7 @@ class Response
      */
     public function getHeader(string $name): ?string
     {
-        return $this->headers[$name] ?? null;
+        return $this->headers[strtolower($name)][1] ?? null;
     }
 
     /**
@@ -76,7 +76,7 @@ class Response
      */
     public function getHeaders(): array
     {
-        return $this->headers;
+        return array_column($this->headers, 1, 0);
     }
 
     /**
@@ -109,7 +109,7 @@ class Response
     public function send(): void
     {
         http_response_code($this->status);
-        foreach ($this->headers as $name => $value) {
+        foreach ($this->headers as [$name, $value]) {
             header("$name: $value");
         }
         echo $this->body;
@@ -122,12 +122,11 @@ class Response
      * @param int $status Redirect status code (default: 302).
      * @return void
      */
-    public function redirect(string $url, int $status = 302): void
+    public function redirect(string $url, int $status = 302): self
     {
         $this->setStatus($status);
         $this->setHeader('Location', $url);
-        $this->send();
-        exit();
+        return $this;
     }
 
     /**
@@ -137,12 +136,11 @@ class Response
      * @param int $status HTTP status code (default: 200).
      * @return void
      */
-    public function json(array $data, int $status = 200): void
+    public function json(array $data, int $status = 200): self
     {
         $this->setStatus($status);
-        $this->setHeader('Content-Type', 'application/json');
-        $this->setBody(json_encode($data));
-        $this->send();
-        exit();
+        $this->setHeader('Content-Type', 'application/json; charset=utf-8');
+        $this->setBody(json_encode($data, JSON_THROW_ON_ERROR));
+        return $this;
     }
 }

@@ -8,7 +8,7 @@ class ValidationDemoController extends ControllerBase
 {
     public function index()
     {
-        $this->render('validation_demo');
+        return $this->render('validation_demo');
     }
 
     public function submit()
@@ -39,6 +39,6 @@ class ValidationDemoController extends ControllerBase
             $data['message'] = 'Registration successful!';
         }
 
-        $this->render('validation_demo', $data);
+        return $this->render('validation_demo', $data);
     }
 }

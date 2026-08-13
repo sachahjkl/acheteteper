@@ -8,6 +8,6 @@ class IndexController extends ControllerBase
 {
     public function index()
     {
-        $this->render('index');
+        return $this->render('index');
     }
 }

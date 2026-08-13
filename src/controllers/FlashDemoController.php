@@ -8,7 +8,7 @@ class FlashDemoController extends ControllerBase
 {
     public function index()
     {
-        $this->render('flash_demo');
+        return $this->render('flash_demo');
     }
 
     public function submit()
@@ -18,6 +18,6 @@ class FlashDemoController extends ControllerBase
         $type = $this->request->post('type', 'success');
         $message = $this->request->post('message', 'Flash message sent!');
 
-        $this->redirectWithFlash('/flash', $type, $message);
+        return $this->redirectWithFlash('/flash', $type, $message);
     }
 }

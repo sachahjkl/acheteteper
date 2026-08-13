@@ -76,7 +76,11 @@ class Response
      */
     public function getHeaders(): array
     {
-        return array_column($this->headers, 1, 0);
+        $headers = [];
+        foreach ($this->headers as [$name, $value]) {
+            $headers[$name] = $value;
+        }
+        return $headers;
     }
 
     /**

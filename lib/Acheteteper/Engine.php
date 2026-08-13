@@ -428,18 +428,20 @@ class Engine
             $candidate = $staticDir['base'] . ($relative !== '' ? DIRECTORY_SEPARATOR . $relative : '');
             $resolved = PathUtils::realpath($candidate);
 
-            if (!$resolved || !str_starts_with($resolved, $staticDir['base'])) {
-                $this->notFound();
+            $insideBase = $resolved === $staticDir['base']
+                || ($resolved !== false && str_starts_with($resolved, $staticDir['base'] . DIRECTORY_SEPARATOR));
+            if (!$insideBase) {
+                $this->notFound()->send();
                 return true;
             }
 
             if (is_dir($resolved)) {
-                $this->renderDirectoryListing($staticDir['base'], $prefix, $relative);
+                $this->notFound()->send();
                 return true;
             }
 
             if (!is_file($resolved)) {
-                $this->notFound();
+                $this->notFound()->send();
                 return true;
             }
 
@@ -450,57 +452,6 @@ class Engine
         return false;
     }
 
-    private function renderDirectoryListing(string $basePath, string $prefix, string $relative): void
-    {
-        $virtualPrefix = rtrim($prefix, '/');
-        $dir = $basePath . ($relative !== '' ? DIRECTORY_SEPARATOR . $relative : '');
-
-        $entries = @scandir($dir) ?: [];
-        $items = [];
-        foreach ($entries as $entry) {
-            if ($entry === '.' || $entry === '..') {
-                continue;
-            }
-            $fullPath = $dir . DIRECTORY_SEPARATOR . $entry;
-            $isDir = is_dir($fullPath);
-            $items[] = [
-                'name' => $entry,
-                'isDir' => $isDir,
-            ];
-        }
-
-        header('Content-Type: text/html; charset=utf-8');
-
-        echo "<!doctype html><html><head><meta charset='utf-8'><title>Index of " . htmlspecialchars($virtualPrefix . '/' . $relative) . "</title></head><body>";
-        echo "<h1>Index of " . htmlspecialchars($virtualPrefix . '/' . $relative) . "</h1>";
-        echo "<ul>";
-
-        if ($relative !== '') {
-            $parentRelative = '';
-            $parts = explode('/', trim($relative, '/'));
-            array_pop($parts);
-            if (!empty($parts)) {
-                $parentRelative = implode('/', $parts);
-            }
-            $parentHref = $virtualPrefix . ($parentRelative !== '' ? '/' . $parentRelative : '');
-            if ($parentHref === '') {
-                $parentHref = '/';
-            }
-            echo "<li><a href=\"" . htmlspecialchars($parentHref === '' ? '/' : $parentHref) . "\">..</a></li>";
-        }
-
-        foreach ($items as $item) {
-            $nameEsc = htmlspecialchars($item['name'], ENT_QUOTES | ENT_SUBSTITUTE, 'UTF-8');
-            $href = $virtualPrefix . ($relative !== '' ? '/' . $relative : '') . '/' . $item['name'];
-            if ($item['isDir']) {
-                $href .= '/';
-            }
-            echo "<li><a href=\"" . htmlspecialchars($href, ENT_QUOTES | ENT_SUBSTITUTE, 'UTF-8') . "\">" . $nameEsc . ($item['isDir'] ? '/' : '') . "</a></li>";
-        }
-
-        echo "</ul></body></html>";
-    }
-
     private function streamFile(string $path): void
     {
         // NOTE: requires enabled fileinfo extension in php.ini
@@ -508,7 +459,10 @@ class Engine
         if ($mime) {
             header('Content-Type: ' . $mime);
         }
+        header('X-Content-Type-Options: nosniff');
         header('Content-Length: ' . filesize($path));
-        readfile($path);
+        if (!$this->request->isHead()) {
+            readfile($path);
+        }
     }
 }

@@ -9,6 +9,13 @@ namespace Acheteteper;
  */
 class FileUpload
 {
+    private const IMAGE_TYPES = [
+        'image/jpeg' => 'jpg',
+        'image/png' => 'png',
+        'image/gif' => 'gif',
+        'image/webp' => 'webp',
+    ];
+
     /**
      * Get uploaded file information.
      * 
@@ -87,8 +94,8 @@ class FileUpload
      */
     public static function validateType(string $fieldName, array $allowedExtensions): bool
     {
-        $ext = self::extension($fieldName);
-        return $ext !== null && in_array($ext, $allowedExtensions);
+        $extension = self::detectedExtension($fieldName);
+        return $extension !== null && in_array($extension, $allowedExtensions, true);
     }
 
     /**
@@ -101,6 +108,22 @@ class FileUpload
     public static function validateSize(string $fieldName, int $maxSize): bool
     {
         $file = self::get($fieldName);
-        return $file !== null && $file['size'] <= $maxSize;
+        return $file !== null && $maxSize >= 0 && $file['size'] >= 0 && $file['size'] <= $maxSize;
+    }
+
+    public static function detectedExtension(string $fieldName): ?string
+    {
+        $file = self::get($fieldName);
+        if ($file === null || !is_uploaded_file($file['tmp_name'])) {
+            return null;
+        }
+        $mime = (new \finfo(FILEINFO_MIME_TYPE))->file($file['tmp_name']);
+        return self::IMAGE_TYPES[$mime] ?? null;
+    }
+
+    public static function randomImageName(string $fieldName): ?string
+    {
+        $extension = self::detectedExtension($fieldName);
+        return $extension === null ? null : bin2hex(random_bytes(16)) . '.' . $extension;
     }
 }

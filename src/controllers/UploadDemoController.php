@@ -24,8 +24,8 @@ class UploadDemoController extends ControllerBase
         if (!FileUpload::has('file')) {
             $data['errors'][] = 'No file uploaded';
         } else {
-            if (!FileUpload::validateType('file', ['jpg', 'jpeg', 'png', 'gif'])) {
-                $data['errors'][] = 'File must be an image (jpg, jpeg, png, gif)';
+            if (!FileUpload::validateType('file', ['jpg', 'png', 'gif', 'webp'])) {
+                $data['errors'][] = 'File must be an image (jpg, png, gif, webp)';
             }
 
             if (!FileUpload::validateSize('file', 2 * 1024 * 1024)) {
@@ -34,8 +34,10 @@ class UploadDemoController extends ControllerBase
 
             if (empty($data['errors'])) {
                 $file = FileUpload::get('file');
-                $extension = FileUpload::extension('file');
-                $filename = uniqid() . '.' . $extension;
+                $filename = FileUpload::randomImageName('file');
+                if ($filename === null) {
+                    $this->fail(400, 'Invalid image');
+                }
                 $destination = $this->config()->getUserConfig('uploadsPath') . '/' . $filename;
 
                 if (FileUpload::move('file', $destination)) {

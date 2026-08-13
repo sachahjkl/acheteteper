@@ -66,8 +66,9 @@ class ControllerBase
         $viewFile = null;
         foreach (Config::$viewExtensions as $extension) {
             $viewPath = $viewBasename . '.' . $extension;
-            if (file_exists($viewPath)) {
-                $viewFile = $viewPath;
+            $resolved = realpath($viewPath);
+            if ($resolved !== false && $this->isInViewDir($resolved)) {
+                $viewFile = $resolved;
                 break;
             }
         }
@@ -84,6 +85,8 @@ class ControllerBase
         if ($this->layout) {
             $layoutFile = $this->config->viewDir() . DIRECTORY_SEPARATOR . $this->layout . '.phtml';
         }
+        $resolvedLayout = realpath($layoutFile);
+        $layoutFile = $resolvedLayout !== false && $this->isInViewDir($resolvedLayout) ? $resolvedLayout : '';
 
         ob_start();
         try {
@@ -104,6 +107,12 @@ class ControllerBase
             }
         }
         return $this->response;
+    }
+
+    private function isInViewDir(string $path): bool
+    {
+        $base = rtrim($this->config->viewDir(), DIRECTORY_SEPARATOR);
+        return $path === $base || str_starts_with($path, $base . DIRECTORY_SEPARATOR);
     }
 
     /**

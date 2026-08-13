@@ -172,7 +172,10 @@ class Request
     {
         $name = strtolower($name);
         $name = str_replace('-', '_', $name);
-        $key = 'HTTP_' . strtoupper($name);
+        $serverName = strtoupper($name);
+        $key = in_array($serverName, ['CONTENT_TYPE', 'CONTENT_LENGTH'], true)
+            ? $serverName
+            : 'HTTP_' . $serverName;
         return $this->server[$key] ?? $default;
     }
 
@@ -206,11 +209,6 @@ class Request
      */
     public function ip(): string
     {
-        if (!empty($this->server['HTTP_CLIENT_IP'])) {
-            return $this->server['HTTP_CLIENT_IP'];
-        } elseif (!empty($this->server['HTTP_X_FORWARDED_FOR'])) {
-            return $this->server['HTTP_X_FORWARDED_FOR'];
-        }
         return $this->server['REMOTE_ADDR'] ?? '';
     }
 

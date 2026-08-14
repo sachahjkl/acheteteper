@@ -1,21 +1,23 @@
-# Framework PHP minimal (Acheteteper)
+[English](README.md) | [Français](README.fr.md)
 
-## Démarrage
+# Minimal PHP framework (Acheteteper)
+
+## Getting started
 ### Nix
 
 ```bash
 nix run
 ```
 
-L'application écoute sur http://localhost:8000.
+The application listens on http://localhost:8000.
 
-Exécutez tous les contrôles avec :
+Run all checks with:
 
 ```bash
 nix flake check
 ```
 
-### Image OCI
+### OCI image
 
 ```bash
 nix build .#dockerImage
@@ -23,30 +25,30 @@ podman load --input result
 podman run --rm -p 8000:8000 -v acheteteper-data:/data acheteteper:1.0.0
 ```
 
-L'image conserve la base SQLite et les uploads dans `/data`.
+The image stores the SQLite database and uploads in `/data`.
 
 ### Configuration
 
-`config/app.php` retourne un objet `Config` construit avec `ConfigBuilder`.
+`config/app.php` returns a `Config` object built with `ConfigBuilder`.
 
-Définissez `APP_CONFIG` pour charger un autre fichier PHP.
+Set `APP_CONFIG` to load another PHP file.
 
-Les variables principales sont `DB_PATH`, `UPLOADS_PATH`, `DEBUG`, `PUBLIC_URL` et `TRUSTED_PROXIES`.
+The main variables are `DB_PATH`, `UPLOADS_PATH`, `DEBUG`, `PUBLIC_URL`, and `TRUSTED_PROXIES`.
 
-### Ancien serveur de développement
+### Legacy development server
 ```bash
 build serve              # 127.0.0.1:8000
 build serve 8080         # port custom
 build serve 0.0.0.0 8080 # host + port custom
 ```
 
-/!\ Attention c'est GIIIIGA lent (300ms ajoutées à chaques requêtes).
+/!\ Warning: it is EXTREEEEMELY slow (adds 300ms to every request).
 
 ## Usage
 
-### Point d'entrée
+### Entry point
 
-Créer un fichier `index.php` dans le répertoire public :
+Create an `index.php` file in the public directory:
 
 ```php
 <?php
@@ -74,9 +76,9 @@ $engine->registerController('/', IndexController::class);
 $engine->run();
 ```
 
-### Créer un contrôleur
+### Create a controller
 
-Les contrôleurs étendent `ControllerBase` :
+Controllers extend `ControllerBase`:
 
 ```php
 <?php
@@ -99,36 +101,36 @@ class IndexController extends ControllerBase
 
 ### Routes
 
-Les routes suivent le pattern `/controller/action` :
+Routes follow the `/controller/action` pattern:
 
 - `/` → `IndexController::index()`
 - `/about` → `AboutController::index()`
 - `/about/contact` → `AboutController::contact()`
 
-Enregistrer les routes avec `registerController()` :
+Register routes with `registerController()`:
 
 ```php
 $engine->registerController('/', IndexController::class);
 $engine->registerController('/about', AboutController::class);
 ```
 
-Chaque action publique déclarée dans le contrôleur doit retourner une `Response`.
+Each public action declared in the controller must return a `Response`.
 
-### Méthodes du contrôleur
+### Controller methods
 
-- `render(string $view, array $data = []): Response` - Rend une vue avec des données
-- `redirect(string $url): Response` - Redirige vers une URL
-- `json(array $data): Response` - Retourne une réponse JSON
-- `getFieldValue(string $key)` - Récupère une valeur POST/GET
-- `getFieldsValues(array $keys)` - Récupère plusieurs valeurs POST/GET
-- `datasource(string $name = 'default')` - Récupère un datasource
-- `getService(string $class)` - Récupère un service
-- `getRepository(string $class)` - Récupère un repository
-- `fail(int $status, string $message)` - Lance une HttpException
+- `render(string $view, array $data = []): Response` - Renders a view with data
+- `redirect(string $url): Response` - Redirects to a URL
+- `json(array $data): Response` - Returns a JSON response
+- `getFieldValue(string $key)` - Gets a POST/GET value
+- `getFieldsValues(array $keys)` - Gets multiple POST/GET values
+- `datasource(string $name = 'default')` - Gets a datasource
+- `getService(string $class)` - Gets a service
+- `getRepository(string $class)` - Gets a repository
+- `fail(int $status, string $message)` - Throws an HttpException
 
-### Vues
+### Views
 
-Les vues sont des fichiers PHP dans le répertoire configuré (`viewDir`). Extensions supportées : `.phtml`, `.php`, `.html`.
+Views are PHP files in the configured directory (`viewDir`). Supported extensions are `.phtml`, `.php`, and `.html`.
 
 ```php
 <h1>Page</h1>
@@ -137,30 +139,30 @@ Les vues sont des fichiers PHP dans le répertoire configuré (`viewDir`). Exten
 
 ### Datasource / Services / Repositories
 
-- Déclarer un datasource : `$engine->registerDatasource('default', SqliteDataSource::class);`
-- Déclarer un service : `$engine->registerService(MyService::class);`
-- Déclarer un repository : `$engine->registerRepository(MyRepository::class);`
-- Dans un contrôleur : `$this->datasource()` ou `$this->getService(MyService::class)` ou `$this->getRepository(MyRepository::class)`
+- Declare a datasource: `$engine->registerDatasource('default', SqliteDataSource::class);`
+- Declare a service: `$engine->registerService(MyService::class);`
+- Declare a repository: `$engine->registerRepository(MyRepository::class);`
+- In a controller: `$this->datasource()` or `$this->getService(MyService::class)` or `$this->getRepository(MyRepository::class)`
 
-Exemple de demo : `/db` (DbDemoController) utilise SQLite, un service et un repository pour un CRUD simple sur `demo_items`.
+Demo example: `/db` (DbDemoController) uses SQLite, a service, and a repository for basic CRUD operations on `demo_items`.
 
 ### Assets / favicon
 - Favicon: `src/public/logo.png`
-- Footer badges: `src/public/php-power-micro.png` et images dans `src/public/footer/`
+- Footer badges: `src/public/php-power-micro.png` and images in `src/public/footer/`
 
-### Uploads et statiques
-- `DB_PATH` et `UPLOADS_PATH` peuvent être définis via l'env.
-- Les uploads sont servis statiquement via `/uploads` (voir `Application::bootstrap()` et `Engine::registerStaticDir`).
+### Uploads and static files
+- `DB_PATH` and `UPLOADS_PATH` can be set through the environment.
+- Uploads are served as static files through `/uploads` (see `Application::bootstrap()` and `Engine::registerStaticDir`).
 
 ### UI
-- Composants Tailwind (boutons, inputs, select) disponibles dans `src/Components.php`.
+- Tailwind components (buttons, inputs, select) are available in `src/Components.php`.
 
 ## Inspirations
 
 - https://gregwar.com/php/components.html
 - https://symfony.com/ (Cocorico)
 
-## Liens utiles
+## Useful links
 
 - https://www.php-fig.org/psr/psr-4/
 - https://www.slimframework.com/docs/v3/tutorial/first-app.html

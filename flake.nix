@@ -168,28 +168,38 @@
               | xargs -0 -n1 php -l
             touch $out
           '';
+          actionlint =
+            pkgs.runCommand "acheteteper-actionlint"
+              {
+                nativeBuildInputs = [ pkgs.actionlint ];
+              }
+              ''
+                actionlint -config-file ${src}/.github/actionlint.yaml ${src}/.github/workflows/*.yml
+                touch $out
+              '';
+          dockerImage = pkgs.dockerTools.buildLayeredImage {
+            name = "acheteteper";
+            tag = "1.0.0";
+            contents = [
+              start
+              pkgs.dockerTools.fakeNss
+            ];
+            config = {
+              Cmd = [ "${start}/bin/acheteteper" ];
+              Env = [
+                "DB_PATH=/data/database.db"
+                "UPLOADS_PATH=/data/uploads"
+                "DEBUG=false"
+              ];
+              ExposedPorts."8000/tcp" = { };
+              Volumes."/data" = { };
+            };
+          };
         in
         {
-          packages = rec {
+          packages = {
             default = app;
-            dockerImage = pkgs.dockerTools.buildLayeredImage {
-              name = "acheteteper";
-              tag = "1.0.0";
-              contents = [
-                start
-                pkgs.dockerTools.fakeNss
-              ];
-              config = {
-                Cmd = [ "${start}/bin/acheteteper" ];
-                Env = [
-                  "DB_PATH=/data/database.db"
-                  "UPLOADS_PATH=/data/uploads"
-                  "DEBUG=false"
-                ];
-                ExposedPorts."8000/tcp" = { };
-                Volumes."/data" = { };
-              };
-            };
+            inherit dockerImage;
           };
 
           apps.default = {
@@ -199,7 +209,12 @@
 
           checks = {
             build = app;
-            inherit lint tests;
+            inherit
+              actionlint
+              dockerImage
+              lint
+              tests
+              ;
           };
 
           devShells.default = pkgs.mkShell {

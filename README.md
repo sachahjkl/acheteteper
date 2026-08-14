@@ -1,5 +1,3 @@
-[English](README.md) | [Français](README.fr.md)
-
 # Minimal PHP framework (Acheteteper)
 
 ## Getting started

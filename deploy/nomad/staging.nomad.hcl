@@ -89,7 +89,7 @@ job "acheteteper" {
         port     = "http"
         tags = [
           "traefik.enable=true",
-          "traefik.http.routers.acheteteper-staging.entrypoints=nomad",
+          "traefik.http.routers.acheteteper-staging.entrypoints=websecure",
           "traefik.http.routers.acheteteper-staging.middlewares=acheteteper-staging-noindex",
           "traefik.http.routers.acheteteper-staging.rule=Host(`staging.php.homelab.sacha.house`)",
           "traefik.http.routers.acheteteper-staging.tls.domains[0].main=staging.php.homelab.sacha.house",

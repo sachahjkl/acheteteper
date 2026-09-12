@@ -1,0 +1,11 @@
+application:
+  name: acheteteper
+  port: 8000
+  healthPath: /api/health
+
+domain:
+  production: php.homelab.sacha.house
+  staging: staging.php.homelab.sacha.house
+
+volume:
+  mountPath: /data

@@ -3,21 +3,20 @@ application:
   port: 8000
   healthPath: /api/health
 
+modules:
+  task:
+    - deploy/task.hcl
+
 environments:
   staging:
     domain: staging.php.homelab.sacha.house
     noIndex: true
-    modules:
-      task:
-        - deploy/task-staging.hcl
   production:
     domain: php.homelab.sacha.house
 
     modules:
       group:
         - deploy/group-production.hcl
-      task:
-        - deploy/task-production.hcl
 volume:
   mountPath: /data
 

@@ -89,6 +89,13 @@ job "acheteteper" {
         name     = "acheteteper-staging"
         provider = "nomad"
         port     = "http"
+        tags = [
+          "traefik.enable=true",
+          "traefik.http.routers.acheteteper-staging.entrypoints=nomad",
+          "traefik.http.routers.acheteteper-staging.middlewares=acheteteper-staging-noindex",
+          "traefik.http.routers.acheteteper-staging.rule=Host(`staging.php.homelab.sacha.house`)",
+          "traefik.http.middlewares.acheteteper-staging-noindex.headers.customresponseheaders.X-Robots-Tag=noindex, nofollow",
+        ]
 
         check {
           name     = "HTTP health"

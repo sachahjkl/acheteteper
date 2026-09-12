@@ -115,6 +115,11 @@ job "acheteteper" {
         name     = "acheteteper-production"
         provider = "nomad"
         port     = "http"
+        tags = [
+          "traefik.enable=true",
+          "traefik.http.routers.acheteteper-production.entrypoints=nomad",
+          "traefik.http.routers.acheteteper-production.rule=Host(`php.homelab.sacha.house`)",
+        ]
 
         check {
           name     = "HTTP health"

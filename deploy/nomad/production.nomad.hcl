@@ -49,9 +49,7 @@ job "acheteteper" {
       mode = "host"
 
       port "http" {
-        static       = 9112
-        to           = 8000
-        host_network = "loopback"
+        to = 8000
       }
     }
 

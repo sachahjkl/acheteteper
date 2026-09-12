@@ -108,7 +108,7 @@ jobs:
     runs-on: ubuntu-latest
     environment:
       name: staging
-      url: https://staging.acheteteper
+      url: https://staging.php.homelab.sacha.house
     permissions:
       contents: read
       id-token: write
@@ -162,4 +162,4 @@ jobs:
             sleep 5
           done
           jq -e --argjson version "$version" '.[0].LatestDeployment.JobVersion == $version and .[0].LatestDeployment.Status == "successful"' <<<"$status" >/dev/null
-          test "$(curl --fail --silent --show-error --max-time 15 https://staging.acheteteper/api/health | jq -r .status)" = ok
+          test "$(curl --fail --silent --show-error --max-time 15 https://staging.php.homelab.sacha.house/api/health | jq -r .status)" = ok

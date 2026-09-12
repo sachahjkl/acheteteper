@@ -99,9 +99,11 @@ job "acheteteper" {
       }
 
       env {
-        DB_PATH      = "/data/database.db"
-        DEBUG        = "false"
-        UPLOADS_PATH = "/data/uploads"
+        DB_PATH         = "/data/database.db"
+        DEBUG           = "false"
+        PUBLIC_URL      = "https://php.homelab.sacha.house"
+        TRUSTED_PROXIES = "172.18.0.1"
+        UPLOADS_PATH    = "/data/uploads"
       }
 
       volume_mount {

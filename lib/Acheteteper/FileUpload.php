@@ -4,7 +4,7 @@ namespace Acheteteper;
 
 /**
  * Simple file upload helper.
- * 
+ *
  * @package Acheteteper
  */
 class FileUpload
@@ -18,7 +18,7 @@ class FileUpload
 
     /**
      * Get uploaded file information.
-     * 
+     *
      * @param string $fieldName Form field name.
      * @return array|null File info array or null if not uploaded.
      */
@@ -39,7 +39,7 @@ class FileUpload
 
     /**
      * Check if a file was uploaded.
-     * 
+     *
      * @param string $fieldName Form field name.
      * @return bool
      */
@@ -50,7 +50,7 @@ class FileUpload
 
     /**
      * Move uploaded file to destination.
-     * 
+     *
      * @param string $fieldName Form field name.
      * @param string $destination Destination path.
      * @return bool True on success.
@@ -72,7 +72,7 @@ class FileUpload
 
     /**
      * Get file extension from uploaded file.
-     * 
+     *
      * @param string $fieldName Form field name.
      * @return string|null File extension or null.
      */
@@ -87,7 +87,7 @@ class FileUpload
 
     /**
      * Validate file type.
-     * 
+     *
      * @param string $fieldName Form field name.
      * @param array $allowedExtensions Allowed file extensions (e.g., ['jpg', 'png']).
      * @return bool True if file type is allowed.
@@ -100,7 +100,7 @@ class FileUpload
 
     /**
      * Validate file size.
-     * 
+     *
      * @param string $fieldName Form field name.
      * @param int $maxSize Maximum size in bytes.
      * @return bool True if file size is within limit.

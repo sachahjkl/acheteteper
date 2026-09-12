@@ -4,14 +4,14 @@ namespace Acheteteper\Utils;
 
 /**
  * Utility class for string operations.
- * 
+ *
  * @package Acheteteper
  */
 class StringUtils
 {
     /**
      * Check if a string is null, empty, or contains only whitespace.
-     * 
+     *
      * @param string $string String to check.
      * @return bool True if the string is null, empty, or whitespace-only.
      */
@@ -30,7 +30,7 @@ class StringUtils
 
     /**
      * Split a path string into parts.
-     * 
+     *
      * @param string $path Path to split.
      * @param string $separator Separator character (default: '/').
      * @param bool $trim Whether to trim each part (default: true).
@@ -53,7 +53,7 @@ class StringUtils
 
     /**
      * Convert a string to camelCase.
-     * 
+     *
      * @param string $string String to convert.
      * @return string CamelCase string.
      */
@@ -67,7 +67,7 @@ class StringUtils
 
     /**
      * Convert a string to snake_case.
-     * 
+     *
      * @param string $string String to convert.
      * @return string Snake_case string.
      */
@@ -79,7 +79,7 @@ class StringUtils
 
     /**
      * Convert a string to kebab-case.
-     * 
+     *
      * @param string $string String to convert.
      * @return string Kebab-case string.
      */

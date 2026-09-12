@@ -7,7 +7,7 @@ use Closure;
 
 /**
  * Builder for creating Config instances.
- * 
+ *
  * @package Acheteteper
  */
 class ConfigBuilder
@@ -30,7 +30,7 @@ class ConfigBuilder
 
     /**
      * Set the view directory path.
-     * 
+     *
      * @param string $viewDir Directory path where view files are located.
      * @return self
      */
@@ -46,7 +46,7 @@ class ConfigBuilder
 
     /**
      * Set SQLite database path.
-     * 
+     *
      * @param string $dbPath Path to SQLite file.
      * @return self
      */
@@ -119,7 +119,7 @@ class ConfigBuilder
 
     /**
      * Build and return the configured Config instance.
-     * 
+     *
      * @return Config
      */
     public function build()

@@ -4,3 +4,4 @@ src/uploads/*
 
 data/*
 result
+.pre-commit-config.yaml

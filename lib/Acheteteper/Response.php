@@ -6,7 +6,7 @@ use Closure;
 
 /**
  * Simple response wrapper.
- * 
+ *
  * @package Acheteteper
  */
 class Response
@@ -18,7 +18,7 @@ class Response
 
     /**
      * Create a Response instance from current PHP globals.
-     * 
+     *
      * @return self
      */
     public static function fromGlobals(): self
@@ -28,7 +28,7 @@ class Response
 
     /**
      * Set the HTTP status code.
-     * 
+     *
      * @param int $status HTTP status code.
      * @return self
      */
@@ -40,7 +40,7 @@ class Response
 
     /**
      * Get the HTTP status code.
-     * 
+     *
      * @return int
      */
     public function getStatus(): int
@@ -50,7 +50,7 @@ class Response
 
     /**
      * Set a response header.
-     * 
+     *
      * @param string $name Header name.
      * @param string $value Header value.
      * @return self
@@ -63,7 +63,7 @@ class Response
 
     /**
      * Get a response header.
-     * 
+     *
      * @param string $name Header name.
      * @return string|null Header value or null if not set.
      */
@@ -74,7 +74,7 @@ class Response
 
     /**
      * Get all response headers.
-     * 
+     *
      * @return array
      */
     public function getHeaders(): array
@@ -88,7 +88,7 @@ class Response
 
     /**
      * Set the response body.
-     * 
+     *
      * @param string $body Response body.
      * @return self
      */
@@ -113,7 +113,7 @@ class Response
 
     /**
      * Get the response body.
-     * 
+     *
      * @return string
      */
     public function getBody(): string
@@ -123,7 +123,7 @@ class Response
 
     /**
      * Send the response (set headers and output body).
-     * 
+     *
      * @return void
      */
     public function send(): void
@@ -141,7 +141,7 @@ class Response
 
     /**
      * Redirect to a URL.
-     * 
+     *
      * @param string $url Target URL.
      * @param int $status Redirect status code (default: 302).
      * @return void
@@ -155,7 +155,7 @@ class Response
 
     /**
      * Send JSON response.
-     * 
+     *
      * @param array $data Data to encode as JSON.
      * @param int $status HTTP status code (default: 200).
      * @return void

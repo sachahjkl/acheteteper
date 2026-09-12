@@ -1,12 +1,22 @@
 {
+  nixConfig = {
+    extra-substituters = ["https://nix-community.cachix.org"];
+    extra-trusted-public-keys = ["nix-community.cachix.org-1:mB9FSh9qf2dCimDSUo8Zy7bkq5CX+/rkCWyvRCYg3Fs="];
+  };
+
   inputs = {
-    nixpkgs.url = "github:NixOS/nixpkgs/nixos-26.05";
+    nixpkgs.url = "https://flakehub.com/f/NixOS/nixpkgs/0.2605";
     flake-utils.url = "github:numtide/flake-utils";
+    git-hooks = {
+      url = "https://flakehub.com/f/cachix/git-hooks.nix/0.1";
+      inputs.nixpkgs.follows = "nixpkgs";
+    };
   };
 
   outputs = {
     nixpkgs,
     flake-utils,
+    git-hooks,
     ...
   }:
     flake-utils.lib.eachSystem
@@ -97,6 +107,11 @@
                   try_files $uri $uri/ /index.php?$query_string;
                 }
 
+                location = /api/health {
+                  default_type application/json;
+                  return 200 '{"status":"ok"}';
+                }
+
                 location = /realtime/socket {
                   proxy_pass http://127.0.0.1:9001;
                   proxy_http_version 1.1;
@@ -185,7 +200,11 @@
           tag = "1.0.0";
           contents = [
             start
+            pkgs.busybox
+            pkgs.cacert
             pkgs.dockerTools.fakeNss
+            pkgs.sqlite
+            pkgs.tzdata
           ];
           config = {
             Cmd = ["${start}/bin/acheteteper"];
@@ -196,6 +215,20 @@
             ];
             ExposedPorts."8000/tcp" = {};
             Volumes."/data" = {};
+          };
+        };
+        preCommitCheck = git-hooks.lib.${system}.run {
+          package = pkgs.prek;
+          src = ./.;
+          hooks = {
+            actionlint.enable = true;
+            alejandra.enable = true;
+            check-added-large-files.enable = true;
+            check-merge-conflicts.enable = true;
+            check-yaml.enable = true;
+            end-of-file-fixer.enable = true;
+            shellcheck.enable = true;
+            trim-trailing-whitespace.enable = true;
           };
         };
       in {
@@ -217,15 +250,19 @@
             lint
             tests
             ;
+          pre-commit = preCommitCheck;
         };
 
         devShells.default = pkgs.mkShell {
-          packages = [
-            php
-            pkgs.curl
-            pkgs.alejandra
-            pkgs.sqlite
-          ];
+          packages =
+            [
+              php
+              pkgs.curl
+              pkgs.alejandra
+              pkgs.sqlite
+            ]
+            ++ preCommitCheck.enabledPackages;
+          shellHook = preCommitCheck.shellHook;
         };
 
         formatter = pkgs.alejandra;

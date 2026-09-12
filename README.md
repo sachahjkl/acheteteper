@@ -25,6 +25,8 @@ podman run --rm -p 8000:8000 -v acheteteper-data:/data acheteteper:1.0.0
 
 The image stores the SQLite database and uploads in `/data`.
 
+CI publishes signed, attested OCI images and deploys immutable digests to staging. Production promotes the exact staging digest after approval.
+
 ### Configuration
 
 `config/app.php` returns a `Config` object built with `ConfigBuilder`.

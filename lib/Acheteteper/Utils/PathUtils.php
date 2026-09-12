@@ -11,7 +11,7 @@ class PathUtils
 
     /**
      * Reduce a path to its canonical form.
-     * 
+     *
      * @param string $path Path to reduce.
      * @return string Reduced path.
      */

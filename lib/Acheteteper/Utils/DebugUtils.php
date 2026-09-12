@@ -7,7 +7,7 @@ class DebugUtils
 
     /**
      * Dump variables and display them in a pretty format with a default title.
-     * 
+     *
      * @param mixed ...$variables The variables to dump.
      * @return void
      */
@@ -18,7 +18,7 @@ class DebugUtils
 
     /**
      * Dump variables and display them in a pretty format with a title.
-     * 
+     *
      * @param string $title The title of the debug section.
      * @param mixed ...$variables The variables to dump.
      * @return void

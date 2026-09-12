@@ -8,9 +8,9 @@ use Acheteteper\Utils\StringUtils;
 
 /**
  * Engine class
- * 
+ *
  * This class is the core of the application and coordinates the request/response cycle.
- * 
+ *
  * @package Acheteteper
  * @author  sachahjkl
  * @version 1.0.0
@@ -67,7 +67,7 @@ class Engine
 
     /**
      * Register a controller for a given route path.
-     * 
+     *
      * @param string $path Route path (e.g., '/', '/about').
      * @param string $class Fully qualified controller class name.
      * @return void
@@ -79,12 +79,12 @@ class Engine
 
     /**
      * Process the current HTTP request and route it to the appropriate controller action.
-     * 
+     *
      * Routing logic:
      * - First attempts to match the full path to a registered controller
      * - If not found, parses the path as /controller/action
      * - Returns 404 if controller or action method is not found
-     * 
+     *
      * @return void
      */
     public function run()
@@ -178,7 +178,7 @@ class Engine
 
     /**
      * Register a datasource factory.
-     * 
+     *
      * @param string $name
      * @param callable|string $factory callable(Config): DataSourceInterface or class-string
      * @return void
@@ -194,7 +194,7 @@ class Engine
 
     /**
      * Set the default datasource name.
-     * 
+     *
      * @param string $name
      * @return void
      */
@@ -205,7 +205,7 @@ class Engine
 
     /**
      * Register a service factory.
-     * 
+     *
      * @param string $class Service class name.
      * @param callable|string|null $factory callable(Config, callable, callable, callable): object or class-string. If null, class name is used.
      * @return void
@@ -226,7 +226,7 @@ class Engine
 
     /**
      * Register a repository factory.
-     * 
+     *
      * @param string $class Repository class name.
      * @param callable|string|null $factory callable(Config, callable, callable, callable): object or class-string. If null, class name is used.
      * @return void
@@ -248,7 +248,7 @@ class Engine
 
     /**
      * Parse a URL path into controller route and action route.
-     * 
+     *
      * @param string $path URL path to parse.
      * @return array{controllerRoute: string, actionRoute: string}
      */
@@ -281,7 +281,7 @@ class Engine
 
     /**
      * Find and instantiate a controller for the given route.
-     * 
+     *
      * @param string $route Route path.
      * @return ControllerBase|null Controller instance or null if not found.
      */
@@ -364,7 +364,7 @@ class Engine
 
     /**
      * Get the pathname from the current request URI.
-     * 
+     *
      * @return string URL path.
      */
     private function pathname()
@@ -374,7 +374,7 @@ class Engine
 
     /**
      * Send a 404 Not Found response.
-     * 
+     *
      * @return void
      */
     private function notFound(): Response
@@ -395,7 +395,7 @@ class Engine
 
     /**
      * Set the HTTP response status code.
-     * 
+     *
      * @param int $status HTTP status code.
      * @return void
      */

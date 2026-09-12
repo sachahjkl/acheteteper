@@ -8,10 +8,10 @@ use Acheteteper\Utils\ViewUtils;
 
 /**
  * Base class for all controllers.
- * 
+ *
  * Provides common functionality for rendering views, handling redirects,
  * JSON responses, and accessing request data.
- * 
+ *
  * @package Acheteteper
  */
 class ControllerBase
@@ -50,9 +50,9 @@ class ControllerBase
 
     /**
      * Render a view template with optional data.
-     * 
+     *
      * Searches for the view file using supported extensions in order of preference.
-     * 
+     *
      * @param string $view View name (without extension).
      * @param array $data Data to pass to the view (extracted as variables).
      * @return void
@@ -125,7 +125,7 @@ class ControllerBase
 
     /**
      * Redirect to a URL.
-     * 
+     *
      * @param string $url Target URL.
      * @return void
      */
@@ -136,7 +136,7 @@ class ControllerBase
 
     /**
      * Send a JSON response.
-     * 
+     *
      * @param array $data Data to encode as JSON.
      * @return void
      */
@@ -147,7 +147,7 @@ class ControllerBase
 
     /**
      * Set the HTTP response status code.
-     * 
+     *
      * @param int $status HTTP status code.
      * @return void
      */
@@ -158,7 +158,7 @@ class ControllerBase
 
     /**
      * Get a single field value from POST or GET request.
-     * 
+     *
      * @param string $key Field name.
      * @return mixed Field value or null if not found.
      */
@@ -169,7 +169,7 @@ class ControllerBase
 
     /**
      * Get multiple field values from POST or GET request.
-     * 
+     *
      * @param array $keys Array of field names.
      * @return array Associative array of field names and their values.
      */
@@ -184,7 +184,7 @@ class ControllerBase
 
     /**
      * Get request method (GET, POST, etc.).
-     * 
+     *
      * @return string
      */
     public function method(): string
@@ -194,7 +194,7 @@ class ControllerBase
 
     /**
      * Check if request is POST.
-     * 
+     *
      * @return bool
      */
     public function isPost(): bool
@@ -204,7 +204,7 @@ class ControllerBase
 
     /**
      * Check if request is GET.
-     * 
+     *
      * @return bool
      */
     public function isGet(): bool
@@ -214,7 +214,7 @@ class ControllerBase
 
     /**
      * Check if request is PUT.
-     * 
+     *
      * @return bool
      */
     public function isPut(): bool
@@ -224,7 +224,7 @@ class ControllerBase
 
     /**
      * Check if request is DELETE.
-     * 
+     *
      * @return bool
      */
     public function isDelete(): bool
@@ -234,7 +234,7 @@ class ControllerBase
 
     /**
      * Check if request is PATCH.
-     * 
+     *
      * @return bool
      */
     public function isPatch(): bool
@@ -244,7 +244,7 @@ class ControllerBase
 
     /**
      * Check if request is HEAD.
-     * 
+     *
      * @return bool
      */
     public function isHead(): bool
@@ -254,7 +254,7 @@ class ControllerBase
 
     /**
      * Redirect with a flash message.
-     * 
+     *
      * @param string $url Target URL.
      * @param string $key Flash message key.
      * @param mixed $value Flash message value.
@@ -268,7 +268,7 @@ class ControllerBase
 
     /**
      * Validate request data.
-     * 
+     *
      * @param array $data Data to validate (defaults to POST data).
      * @return Validator
      */
@@ -282,7 +282,7 @@ class ControllerBase
 
     /**
      * Require POST method, throw exception if not.
-     * 
+     *
      * @return void
      * @throws \Exception If request is not POST.
      */
@@ -295,7 +295,7 @@ class ControllerBase
 
     /**
      * Require GET method, throw exception if not.
-     * 
+     *
      * @return void
      * @throws HttpException If request is not GET.
      */
@@ -308,7 +308,7 @@ class ControllerBase
 
     /**
      * Require PUT method, throw exception if not.
-     * 
+     *
      * @return void
      * @throws HttpException If request is not PUT.
      */
@@ -321,7 +321,7 @@ class ControllerBase
 
     /**
      * Require DELETE method, throw exception if not.
-     * 
+     *
      * @return void
      * @throws HttpException If request is not DELETE.
      */
@@ -334,7 +334,7 @@ class ControllerBase
 
     /**
      * Require PATCH method, throw exception if not.
-     * 
+     *
      * @return void
      * @throws HttpException If request is not PATCH.
      */
@@ -347,7 +347,7 @@ class ControllerBase
 
     /**
      * Require HEAD method, throw exception if not.
-     * 
+     *
      * @return void
      * @throws HttpException If request is not HEAD.
      */
@@ -388,7 +388,7 @@ class ControllerBase
 
     /**
      * Require valid CSRF token, throw exception if not.
-     * 
+     *
      * @return void
      * @throws HttpException If CSRF token is invalid.
      */
@@ -456,7 +456,7 @@ class ControllerBase
 
     /**
      * Throw an HTTP exception with status and message.
-     * 
+     *
      * @param int $status HTTP status code.
      * @param string $message Error message.
      * @return never

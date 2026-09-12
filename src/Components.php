@@ -46,7 +46,7 @@ class Components
             . '</li>';
     }
 
-    /** 
+    /**
      * Create a text form input field ()
      */
     public static function FormInput(string $name, string $label, string $value = '', array $attributes = []): string

@@ -6,7 +6,7 @@ use Closure;
 
 /**
  * Configuration class for the framework.
- * 
+ *
  * @package Acheteteper
  */
 class Config
@@ -14,7 +14,7 @@ class Config
     private ?bool $debug = null;
     /**
      * Supported view file extensions, in order of preference.
-     * 
+     *
      * @var array<string>
      */
     public static array $viewExtensions = [
@@ -48,7 +48,7 @@ class Config
 
     /**
      * Sets a user-defined configuration value.
-     * 
+     *
      * @param string $key Configuration key.
      * @param mixed $value Configuration value.
      * @return self
@@ -61,7 +61,7 @@ class Config
 
     /**
      * Gets a user-defined configuration value.
-     * 
+     *
      * @param string $key Configuration key.
      * @return mixed Configuration value, or null if key does not exist.
      */
@@ -72,7 +72,7 @@ class Config
 
     /**
      * Removes a user-defined configuration value.
-     * 
+     *
      * @param string $key Configuration key to remove.
      * @return self
      */
@@ -84,7 +84,7 @@ class Config
 
     /**
      * Removes all user-defined configuration values.
-     * 
+     *
      * @return self
      */
     public function clearUserConfigs(): self
@@ -95,7 +95,7 @@ class Config
 
     /**
      * Returns whether debug mode is enabled.
-     * 
+     *
      * @return bool True if debug mode is enabled, false otherwise.
      */
     public function debug(): bool
@@ -105,7 +105,7 @@ class Config
 
     /**
      * Returns the view directory path.
-     * 
+     *
      * @return string View directory path.
      */
     public function viewDir(): string
@@ -115,7 +115,7 @@ class Config
 
     /**
      * Returns the database path.
-     * 
+     *
      * @return string Database path.
      */
     public function dbPath(): string

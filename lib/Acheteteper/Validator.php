@@ -4,7 +4,7 @@ namespace Acheteteper;
 
 /**
  * Simple validation helper.
- * 
+ *
  * @package Acheteteper
  */
 class Validator
@@ -22,7 +22,7 @@ class Validator
 
     /**
      * Check if a field is required and not empty.
-     * 
+     *
      * @param string $field Field name.
      * @param string $message Error message.
      * @return self
@@ -38,7 +38,7 @@ class Validator
 
     /**
      * Check if a field is a valid email.
-     * 
+     *
      * @param string $field Field name.
      * @param string $message Error message.
      * @return self
@@ -54,7 +54,7 @@ class Validator
 
     /**
      * Check if a field has minimum length.
-     * 
+     *
      * @param string $field Field name.
      * @param int $min Minimum length.
      * @param string $message Error message.
@@ -71,7 +71,7 @@ class Validator
 
     /**
      * Check if a field has maximum length.
-     * 
+     *
      * @param string $field Field name.
      * @param int $max Maximum length.
      * @param string $message Error message.
@@ -88,7 +88,7 @@ class Validator
 
     /**
      * Check if a field matches a pattern.
-     * 
+     *
      * @param string $field Field name.
      * @param string $pattern Regex pattern.
      * @param string $message Error message.
@@ -105,7 +105,7 @@ class Validator
 
     /**
      * Check if a field equals another field.
-     * 
+     *
      * @param string $field Field name.
      * @param string $otherField Other field name to compare.
      * @param string $message Error message.
@@ -123,7 +123,7 @@ class Validator
 
     /**
      * Add a custom validation error.
-     * 
+     *
      * @param string $field Field name.
      * @param string $message Error message.
      * @return self
@@ -136,7 +136,7 @@ class Validator
 
     /**
      * Check if validation passed (no errors).
-     * 
+     *
      * @return bool
      */
     public function isValid(): bool
@@ -146,7 +146,7 @@ class Validator
 
     /**
      * Get all validation errors.
-     * 
+     *
      * @return array<string, string> Associative array of field => error message.
      */
     public function getErrors(): array
@@ -156,7 +156,7 @@ class Validator
 
     /**
      * Get error for a specific field.
-     * 
+     *
      * @param string $field Field name.
      * @return string|null Error message or null if no error.
      */

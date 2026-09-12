@@ -4,7 +4,7 @@ namespace Acheteteper;
 
 /**
  * Simple CSRF token generation and validation.
- * 
+ *
  * @package Acheteteper
  */
 class Csrf
@@ -13,7 +13,7 @@ class Csrf
 
     /**
      * Generate and store a CSRF token.
-     * 
+     *
      * @return string CSRF token.
      */
     public static function token(): string
@@ -26,7 +26,7 @@ class Csrf
 
     /**
      * Generate a hidden input field HTML for CSRF token.
-     * 
+     *
      * @return string HTML input field.
      */
     public static function field(): string
@@ -36,7 +36,7 @@ class Csrf
 
     /**
      * Validate a CSRF token.
-     * 
+     *
      * @param string|null $token Token to validate (defaults to POST['_token']).
      * @return bool True if token is valid.
      */
@@ -51,7 +51,7 @@ class Csrf
 
     /**
      * Check if CSRF token is valid, throw exception if not.
-     * 
+     *
      * @param string|null $token Token to validate.
      * @return void
      * @throws HttpException If token is invalid.

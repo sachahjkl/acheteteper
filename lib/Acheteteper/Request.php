@@ -4,7 +4,7 @@ namespace Acheteteper;
 
 /**
  * Simple request wrapper for accessing HTTP request data.
- * 
+ *
  * @package Acheteteper
  */
 class Request
@@ -16,7 +16,7 @@ class Request
 
     /**
      * Create a Request instance from current PHP globals.
-     * 
+     *
      * @return self
      */
     public static function fromGlobals(?Config $config = null): self
@@ -39,7 +39,7 @@ class Request
 
     /**
      * Get the HTTP request method (GET, POST, etc.).
-     * 
+     *
      * @return string
      */
     public function method(): string
@@ -49,7 +49,7 @@ class Request
 
     /**
      * Check if the request method is GET.
-     * 
+     *
      * @return bool
      */
     public function isGet(): bool
@@ -59,7 +59,7 @@ class Request
 
     /**
      * Check if the request method is POST.
-     * 
+     *
      * @return bool
      */
     public function isPost(): bool
@@ -69,7 +69,7 @@ class Request
 
     /**
      * Check if the request method is PUT.
-     * 
+     *
      * @return bool
      */
     public function isPut(): bool
@@ -79,7 +79,7 @@ class Request
 
     /**
      * Check if the request method is DELETE.
-     * 
+     *
      * @return bool
      */
     public function isDelete(): bool
@@ -89,7 +89,7 @@ class Request
 
     /**
      * Check if the request method is PATCH.
-     * 
+     *
      * @return bool
      */
     public function isPatch(): bool
@@ -99,7 +99,7 @@ class Request
 
     /**
      * Check if the request method is HEAD.
-     * 
+     *
      * @return bool
      */
     public function isHead(): bool
@@ -159,7 +159,7 @@ class Request
 
     /**
      * Get a value from POST data.
-     * 
+     *
      * @param string $key Field name.
      * @param mixed $default Default value if not found.
      * @return mixed
@@ -171,7 +171,7 @@ class Request
 
     /**
      * Get a value from GET data.
-     * 
+     *
      * @param string $key Field name.
      * @param mixed $default Default value if not found.
      * @return mixed
@@ -183,7 +183,7 @@ class Request
 
     /**
      * Get a value from POST or GET data (POST takes precedence).
-     * 
+     *
      * @param string $key Field name.
      * @param mixed $default Default value if not found.
      * @return mixed
@@ -195,7 +195,7 @@ class Request
 
     /**
      * Get all POST data.
-     * 
+     *
      * @return array
      */
     public function allPost(): array
@@ -205,7 +205,7 @@ class Request
 
     /**
      * Get all GET data.
-     * 
+     *
      * @return array
      */
     public function allGet(): array
@@ -215,7 +215,7 @@ class Request
 
     /**
      * Get a request header value.
-     * 
+     *
      * @param string $name Header name (case-insensitive).
      * @param mixed $default Default value if not found.
      * @return mixed
@@ -233,7 +233,7 @@ class Request
 
     /**
      * Get the request URI path.
-     * 
+     *
      * @return string
      */
     public function path(): string
@@ -243,7 +243,7 @@ class Request
 
     /**
      * Get the full request URL.
-     * 
+     *
      * @return string
      */
     public function url(): string
@@ -259,7 +259,7 @@ class Request
 
     /**
      * Get the request IP address.
-     * 
+     *
      * @return string
      */
     public function ip(): string
@@ -273,7 +273,7 @@ class Request
 
     /**
      * Check if request is AJAX (XMLHttpRequest).
-     * 
+     *
      * @return bool
      */
     public function isAjax(): bool

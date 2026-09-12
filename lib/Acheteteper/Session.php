@@ -4,14 +4,14 @@ namespace Acheteteper;
 
 /**
  * Simple session wrapper.
- * 
+ *
  * @package Acheteteper
  */
 class Session
 {
     /**
      * Start session if not already started.
-     * 
+     *
      * @return void
      */
     private static function ensureStarted(): void
@@ -29,7 +29,7 @@ class Session
 
     /**
      * Get a session value.
-     * 
+     *
      * @param string $key Session key.
      * @param mixed $default Default value if not found.
      * @return mixed
@@ -42,7 +42,7 @@ class Session
 
     /**
      * Set a session value.
-     * 
+     *
      * @param string $key Session key.
      * @param mixed $value Value to set.
      * @return void
@@ -55,7 +55,7 @@ class Session
 
     /**
      * Check if a session key exists.
-     * 
+     *
      * @param string $key Session key.
      * @return bool
      */
@@ -67,7 +67,7 @@ class Session
 
     /**
      * Remove a session value.
-     * 
+     *
      * @param string $key Session key.
      * @return void
      */
@@ -79,7 +79,7 @@ class Session
 
     /**
      * Clear all session data.
-     * 
+     *
      * @return void
      */
     public static function clear(): void
@@ -90,7 +90,7 @@ class Session
 
     /**
      * Destroy the session.
-     * 
+     *
      * @return void
      */
     public static function destroy(): void
@@ -112,7 +112,7 @@ class Session
 
     /**
      * Get a flash message and remove it.
-     * 
+     *
      * @param string $key Flash message key.
      * @param mixed $default Default value if not found.
      * @return mixed
@@ -127,7 +127,7 @@ class Session
 
     /**
      * Set a flash message.
-     * 
+     *
      * @param string $key Flash message key.
      * @param mixed $value Flash message value.
      * @return void
